@@ -1,5 +1,7 @@
 import { services } from "./catalog.ts";
 import { type DemoState } from "./demo.ts";
+import { scheduleReason } from "./scheduling/rules.ts";
+import { toMinutes } from "./team/model.ts";
 export const bookingHorizonDays = 60;
 export function dateKey(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -31,17 +33,18 @@ export function getSlots(
     (s) => s.id === serviceId,
   )?.demoDurationMinutes;
   if (!duration) return [];
-  const toMinutes = (time: string) =>
-    Number(time.slice(0, 2)) * 60 + Number(time.slice(3));
+  const member = state.team?.find((b) => b.id === barberId);
+  const open = toMinutes(member?.open ?? "10:00"),
+    close = toMinutes(member?.close ?? "18:00");
   return Array.from(
-    { length: Math.floor((18 * 60 - 10 * 60 - duration) / 15) + 1 },
+    { length: Math.max(0, Math.floor((close - open - duration) / 15) + 1) },
     (_, index) => {
-      const start = 600 + index * 15;
+      const start = open + index * 15;
       const time = `${String(Math.floor(start / 60)).padStart(2, "0")}:${String(start % 60).padStart(2, "0")}`;
       const past = Date.parse(`${date}T${time}:00-05:00`) <= now;
       const occupied = state.bookings.some(
         (b) =>
-          b.status !== "cancelada" &&
+          !["cancelada", "finalizada"].includes(b.status) &&
           b.barberId === barberId &&
           b.date === date &&
           start <
@@ -51,16 +54,26 @@ export function getSlots(
           start + duration > toMinutes(b.time),
       );
       const paused = state.unavailableBarberIds?.includes(barberId);
+      const blocked = scheduleReason(
+        state,
+        barberId,
+        date,
+        start,
+        start + duration,
+        now,
+      );
       return {
         time,
-        available: !past && !occupied && !paused,
+        available: !past && !occupied && !paused && !blocked,
         reason: paused
           ? "Profesional pausado"
-          : past
-            ? "Horario pasado"
-            : occupied
-              ? "Ocupado en demo"
-              : "",
+          : blocked
+            ? blocked
+            : past
+              ? "Horario pasado"
+              : occupied
+                ? "Ocupado en demo"
+                : "",
       };
     },
   );

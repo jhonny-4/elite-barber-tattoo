@@ -1,5 +1,8 @@
 import { barbers, services } from "./catalog.ts";
 import { createDemoId } from "./id.ts";
+import type { TeamMember } from "./team/model.ts";
+import type { QueueTicket } from "./queue/model.ts";
+import { scheduleReason } from "./scheduling/rules.ts";
 
 export type Booking = {
   id: string;
@@ -9,7 +12,9 @@ export type Booking = {
   time: string;
   name: string;
   phone: string;
-  status: "reservada-demo" | "cancelada";
+  status: "reservada-demo" | "cancelada" | "en-atencion" | "finalizada";
+  source?: "online" | "presencial";
+  token?: string;
 };
 export const tattooStatuses = [
   "pendiente",
@@ -34,6 +39,8 @@ export type DemoState = {
   bookings: Booking[];
   requests: TattooRequest[];
   unavailableBarberIds?: string[];
+  team?: TeamMember[];
+  queue?: QueueTicket[];
 };
 export const emptyState = (): DemoState => ({
   version: 1,
@@ -78,8 +85,14 @@ export function addBooking(
   if (
     !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(input.time) ||
     minutes(input.time) % 15 !== 0 ||
-    minutes(input.time) < 600 ||
-    minutes(input.time) + service.demoDurationMinutes > 1080
+    minutes(input.time) <
+      minutes(
+        state.team?.find((b) => b.id === input.barberId)?.open ?? "10:00",
+      ) ||
+    minutes(input.time) + service.demoDurationMinutes >
+      minutes(
+        state.team?.find((b) => b.id === input.barberId)?.close ?? "18:00",
+      )
   )
     throw new Error(
       "Selecciona un horario dentro de la disponibilidad demo (10:00–18:00).",
@@ -88,9 +101,11 @@ export function addBooking(
     throw new Error("Ese horario ya pasó. Selecciona uno futuro.");
   const start = minutes(input.time),
     end = start + service.demoDurationMinutes;
+  const blocked = scheduleReason(state, input.barberId, input.date, start, end);
+  if (blocked) throw new Error(blocked);
   const conflict = state.bookings.some(
     (b) =>
-      b.status !== "cancelada" &&
+      !["cancelada", "finalizada"].includes(b.status) &&
       b.barberId === input.barberId &&
       b.date === input.date &&
       start <
