@@ -26,3 +26,14 @@ Fecha de revisión: 16 de octubre de 2026 (Cartagena).
 - Vista integrada sin errores de consola durante la inspección. En Chrome, una extensión del usuario añadió atributos al documento y produjo un aviso de hidratación externo a la app.
 
 La revisión no certifica producción, disponibilidad simultánea entre dispositivos, seguridad de roles ni integraciones externas: esas capas aún no existen. No se han realizado pagos ni enviado mensajes.
+
+## Revisión visual 02 — monocromo
+
+- Paleta CSS convertida a grises. Escultura de las letras y barras del logo Elite comprobada visualmente con WebGL; retirada la figura abstracta anterior.
+- Nuevo sistema de tipografía y botones con profundidad en formularios, calendario, navegación y tarjetas.
+- Sin enlace al panel en la web pública de visitante. Acceso directo a `/gestion` presenta la entrada de propietario; inicio y salida de sesión demo comprobados.
+- Dirección Wi-Fi del computador accesible desde el navegador. Reserva completa por HTTP de red local comprobada, incluido el fallback de generación de IDs sin `randomUUID`.
+- Revisión móvil a 390 px sin desbordamiento en portada y confirmación de reserva.
+- Nueve pruebas de dominio aprobadas después de añadir cobertura para HTTP local.
+
+La IP local no demuestra por sí sola conexión desde un teléfono físico: requiere que ambos dispositivos compartan Wi-Fi y que la red permita la comunicación. No se modificó el firewall.

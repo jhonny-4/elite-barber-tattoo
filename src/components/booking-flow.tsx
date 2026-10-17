@@ -96,8 +96,8 @@ export function BookingFlow() {
           <span>{currency(service.priceCOP)} COP · provisional</span>
           <small>Referencia demo: {result.id.slice(0, 8).toUpperCase()}</small>
         </div>
-        <Link className="button" href="/gestion">
-          Ver cita en gestión <Icon name="arrow" />
+        <Link className="button" href="/">
+          Volver al inicio <Icon name="arrow" />
         </Link>
         <button
           className="text-link"

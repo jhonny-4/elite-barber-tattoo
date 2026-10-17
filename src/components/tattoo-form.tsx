@@ -98,8 +98,8 @@ export function TattooForm() {
         <div className="request-status">
           <span className="live-dot" /> Pendiente de evaluación
         </div>
-        <Link className="button" href="/gestion?tab=solicitudes">
-          Ver solicitud en gestión <Icon name="arrow" />
+        <Link className="button" href="/jean-carlos">
+          Conocer al artista <Icon name="arrow" />
         </Link>
         <button
           className="text-link"

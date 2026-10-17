@@ -118,7 +118,7 @@ export function Dashboard() {
   return (
     <div className="dashboard">
       <aside className="dashboard-sidebar">
-        <p className="eyebrow">ELITE / GESTIÓN</p>
+        <p className="eyebrow">ELITE / ADMINISTRACIÓN</p>
         {[
           ["citas", "calendar", "Agenda"],
           ["solicitudes", "spark", "Tatuajes"],
@@ -156,9 +156,9 @@ export function Dashboard() {
           <span className="demo-badge">DEMO LOCAL</span>
         </div>
         <h1>
-          Todo en
+          Panel
           <br />
-          <span className="serif">su lugar.</span>
+          <span className="serif">administrativo.</span>
         </h1>
         <p className="muted">
           Explora cómo se gestionará Elite. Usa únicamente datos ficticios.

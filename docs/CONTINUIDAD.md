@@ -7,13 +7,15 @@ Primera dirección visual y flujos demo implementados sobre Next.js. Este proyec
 ## Decisiones
 
 - Elite y Jean Carlos pertenecen al mismo establecimiento. JC es identidad del artista.
-- Negro carbón, blanco cálido, acento lima, metal 3D, tipografía Barlow Condensed / Manrope / serif editorial. No alterar colores reales del trabajo en las imágenes ampliadas.
+- Dirección revisada por el usuario: solo blanco, negro y grises. Space Grotesk / Manrope / Cormorant Garamond. Escultura 3D del logo principal Elite, sin figura abstracta ni collage en portada. Botones de relieve coordinados. Conservar colores reales en las imágenes ampliadas.
 - Objetos 3D decorativos; calendario HTML con relieve CSS para conservar accesibilidad, controles táctiles y rendimiento.
 - Precio provisional: corte 20.000 COP, corte y barba 25.000 COP. Tatuajes sujetos a cotización del diseño.
 - Nombres temporales Barbero 1–3, retratos pendientes. No inventar dirección, teléfono, biografías ni testimonios.
 - Calendario: días anteriores deshabilitados, máximo 60 días, intervalos de 15 min, duración por servicio y horarios ocupados bloqueados.
 - Referencias de solicitudes locales de hasta 1 MB; sin backend ni envío. Solo datos ficticios en gestión.
 - Las solicitudes no se convierten automáticamente en citas. Los estados del panel son ilustrativos y progresan secuencialmente; cerrar es terminal.
+- Panel administrativo en `/administracion`, fuera de la navegación pública. Sesión de propietario solo simulada en `sessionStorage`; NO es seguridad de producción. El dueño tendrá cuenta y rol verificados en servidor y RLS cuando se conecte Supabase. `/gestion` queda como alias con el mismo control de presentación.
+- Vista LAN mediante `npm run dev -- --hostname 0.0.0.0`. Se añadió generación de IDs compatible con HTTP local de teléfonos, donde `crypto.randomUUID` puede no existir.
 
 ## Material
 

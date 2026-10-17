@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { Header, Footer } from "../components/shell";
 import { Icon } from "../components/icons";
-import { Photo, JCMark } from "../components/media";
-import { ChromeObject } from "../components/chrome-object";
+import { JCMark } from "../components/media";
+import { EliteSculpture } from "../components/elite-sculpture";
 import { Gallery } from "../components/gallery";
 import { Reveal } from "../components/reveal";
-import { portfolio } from "../domain/media";
 import { services, currency, barbers } from "../domain/catalog";
 export default function Home() {
   return (
@@ -19,49 +18,36 @@ export default function Home() {
               <span className="live-dot" /> CARTAGENA · BARBER & TATTOO
             </p>
             <h1>
-              EL ESTILO
+              TU ESTILO.
               <br />
-              SE LLEVA.
-              <br />
-              <span className="outline-text">EL ARTE</span>
-              <br />
-              <span className="lime-text">SE QUEDA.</span>
+              <span className="serif">Tu firma.</span>
             </h1>
             <p className="hero-description">
-              Hay formas de cambiar tu look.
-              <br />Y formas de contar quién eres.
+              Barbería y tatuaje en un mismo lugar.
               <br />
-              <strong>Encuentra la tuya en Elite.</strong>
+              Precisión en el corte. Identidad en cada trazo.
             </p>
             <div className="hero-actions">
               <Link className="button" href="/reservar">
                 Reserva tu corte <Icon name="arrow" />
               </Link>
-              <Link className="text-link" href="/tatuaje">
+              <Link className="button button-outline" href="/tatuaje">
                 Quiero un tatuaje <Icon name="arrow" />
               </Link>
             </div>
           </div>
           <div className="hero-art">
-            <div className="art-coordinate">ELITE / EXPRESIÓN SIN LÍMITES</div>
-            <ChromeObject />
-            <div className="hero-photo">
-              <Photo item={portfolio[0]} priority />
-              <div className="photo-shade" />
-              <span className="photo-caption">EL ARTE DE HACERLO TUYO.</span>
-            </div>
-            <div className="hero-small-photo">
-              <Photo item={portfolio[2]} priority />
-              <span>JC / TATTOO</span>
-            </div>
-            <div className="rotating-seal" aria-hidden="true">
-              <span>PRECISIÓN</span>
-              <Icon name="spark" />
-              <span>CON CARÁCTER</span>
-            </div>
+            <div className="art-coordinate">ELITE / ESTUDIO DE ESTILO</div>
+            <EliteSculpture />
+            <div className="sculpture-floor" aria-hidden="true" />
+            <span className="sculpture-caption">
+              ELITE BARBER & TATTOO
+              <br />
+              <small>LA IDENTIDAD TOMA FORMA.</small>
+            </span>
             <div className="hero-art-footer">
-              <span>01 — EL UNIVERSO ELITE</span>
-              <span>DESLIZA PARA DESCUBRIR ↓</span>
+              <span>01 / UNA FIRMA PROPIA</span>
+              <a href="#servicios">DESCUBRE TU EXPERIENCIA ↓</a>
             </div>
           </div>
         </section>

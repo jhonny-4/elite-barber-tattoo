@@ -28,15 +28,22 @@ npm test
 
 ## Recorrido de presentación
 
-| Ruta | Experiencia |
-|---|---|
-| `/` | Portada, objeto 3D, servicios, galería filtrable y ampliable, artista y equipo |
-| `/jean-carlos` | Identidad JC, proceso de valoración y selección de tatuajes |
-| `/reservar` | Servicio → profesional → calendario con relieve → hora → contacto → confirmación demo |
-| `/tatuaje` | Idea, zona, tamaño, referencia con previsualización y solicitud pendiente |
-| `/gestion` | Agenda, solicitudes, clientes derivados, disponibilidad del equipo y restablecimiento |
+| Ruta              | Experiencia                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| `/`               | Portada, objeto 3D, servicios, galería filtrable y ampliable, artista y equipo        |
+| `/jean-carlos`    | Identidad JC, proceso de valoración y selección de tatuajes                           |
+| `/reservar`       | Servicio → profesional → calendario con relieve → hora → contacto → confirmación demo |
+| `/tatuaje`        | Idea, zona, tamaño, referencia con previsualización y solicitud pendiente             |
+| `/administracion` | Entrada aparte del propietario y panel administrativo demo                            |
+| `/gestion`        | Alias del panel, con la misma entrada de propietario                                  |
 
-Se pueden preseleccionar `?servicio=corte-barba` y `?profesional=barbero-2` en `/reservar`. `/gestion?tab=solicitudes` abre las solicitudes.
+Se pueden preseleccionar `?servicio=corte-barba` y `?profesional=barbero-2` en `/reservar`. `/administracion?tab=solicitudes` abre las solicitudes después de entrar al modo propietario.
+
+El visitante no ve un enlace al panel. Para presentarlo, abrir `/administracion` y elegir **Probar panel administrativo · demo**. La sesión simulada se conserva en esta pestaña; **Salir de la demo** vuelve a la entrada. Esto organiza la experiencia, pero no constituye autenticación ni autorización real: Supabase Auth, validación en servidor y RLS son obligatorios antes de usar datos reales.
+
+### Ver desde el celular
+
+Ejecutar `npm run dev -- --hostname 0.0.0.0`. Conectar el celular al mismo Wi-Fi que el computador y abrir `http://IP-DEL-COMPUTADOR:3000`. La IP puede cambiar al reconectar. El computador debe permanecer encendido y el servidor activo. `localhost` desde el celular apunta al propio teléfono. No se abre ningún puerto del router ni se modifica el firewall. `next.config.ts` permite únicamente los nombres locales y las IP del computador como orígenes de desarrollo.
 
 Para demostrar: crear cita, verla en gestión, cancelarla; enviar tatuaje con imagen, revisar la referencia y avanzar su estado; pausar un profesional y comprobar su agenda. Usar siempre contactos ficticios.
 
@@ -47,7 +54,7 @@ Para demostrar: crear cita, verla en gestión, cancelarla; enviar tatuaje con im
 - Duraciones de 30/45 minutos, horas 10:00–18:00 y horizonte de 60 días: exclusivamente demo.
 - Se comprueban cruces parciales y disponibilidad por profesional antes de guardar. Web Locks serializa las escrituras locales cuando el navegador lo soporta. Esto **no sustituye** las transacciones y restricciones del servidor entre dispositivos.
 - Datos en `localStorage`, clave `zenko.elite.demo.v1`. La imagen opcional se conserva como data URL, hasta 1 MB por archivo, sujeto al espacio del navegador. Se informa de errores de lectura, formato o falta de espacio. No se sube ningún archivo.
-- Panel público sin autenticación. Sin correos, WhatsApp, cobros, reservas ni cotizaciones de producción.
+- Entrada separada y sesión de propietario simulada, sin autenticación real. Sin correos, WhatsApp, cobros, reservas ni cotizaciones de producción.
 - Los tatuajes comienzan pendientes. Los estados posteriores se marcan manualmente en gestión para ilustrar el proceso: no generan precios, citas ni mensajes.
 - Dirección, horario comercial, teléfono, biografías y datos no confirmados no se publican como hechos.
 - Páginas con `noindex` mientras sean un prototipo. No se ha desplegado.
@@ -64,7 +71,7 @@ tests/               pruebas de comportamiento del dominio
 docs/                continuidad, activos y paso a producción
 ```
 
-React + Next.js + TypeScript + Tailwind CSS. Animaciones de entrada con IntersectionObserver, transiciones CSS y objeto Three.js cargado de forma dinámica. Alternativa visual CSS cuando no hay WebGL. Movimiento reducido respetado; resolución del lienzo limitada; render fuera de pantalla evitado. El calendario es una interfaz HTML accesible con profundidad CSS, botones nativos y flechas de teclado.
+React + Next.js + TypeScript + Tailwind CSS. Paleta monocromática, Space Grotesk / Manrope / Cormorant Garamond servidas localmente, botones con relieve, entradas con IntersectionObserver y progreso de scroll. Escultura Three.js inspirada en la geometría del logo Elite, con extrusión, biseles, luz de estudio y respuesta sutil al puntero y scroll. Alternativa CSS con el logo cuando no hay WebGL. Movimiento reducido respetado; resolución del lienzo limitada; render fuera de pantalla evitado. El calendario es una interfaz HTML accesible con profundidad CSS, botones nativos y flechas de teclado. Las fotografías de la galería se presentan en blanco y negro y conservan su color original al ampliarlas.
 
 ## Reemplazar fotografías y logos
 

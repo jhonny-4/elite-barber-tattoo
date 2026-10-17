@@ -1,4 +1,5 @@
 import { barbers, services } from "./catalog.ts";
+import { createDemoId } from "./id.ts";
 
 export type Booking = {
   id: string;
@@ -109,7 +110,7 @@ export function addBooking(
       {
         ...input,
         name: input.name.trim(),
-        id: crypto.randomUUID(),
+        id: createDemoId(),
         status: "reservada-demo",
       },
     ],
@@ -133,7 +134,7 @@ export function addTattooRequest(
     ...state,
     requests: [
       ...state.requests,
-      { ...input, id: crypto.randomUUID(), status: "pendiente" },
+      { ...input, id: createDemoId(), status: "pendiente" },
     ],
   };
 }

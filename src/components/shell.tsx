@@ -3,7 +3,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Brand } from "./media";
 import { Icon } from "./icons";
+import { useOwnerSession } from "../lib/owner-session";
 export function Header() {
+  const { owner } = useOwnerSession();
   const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!open) return;
@@ -21,10 +23,12 @@ export function Header() {
       <div className="demo-strip">
         <span className="live-dot" /> EXPERIENCIA DEMO{" "}
         <span className="strip-divider">/</span>{" "}
-        <span>Hecha para imaginar lo que viene.</span>
-        <Link href="/gestion">
-          Explorar gestión <Icon name="arrow" />
-        </Link>
+        <span>Cartagena · Barbería & tatuaje</span>
+        {owner && (
+          <Link href="/administracion">
+            Panel administrativo <Icon name="arrow" />
+          </Link>
+        )}
       </div>
       <header className="site-header">
         <Link
@@ -112,7 +116,6 @@ export function Footer() {
         <div>
           <Link href="/reservar">Reservar barbería</Link>
           <Link href="/tatuaje">Proponer un tatuaje</Link>
-          <Link href="/gestion">Gestión demo</Link>
         </div>
       </div>
       <div className="footer-bottom">
