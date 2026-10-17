@@ -1,25 +1,13 @@
-# Abrir el proyecto en Claude Code
+﻿# Continuar en Claude Code en la nube
 
-Repositorio: `jhonny-4/elite-barber-tattoo`.
+Repositorio público: `jhonny-4/elite-barber-tattoo`. La rama `main` contiene el proyecto completo.
 
-Seleccionar `feat/premium-pwa-v4`: contiene el proyecto completo. Antes de esta entrega, `main` solo tenía README y `.gitignore`. No es necesario crear otra web ni otra carpeta.
+1. Adjuntar ese repositorio a la sesión con acceso de escritura.
+2. Leer `PROMPT_CLAUDE.md` en la raíz: incluye el encargo pendiente y las decisiones del usuario.
+3. Leer `AGENTS.md`, `CLAUDE.md`, `README.md` y `docs/v4/VALIDACION.md`.
+4. Revisar Git y crear una rama desde main actualizado, preservando cambios ajenos.
+5. Con Node.js 24: `npm ci` y `npm run dev`. Para PWA: `npm run build` y `npm start`.
 
-1. Abrir el repositorio en Claude Code y seleccionar la rama V4, o crear una rama desde ella.
-2. Leer `CLAUDE.md` y el README.
-3. Usar Node.js 24 y ejecutar `npm ci`.
-4. Ejecutar `npm run dev`; para PWA, `npm run build` y `npm start`.
-5. Revisar `docs/v4/VALIDACION.md`: las pruebas físicas pendientes no deben darse por realizadas.
+No crear otra aplicación. El proyecto real está en desarrollo; el avance actual mantiene procesos simulados, JSON local y no tiene base de datos de producción ni autenticación real. El siguiente trabajo es el diseño premium completo y el mapa integrado.
 
-Para un checkout vacío basado en main, revisar primero cambios locales y luego:
-
-```sh
-git fetch origin
-git switch --track origin/feat/premium-pwa-v4
-npm ci
-```
-
-Si la rama ya existe localmente, usar `git switch feat/premium-pwa-v4`. No usar reset, borrar archivos ni crear otra aplicación para corregir una selección de rama.
-
-La agenda local y sus datos de ejemplo no se suben a GitHub. Una nueva instancia comienza vacía. Las imágenes estáticas autorizadas sí están en el repositorio. La persistencia de una sesión de nube temporal no es un backend de producción.
-
-La fase siguiente acordada es el acabado visual con High. Revisar el PR antes de integrar en main; no hacer merge ni desplegar sin autorización específica.
+El estado local no viaja en Git: usar datos ficticios en la nube. No desplegar, conectar servicios reales ni integrar cambios en main sin autorización. Registrar las validaciones nuevas y las pruebas físicas pendientes.

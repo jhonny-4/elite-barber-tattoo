@@ -2,9 +2,11 @@
 
 Este repositorio ya contiene el proyecto. No reconstruirlo desde cero.
 
+**Leer primero `PROMPT_CLAUDE.md`: contiene el encargo completo, las prioridades y el estado vigente para continuar en la nube.**
+
 ## Abrir y ejecutar
 
-- Rama de esta entrega: `feat/premium-pwa-v4`. `main` contiene la base inicial hasta revisar e integrar el PR.
+- Rama de partida: `main`, que contiene el proyecto completo. Repositorio público.
 - Leer `README.md`, `docs/v4/VALIDACION.md` y `AGENTS.md` antes de modificar.
 - Código en la raíz: `src/`, `public/`, `tests/`, `docs/`. No crear otra aplicación dentro de otra carpeta.
 - Node.js 24. Ejecutar `npm ci` y `npm run dev`. Para PWA: `npm run build` y `npm start`.
