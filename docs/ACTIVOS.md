@@ -6,6 +6,8 @@
 | `reference/jc-logo-source.png`     | IMG_3497.png, adjunto del chat de referencia   | Monograma JC, encuadre en navegador |
 | `reference/tattoo-source.jpeg`     | IMG_3496.jpeg, captura de @jeancarlostattoo19  | Tatuajes provisionales              |
 | `reference/barber-source.jpeg`     | IMG_3495.jpeg, captura de @elite_barber_tattoo | Cortes provisionales                |
+| `barber/barber-texture.png` | Primer corte individual del último mensaje; 1290 × 1165 | Sección barbería y galería |
+| `barber/barber-precision.png` | Segundo corte individual del último mensaje; 1290 × 1514 | Sección barbería y galería |
 
 Se conservaron las capturas sin editar. Los `viewBox` del componente `Photo` muestran un área de la imagen original. No hay reconstrucción generativa, retoque del tatuaje ni ampliación 4K. Las marcas de interfaz aún visibles en algunas capturas se sustituyen al recibir fotografías individuales.
 

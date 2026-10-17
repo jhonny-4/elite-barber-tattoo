@@ -10,6 +10,7 @@ import "@fontsource/manrope/700.css";
 import "./globals.css";
 import "./monochrome.css";
 import "./brand-experience.css";
+import "./refinement.css";
 export const metadata: Metadata = {
   title: "Elite Barber & Tattoo | Prototipo ZENKO",
   description:

@@ -8,9 +8,19 @@ import {
 } from "../lib/owner-session";
 import { Dashboard } from "./dashboard";
 import { Icon } from "./icons";
+import { SectionBrand } from "./media";
 export function OwnerGate() {
   const { owner, ready } = useOwnerSession();
   const [error, setError] = useState("");
+  function enter() {
+    try {
+      beginOwnerDemo();
+    } catch {
+      setError(
+        "Este navegador no permite guardar la sesión demo. Prueba en una ventana normal.",
+      );
+    }
+  }
   if (!ready)
     return <p className="loading-state">Preparando acceso administrativo…</p>;
   if (owner)
@@ -27,6 +37,7 @@ export function OwnerGate() {
     );
   return (
     <div className="owner-access">
+      <SectionBrand />
       <p className="eyebrow">ELITE / ACCESO DEL PROPIETARIO</p>
       <h1>
         Panel
@@ -35,6 +46,15 @@ export function OwnerGate() {
       </h1>
       <p className="lead">
         El espacio de Jean Carlos para organizar su negocio.
+      </p>
+      <button className="button owner-primary-action" onClick={enter}>
+        Abrir panel demo <Icon name="arrow" />
+      </button>
+      <p className="form-disclaimer">
+        Vista de presentación sin contraseña. Solo datos ficticios.
+      </p>
+      <p className="inline-error" role="alert">
+        {error}
       </p>
       <div className="owner-explainer">
         <article>
@@ -64,23 +84,6 @@ export function OwnerGate() {
           Ahora es una simulación de presentación, sin contraseña ni protección
           de producción. Utiliza solo datos ficticios.
         </p>
-        <p className="inline-error" role="alert">
-          {error}
-        </p>
-        <button
-          className="button"
-          onClick={() => {
-            try {
-              beginOwnerDemo();
-            } catch {
-              setError(
-                "Este navegador no permite guardar la sesión demo. Prueba en una ventana normal.",
-              );
-            }
-          }}
-        >
-          Probar panel administrativo · demo <Icon name="arrow" />
-        </button>
         <Link className="text-link" href="/">
           Volver a la web pública
         </Link>

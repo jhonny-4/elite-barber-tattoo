@@ -12,6 +12,7 @@ import {
 import { prettyDate } from "../domain/availability";
 import { Icon } from "./icons";
 import { ConfirmAction } from "./confirm-action";
+import { Brand } from "./media";
 const labels: Record<TattooRequest["status"], string> = {
   pendiente: "Pendiente",
   "en-evaluacion": "En evaluación",
@@ -35,13 +36,18 @@ export function Dashboard() {
   const params = useSearchParams();
   const demo = useDemo();
   const [tab, setTab] = useState(
-      params.get("tab") === "solicitudes" ? "solicitudes" : "citas",
+      ["citas", "solicitudes", "clientes", "equipo"].includes(
+        params.get("tab") ?? "",
+      )
+        ? params.get("tab")!
+        : "resumen",
     ),
     [query, setQuery] = useState(""),
     [status, setStatus] = useState("todos"),
     [message, setMessage] = useState(""),
     [busy, setBusy] = useState(false),
     [today, setToday] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
   useEffect(() => setToday(todayBogota()), []);
   const active = demo.state.bookings.filter((b) => b.status !== "cancelada");
   const matches = (...values: string[]) =>
@@ -107,6 +113,7 @@ export function Dashboard() {
     .filter(
       (b) =>
         matches(b.name, b.phone, b.date) &&
+        (!dateFilter || b.date === dateFilter) &&
         (status === "todos" || b.status === status),
     )
     .sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));
@@ -115,11 +122,31 @@ export function Dashboard() {
       matches(r.name, r.phone, r.idea) &&
       (status === "todos" || r.status === status),
   );
+  const upcoming = active
+    .filter((b) => b.date >= today)
+    .sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`))
+    .slice(0, 4);
+  const pendingRequests = demo.state.requests.filter(
+    (r) => r.status === "pendiente",
+  );
+  function openTab(id: string) {
+    setTab(id);
+    setQuery("");
+    setStatus("todos");
+    setDateFilter("");
+  }
   return (
     <div className="dashboard">
       <aside className="dashboard-sidebar">
+        <div className="dashboard-brand">
+          <Brand />
+          <span>
+            JEAN CARLOS<small>Propietario · demo</small>
+          </span>
+        </div>
         <p className="eyebrow">ELITE / ADMINISTRACIÓN</p>
         {[
+          ["resumen", "grid", "Resumen"],
           ["citas", "calendar", "Agenda"],
           ["solicitudes", "spark", "Tatuajes"],
           ["clientes", "users", "Clientes"],
@@ -127,17 +154,19 @@ export function Dashboard() {
         ].map(([id, icon, label]) => (
           <button
             key={id}
-            onClick={() => {
-              setTab(id);
-              setQuery("");
-              setStatus("todos");
-            }}
+            onClick={() => openTab(id)}
             className={tab === id ? "active" : ""}
             aria-pressed={tab === id}
           >
             <Icon name={icon as "calendar"} />
             {label}
-            <span>↗</span>
+            <span>
+              {id === "citas"
+                ? active.length
+                : id === "solicitudes"
+                  ? pendingRequests.length
+                  : "↗"}
+            </span>
           </button>
         ))}
         <div className="dashboard-sidebar-bottom">
@@ -156,13 +185,22 @@ export function Dashboard() {
           <span className="demo-badge">DEMO LOCAL</span>
         </div>
         <h1>
-          Panel
+          Todo Elite.
           <br />
-          <span className="serif">administrativo.</span>
+          <span className="serif">En tus manos.</span>
         </h1>
         <p className="muted">
-          Explora cómo se gestionará Elite. Usa únicamente datos ficticios.
+          Jean Carlos, esta es tu vista de gestión. Agenda, tatuajes, clientes y
+          equipo en un solo lugar.
         </p>
+        <div className="dashboard-quick-actions">
+          <Link href="/reservar" className="button button-small">
+            <Icon name="plus" /> Nueva cita demo
+          </Link>
+          <Link href="/tatuaje" className="button button-outline button-small">
+            <Icon name="spark" /> Nueva solicitud
+          </Link>
+        </div>
         <div className="dashboard-stats">
           {[
             ["Citas activas", String(active.length), "calendar"],
@@ -193,15 +231,17 @@ export function Dashboard() {
         </p>
         <div className="dashboard-toolbar">
           <h2>
-            {tab === "citas"
-              ? "Agenda"
-              : tab === "solicitudes"
-                ? "Solicitudes de tatuaje"
-                : tab === "clientes"
-                  ? "Clientes"
-                  : "Equipo"}
+            {tab === "resumen"
+              ? "Resumen del estudio"
+              : tab === "citas"
+                ? "Agenda"
+                : tab === "solicitudes"
+                  ? "Solicitudes de tatuaje"
+                  : tab === "clientes"
+                    ? "Clientes"
+                    : "Equipo"}
           </h2>
-          {tab !== "equipo" && (
+          {tab !== "equipo" && tab !== "resumen" && (
             <input
               aria-label="Buscar en gestión"
               type="search"
@@ -210,6 +250,17 @@ export function Dashboard() {
               onChange={(e) => setQuery(e.target.value)}
             />
           )}{" "}
+          {tab === "citas" && (
+            <label className="agenda-date-filter">
+              Fecha
+              <input
+                type="date"
+                aria-label="Filtrar citas por fecha"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              />
+            </label>
+          )}
           {(tab === "citas" || tab === "solicitudes") && (
             <select
               aria-label="Filtrar por estado"
@@ -236,6 +287,109 @@ export function Dashboard() {
           <p className="loading-state">Leyendo datos locales…</p>
         ) : (
           <>
+            {tab === "resumen" && (
+              <div className="dashboard-overview">
+                <section className="overview-card">
+                  <div className="overview-heading">
+                    <Icon name="calendar" />
+                    <h3>Próximas citas</h3>
+                    <button
+                      className="text-link"
+                      onClick={() => openTab("citas")}
+                    >
+                      Ver agenda ↗
+                    </button>
+                  </div>
+                  {upcoming.length ? (
+                    <div className="overview-list">
+                      {upcoming.map((b) => (
+                        <article key={b.id}>
+                          <span className="overview-time">
+                            {b.time}
+                            <small>{prettyDate(b.date)}</small>
+                          </span>
+                          <div>
+                            <strong>{b.name}</strong>
+                            <p>
+                              {services.find((s) => s.id === b.serviceId)?.name}{" "}
+                              · {barbers.find((p) => p.id === b.barberId)?.name}
+                            </p>
+                          </div>
+                          <span className="status-badge">Demo</span>
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="overview-empty">
+                      <Icon name="calendar" />
+                      <h4>Tu agenda, lista para empezar.</h4>
+                      <p>
+                        Las citas creadas desde este navegador aparecerán aquí.
+                      </p>
+                      <Link href="/reservar" className="text-link">
+                        Crear primera cita demo ↗
+                      </Link>
+                    </div>
+                  )}
+                </section>
+                <section className="overview-card">
+                  <div className="overview-heading">
+                    <Icon name="spark" />
+                    <h3>Ideas por evaluar</h3>
+                    <button
+                      className="text-link"
+                      onClick={() => openTab("solicitudes")}
+                    >
+                      Ver solicitudes ↗
+                    </button>
+                  </div>
+                  {pendingRequests.length ? (
+                    <div className="overview-list">
+                      {pendingRequests.slice(0, 4).map((r) => (
+                        <article key={r.id}>
+                          <div>
+                            <strong>{r.name}</strong>
+                            <p>{r.idea}</p>
+                          </div>
+                          <span className="status-badge">Pendiente</span>
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="overview-empty">
+                      <Icon name="spark" />
+                      <h4>El próximo proyecto comienza con una idea.</h4>
+                      <p>
+                        Las solicitudes de tatuaje esperan tu valoración; no se
+                        confirman automáticamente.
+                      </p>
+                      <Link href="/tatuaje" className="text-link">
+                        Crear solicitud demo ↗
+                      </Link>
+                    </div>
+                  )}
+                </section>
+                <section className="overview-team-strip">
+                  <div>
+                    <p className="eyebrow">EQUIPO DE BARBERÍA</p>
+                    <h3>Disponibilidad de ejemplo</h3>
+                  </div>
+                  <div>
+                    {barbers.map((b, i) => (
+                      <button key={b.id} onClick={() => openTab("equipo")}>
+                        <span className="barber-avatar">E{i + 1}</span>
+                        <strong>{b.name}</strong>
+                        <small>
+                          {demo.state.unavailableBarberIds?.includes(b.id)
+                            ? "Agenda pausada"
+                            : "Agenda activa"}
+                        </small>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            )}
             {tab === "citas" &&
               (bookings.length ? (
                 <div className="table-scroll">
@@ -307,7 +461,7 @@ export function Dashboard() {
               ) : (
                 <Empty
                   title={
-                    query || status !== "todos"
+                    query || status !== "todos" || dateFilter
                       ? "No hay coincidencias."
                       : "Tu agenda está lista para empezar."
                   }

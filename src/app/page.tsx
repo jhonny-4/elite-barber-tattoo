@@ -89,8 +89,7 @@ export default function Home() {
           <div>
             {Array.from({ length: 4 }, (_, i) => (
               <span key={i}>
-                BARBERÍA <b>✳</b> TATUAJE <b>✳</b> IDENTIDAD <b>✳</b> ELITE{" "}
-                <b>✳</b>{" "}
+                <em>ELITE</em> <b>✦</b> BARBERÍA <b>✦</b> TATTOO <b>✦</b>{" "}
               </span>
             ))}
           </div>
@@ -206,12 +205,19 @@ export default function Home() {
         </section>
         <section className="section barber-culture" data-reveal>
           <div className="barber-culture-visual">
-            <Photo item={portfolio[3]} fit="contain" />
+            <div className="barber-duo">
+              {[portfolio[3], portfolio[1]].map((item) => (
+                <figure key={item.id}>
+                  <Photo item={item} fit="contain" />
+                  <figcaption>{item.title}</figcaption>
+                </figure>
+              ))}
+            </div>
             <span className="barber-photo-signature">
               ELITE BARBER / CARTAGENA
             </span>
             <span className="barber-culture-number" aria-hidden="true">
-              E.
+              ELITE.
             </span>
           </div>
           <div className="barber-culture-copy">

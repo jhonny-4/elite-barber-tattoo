@@ -37,7 +37,9 @@ export function Gallery({ tattooOnly = false }: { tattooOnly?: boolean }) {
               ? "Selección de tatuajes de Jean Carlos."
               : "Cortes y tatuajes del negocio."}
             <br />
-            Capturas provisionales para esta demo.
+            {tattooOnly
+              ? "Capturas provisionales para esta demo."
+              : "Cortes seleccionados · tatuajes de referencia."}
           </p>
         </div>
       </div>
@@ -103,7 +105,7 @@ export function Gallery({ tattooOnly = false }: { tattooOnly?: boolean }) {
       </div>
       <div className="gallery-bottom">
         <span>
-          El trabajo real es el protagonista. Fotografías originales pendientes.
+          Cortes seleccionados del negocio. Tatuajes: capturas provisionales.
         </span>
         <Link className="text-link" href="/tatuaje">
           Hablemos de tu idea <Icon name="arrow" />

@@ -8,9 +8,13 @@ import { getSlots, prettyDate, shiftDate } from "../domain/availability";
 import { useDemo } from "../lib/use-demo";
 import { Calendar } from "./calendar";
 import { Icon } from "./icons";
+import { Brand } from "./media";
+import { businessAddress } from "../domain/business";
 export function BookingFlow() {
   const params = useSearchParams();
   const demo = useDemo();
+  const [contact, setContact] = useState({ name: "", phone: "" });
+  const [consent, setConsent] = useState(false);
   const [barberId, setBarber] = useState(
     () =>
       barbers.find((b) => b.id === params.get("profesional"))?.id ??
@@ -47,7 +51,6 @@ export function BookingFlow() {
     event.preventDefault();
     setBusy(true);
     setError("");
-    const data = new FormData(event.currentTarget);
     try {
       let created: Booking | undefined;
       await demo.transact((state) => {
@@ -56,8 +59,8 @@ export function BookingFlow() {
           serviceId,
           date,
           time,
-          name: String(data.get("name") ?? ""),
-          phone: String(data.get("phone") ?? ""),
+          name: contact.name,
+          phone: contact.phone,
         });
         created = next.bookings.at(-1);
         return next;
@@ -99,6 +102,9 @@ export function BookingFlow() {
         <Link className="button" href="/">
           Volver al inicio <Icon name="arrow" />
         </Link>
+        <Link className="text-link" href="/administracion?tab=citas">
+          Ver cita en el panel demo <Icon name="grid" />
+        </Link>
         <button
           className="text-link"
           onClick={() => {
@@ -115,19 +121,26 @@ export function BookingFlow() {
     <div className="booking-layout">
       <div className="booking-workspace">
         <div className="stepper" aria-label="Pasos de reserva">
-          {["Tu experiencia", "Fecha & hora", "Tus datos"].map((label, i) => (
-            <button
-              key={label}
-              onClick={() => {
-                if (i + 1 < step) setStep(i + 1);
-              }}
-              disabled={i + 1 > step}
-              aria-current={step === i + 1 ? "step" : undefined}
-            >
-              <span>{step > i + 1 ? <Icon name="check" /> : `0${i + 1}`}</span>
-              {label}
-            </button>
-          ))}
+          {["Experiencia", "Fecha y hora", "Tus datos", "Revisión"].map(
+            (label, i) => (
+              <button
+                key={label}
+                onClick={() => {
+                  if (i + 1 < step) setStep(i + 1);
+                }}
+                disabled={i + 1 > step}
+                aria-current={step === i + 1 ? "step" : undefined}
+              >
+                <span>
+                  {step > i + 1 ? <Icon name="check" /> : `0${i + 1}`}
+                </span>
+                {label}
+              </button>
+            ),
+          )}
+        </div>
+        <div className="booking-progress" aria-hidden="true">
+          <span style={{ width: `${step * 25}%` }} />
         </div>
         <p className="inline-error" role="alert">
           {error || demo.error}
@@ -282,17 +295,46 @@ export function BookingFlow() {
           </div>
         )}
         {step === 3 && (
-          <form className="booking-step" onSubmit={submit}>
+          <form
+            className="booking-step"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (
+                !contact.name.trim() ||
+                !/^[+\d\s()-]{7,20}$/.test(contact.phone)
+              ) {
+                setError("Escribe un nombre y un teléfono de ejemplo válido.");
+                return;
+              }
+              setError("");
+              setStep(4);
+            }}
+          >
             <p className="eyebrow">03 / EL ÚLTIMO DETALLE</p>
             <h2>
-              Todo listo.
+              Hagámoslo
               <br />
-              <span className="serif">Dale tu nombre.</span>
+              <span className="serif">personal.</span>
             </h2>
-            <ContactFields />
+            <div className="contact-intro">
+              <Icon name="users" />
+              <div>
+                <strong>Datos para tu cita</strong>
+                <p>
+                  En esta presentación, utiliza un nombre y un teléfono
+                  ficticios.
+                </p>
+              </div>
+            </div>
+            <ContactFields value={contact} onChange={setContact} />
             <label className="checkbox-label">
-              <input type="checkbox" required /> Entiendo que es una
-              demostración y usaré datos ficticios.
+              <input
+                type="checkbox"
+                required
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+              />{" "}
+              Entiendo que es una demostración y usaré datos ficticios.
             </label>
             <div className="step-actions">
               <button
@@ -302,9 +344,9 @@ export function BookingFlow() {
               >
                 ← Volver
               </button>
-              <button className="button" disabled={busy || !selectedAvailable}>
-                {busy ? "Guardando…" : "Registrar cita demo"}
-                <Icon name="check" />
+              <button className="button" disabled={!selectedAvailable}>
+                Revisar mi cita
+                <Icon name="arrow" />
               </button>
             </div>
             {!selectedAvailable && (
@@ -319,6 +361,78 @@ export function BookingFlow() {
             </p>
           </form>
         )}
+        {step === 4 && (
+          <form className="booking-step" onSubmit={submit}>
+            <p className="eyebrow">04 / CADA DETALLE EN SU LUGAR</p>
+            <h2>
+              Tu próxima
+              <br />
+              <span className="serif">visita a Elite.</span>
+            </h2>
+            <p className="review-description">
+              Revisa tu selección antes de guardar la cita de ejemplo.
+            </p>
+            <div className="booking-review">
+              <Brand />
+              <dl>
+                <div>
+                  <dt>Experiencia</dt>
+                  <dd>{service.name}</dd>
+                </div>
+                <div>
+                  <dt>Profesional provisional</dt>
+                  <dd>{professional.name}</dd>
+                </div>
+                <div>
+                  <dt>Fecha</dt>
+                  <dd>{prettyDate(date)}</dd>
+                </div>
+                <div>
+                  <dt>Hora · Cartagena</dt>
+                  <dd>{time}</dd>
+                </div>
+                <div>
+                  <dt>Cliente de ejemplo</dt>
+                  <dd>{contact.name}</dd>
+                </div>
+                <div>
+                  <dt>Contacto de ejemplo</dt>
+                  <dd>{contact.phone}</dd>
+                </div>
+                <div>
+                  <dt>Precio provisional</dt>
+                  <dd>{currency(service.priceCOP)} COP</dd>
+                </div>
+              </dl>
+            </div>
+            <p className="summary-notice">
+              <Icon name="check" /> Esta acción guarda una cita local de
+              demostración. No la envía al negocio.
+            </p>
+            {!selectedAvailable && (
+              <p className="inline-error" role="alert">
+                Este horario dejó de estar disponible. Vuelve al paso de fecha y
+                hora.
+              </p>
+            )}
+            <div className="step-actions">
+              <button
+                type="button"
+                className="text-link"
+                onClick={() => setStep(3)}
+              >
+                ← Editar datos
+              </button>
+              <button
+                className="button"
+                disabled={busy || !selectedAvailable || !consent}
+              >
+                {busy ? "Guardando…" : "Guardar cita demo"}
+                <Icon name="check" />
+              </button>
+            </div>
+          </form>
+        )}
       </div>
       <aside className="booking-summary">
         <div className="summary-top">
@@ -326,7 +440,7 @@ export function BookingFlow() {
           <Icon name="spark" />
         </div>
         <div className="summary-emblem">
-          E<span>✳</span>
+          <Brand />
         </div>
         <h3>{service.name}</h3>
         <p>{professional.name} · perfil provisional</p>
@@ -356,11 +470,21 @@ export function BookingFlow() {
         <Link className="text-link" href="/tatuaje">
           ¿Buscas un tatuaje? <Icon name="arrow" />
         </Link>
+        <div className="summary-location">
+          <span className="eyebrow">EL ESTUDIO</span>
+          <p>{businessAddress}.</p>
+        </div>
       </aside>
     </div>
   );
 }
-export function ContactFields() {
+export function ContactFields({
+  value,
+  onChange,
+}: {
+  value?: { name: string; phone: string };
+  onChange?: (value: { name: string; phone: string }) => void;
+} = {}) {
   return (
     <div className="contact-fields">
       <label>
@@ -371,6 +495,10 @@ export function ContactFields() {
           maxLength={100}
           autoComplete="off"
           placeholder="Tu nombre demo"
+          value={value?.name}
+          onChange={(event) =>
+            onChange?.({ name: event.target.value, phone: value?.phone ?? "" })
+          }
         />
       </label>
       <label>
@@ -383,6 +511,11 @@ export function ContactFields() {
           maxLength={20}
           autoComplete="off"
           placeholder="300 000 0000"
+          inputMode="tel"
+          value={value?.phone}
+          onChange={(event) =>
+            onChange?.({ name: value?.name ?? "", phone: event.target.value })
+          }
         />
       </label>
     </div>

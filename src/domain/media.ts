@@ -36,7 +36,8 @@ export const portfolio: PortfolioItem[] = [
     title: "La precisión del detalle",
     subtitle: "Elite · Barbería",
     ...barber,
-    crop: [239, 285, 230, 260],
+    crop: [0, 0, 1290, 1514],
+    original: "/media/barber/barber-precision.png",
   },
   {
     id: "tattoo-02",
@@ -52,7 +53,8 @@ export const portfolio: PortfolioItem[] = [
     title: "Textura & forma",
     subtitle: "Elite · Barbería",
     ...barber,
-    crop: [2, 898, 230, 278],
+    crop: [0, 0, 1290, 1165],
+    original: "/media/barber/barber-texture.png",
   },
   {
     id: "tattoo-03",

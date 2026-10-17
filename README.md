@@ -32,14 +32,14 @@ npm test
 | ----------------- | ------------------------------------------------------------------------------------- |
 | `/`               | Portada, objeto 3D, servicios, galería filtrable y ampliable, artista y equipo        |
 | `/jean-carlos`    | Identidad JC, proceso de valoración y selección de tatuajes                           |
-| `/reservar`       | Servicio → profesional → calendario con relieve → hora → contacto → confirmación demo |
+| `/reservar`       | Experiencia → fecha y hora → datos → revisión final → cita demo |
 | `/tatuaje`        | Idea, zona, tamaño, referencia con previsualización y solicitud pendiente             |
 | `/administracion` | Entrada aparte del propietario y panel administrativo demo                            |
 | `/gestion`        | Alias del panel, con la misma entrada de propietario                                  |
 
 Se pueden preseleccionar `?servicio=corte-barba` y `?profesional=barbero-2` en `/reservar`. `/administracion?tab=solicitudes` abre las solicitudes después de entrar al modo propietario.
 
-La navegación principal no incluye el panel. El enlace **Propietario · Panel administrativo** del pie abre la entrada separada en `/administracion`. Para presentarlo, elegir **Probar panel administrativo · demo**. La sesión simulada se conserva en esta pestaña; **Salir de la demo** vuelve a la entrada. El enlace público lleva a la entrada, no abre directamente la gestión. Esto organiza la experiencia, pero no constituye autenticación ni autorización real: Supabase Auth, validación en servidor y RLS son obligatorios antes de usar datos reales.
+La franja superior incluye **Panel administrativo · demo**, además del acceso de propietario al pie. En `/administracion`, elegir **Abrir panel demo**: el resumen muestra métricas de los datos locales, próximas citas, solicitudes pendientes y equipo. Las pestañas separan agenda (con búsqueda, fecha y estado), tatuajes, clientes y equipo. La sesión simulada se conserva en esta pestaña; **Salir de la demo** vuelve a la entrada. Esto no constituye autenticación ni autorización real: Supabase Auth, validación en servidor y RLS son obligatorios antes de usar datos reales.
 
 ### Ver desde el celular
 
@@ -58,7 +58,7 @@ Los botones de inicio abren destinos externos reales: WhatsApp `https://wa.me/57
 - Datos en `localStorage`, clave `zenko.elite.demo.v1`. La imagen opcional se conserva como data URL, hasta 1 MB por archivo, sujeto al espacio del navegador. Se informa de errores de lectura, formato o falta de espacio. No se sube ningún archivo.
 - Entrada separada y sesión de propietario simulada, sin autenticación real. Sin correos, WhatsApp, cobros, reservas ni cotizaciones de producción.
 - Los tatuajes comienzan pendientes. Los estados posteriores se marcan manualmente en gestión para ilustrar el proceso: no generan precios, citas ni mensajes.
-- Dirección, horario comercial, teléfono definitivo y biografías siguen pendientes de confirmar.
+- Dirección aportada por el usuario: Cra. 59b #mz50-24, barrio Chiquinquirá, Cartagena de Indias, Bolívar. El enlace de Google Maps busca esta dirección; no se ha verificado un pin ni una ficha del negocio. Horario comercial, teléfono definitivo y biografías siguen pendientes de confirmar.
 - Páginas con `noindex` mientras sean un prototipo. No se ha desplegado.
 
 ## Organización
@@ -77,7 +77,7 @@ React + Next.js + TypeScript + Tailwind CSS. Paleta monocromática, Space Grotes
 
 ## Reemplazar fotografías y logos
 
-Leer `docs/ACTIVOS.md`. Las cuatro capturas recuperadas del chat anterior se conservan sin modificar; el navegador encuadra las áreas relevantes. No son fotografías 4K y no se han inventado detalles. Los ocho adjuntos posteriores aún no están disponibles como archivos del proyecto.
+Leer `docs/ACTIVOS.md`. Las cuatro capturas del chat anterior se conservan sin modificar. Se incorporaron los dos cortes individuales del último mensaje, sin retoque ni reconstrucción: sustituyen a ambos cortes previos en la galería y la sección de barbería. Las fotografías muestran su color real sobre superficies monocromáticas. Los tatuajes siguen usando capturas provisionales; los demás adjuntos anteriores aún no se han incorporado. No se han creado detalles ni afirmado una resolución 4K.
 
 En `src/domain/media.ts`, cada trabajo admite `original: '/media/tattoo/archivo.webp'` y `position` opcional. Añadir originales autorizados dentro de `public/media/` y cambiar ese campo. Sustituir las referencias de los componentes `Brand` y `JCMark` cuando lleguen los logos originales. No asignar un corte a un barbero concreto hasta confirmarlo.
 

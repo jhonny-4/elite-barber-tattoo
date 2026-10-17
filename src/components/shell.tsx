@@ -3,9 +3,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Brand } from "./media";
 import { Icon } from "./icons";
-import { useOwnerSession } from "../lib/owner-session";
+import { businessAddress, mapsUrl } from "../domain/business";
 export function Header() {
-  const { owner } = useOwnerSession();
   const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!open) return;
@@ -24,11 +23,9 @@ export function Header() {
         <span className="live-dot" /> EXPERIENCIA DEMO{" "}
         <span className="strip-divider">/</span>{" "}
         <span>Cartagena · Barbería & tatuaje</span>
-        {owner && (
-          <Link href="/administracion">
-            Panel administrativo <Icon name="arrow" />
-          </Link>
-        )}
+        <Link href="/administracion" className="owner-entry">
+          Panel administrativo · demo <Icon name="arrow" />
+        </Link>
       </div>
       <header className="site-header">
         <Link
@@ -75,21 +72,46 @@ export function Footer() {
     <footer className="footer">
       <div className="footer-top">
         <div>
-          <p className="eyebrow">CARTAGENA, COLOMBIA</p>
+          <Brand />
+          <p className="eyebrow">TU ESTILO TIENE UN LUGAR / CARTAGENA</p>
           <h2>
-            Tu próxima
+            Aquí empieza
             <br />
-            <span className="serif">versión.</span>
+            <span className="serif">tu próxima versión.</span>
           </h2>
         </div>
-        <Link
-          className="circle-link"
-          href="/reservar"
-          aria-label="Reservar barbería"
-        >
-          <Icon name="arrow" />
-        </Link>
+        <div className="footer-cta-actions">
+          <Link className="button" href="/reservar">
+            Reserva en Elite <Icon name="arrow" />
+          </Link>
+          <a
+            className="button button-outline"
+            href="https://wa.me/573012329541"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="whatsapp" /> Hablemos
+          </a>
+        </div>
       </div>
+      <section className="location-card" aria-labelledby="location-title">
+        <span className="location-coordinate" aria-hidden="true">
+          E.
+        </span>
+        <div>
+          <p className="eyebrow">UN SOLO ESTUDIO / DOS FORMAS DE EXPRESARTE</p>
+          <h3 id="location-title">Nos vemos en Chiquinquirá.</h3>
+          <address>{businessAddress}.</address>
+        </div>
+        <a
+          className="button"
+          href={mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ver en Google Maps <Icon name="arrow" />
+        </a>
+      </section>
       <div className="footer-grid">
         <Brand />
         <p>
@@ -123,7 +145,7 @@ export function Footer() {
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} Elite Barber & Tattoo</span>
-        <span>Dirección y contacto pendientes de confirmar.</span>
+        <span>Chiquinquirá · Cartagena de Indias</span>
         <span>
           DISEÑO & DESARROLLO <b>ZENKO</b>
         </span>

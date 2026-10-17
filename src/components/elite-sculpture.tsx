@@ -43,6 +43,12 @@ export function EliteSculpture() {
             roughness: 0.22,
             envMapIntensity: 1.7,
           });
+          const sideMaterial = new T.MeshStandardMaterial({
+            color: 0x666666,
+            metalness: 1,
+            roughness: 0.28,
+            envMapIntensity: 1.2,
+          });
           const geometries: InstanceType<typeof T.ExtrudeGeometry>[] = [];
           const textures: InstanceType<typeof T.CanvasTexture>[] = [];
           const labelMaterials: InstanceType<typeof T.MeshBasicMaterial>[] = [];
@@ -60,15 +66,15 @@ export function EliteSculpture() {
             });
             s.closePath();
             const geometry = new T.ExtrudeGeometry(s, {
-              depth: 0.3,
+              depth: 0.58,
               bevelEnabled: true,
-              bevelThickness: 0.055,
-              bevelSize: 0.045,
+              bevelThickness: 0.075,
+              bevelSize: 0.055,
               bevelSegments: 3,
               steps: 1,
             });
             geometries.push(geometry);
-            const mesh = new T.Mesh(geometry, material);
+            const mesh = new T.Mesh(geometry, [material, sideMaterial]);
             mesh.position.set(x, y, 0);
             group.add(mesh);
             parts.push({ mesh, x, y });
@@ -213,8 +219,8 @@ export function EliteSculpture() {
                 ? -3
                 : -3 + Math.sin(t * 0.55) * 4;
               const targetY = motion.matches
-                ? 0.07
-                : 0.08 + Math.sin(t * 0.4) * 0.19 + pointerX * 0.4;
+                ? 0.22
+                : 0.22 + Math.sin(t * 0.4) * 0.24 + pointerX * 0.4;
               const targetX = motion.matches
                 ? -0.06
                 : -0.08 - pointerY * 0.15 + progress * 0.12;
@@ -246,6 +252,7 @@ export function EliteSculpture() {
             planes.forEach((p) => p.dispose());
             labelMaterials.forEach((m) => m.dispose());
             material.dispose();
+            sideMaterial.dispose();
             env.dispose();
             environment.dispose();
             pmrem.dispose();

@@ -16,6 +16,8 @@ export function Photo({
         className={`photo ${className}`}
         src={item.original}
         alt={item.title}
+        width={item.crop[2]}
+        height={item.crop[3]}
         loading={priority ? "eager" : "lazy"}
         style={{ objectPosition: item.position ?? "center", objectFit: fit }}
       />
