@@ -28,3 +28,8 @@ Pendientes físicos: instalación Android/iOS, escaneo QR con cámara y sincroni
 El usuario autorizó subir esta entrega a GitHub; no futuros merges, despliegues o cambios de visibilidad. No conectar servicios reales sin nuevas instrucciones. Conservar historial, sin force push. Nunca subir `.env`, credenciales o `var/demo`.
 
 Al modificar implementación: `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`. Mantener documentadas simulaciones y limitaciones.
+
+## Actualización del proyecto
+
+Repositorio público. Usar main: contiene el proyecto completo. Es el proyecto real en desarrollo; la versión de presentación mantiene flujos simulados, almacenamiento JSON local y no tiene base de datos de producción ni autenticación real. El mapa integrado y el acabado premium siguen pendientes.
+

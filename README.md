@@ -84,3 +84,8 @@ Las pruebas de persistencia crean su propia carpeta temporal y no usan la agenda
 Detalles: `docs/v4/ESTRUCTURA.md`, `docs/v4/VALIDACION.md` y `docs/PRODUCCION.md`.
 
 Rama local `feat/premium-pwa-v4`. Respaldo previo `c171aba`. No hacer push, merge ni despliegue sin autorización. No subir `var/demo`, credenciales o referencias privadas. Al terminar la revisión funcional, avisar al usuario para cambiar a High y refinar diseño, GSAP si procede, marcas de agua y animaciones.
+
+## Actualización del proyecto
+
+Repositorio público. Usar main: contiene el proyecto completo. Es el proyecto real en desarrollo; la versión de presentación mantiene flujos simulados, almacenamiento JSON local y no tiene base de datos de producción ni autenticación real. El mapa integrado y el acabado premium siguen pendientes.
+
