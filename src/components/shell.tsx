@@ -138,6 +138,7 @@ export function Footer() {
         <div>
           <Link href="/reservar">Reservar barbería</Link>
           <Link href="/tatuaje">Proponer un tatuaje</Link>
+          <Link href="/#ubicacion">Ubicación y mapa</Link>
           <Link href="/turnos">Tomar turno por QR</Link>
           <Link href="/pantalla-turnos">Pantalla de turnos</Link>
           <Link href="/administracion">
