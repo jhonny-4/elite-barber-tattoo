@@ -1,29 +1,278 @@
-'use client';
-import {useEffect,useState} from 'react';
-import {artist,barbers,currency,services} from '../domain/catalog';
-import {addBooking,addTattooRequest,emptyState,tattooStatuses,todayBogota,type DemoState} from '../domain/demo';
-import {readDemo,saveDemo} from '../lib/storage';
-
-export default function Page(){
-  const [state,setState]=useState<DemoState>(emptyState),[ready,setReady]=useState(false),[message,setMessage]=useState('');
-  useEffect(()=>{try{setState(readDemo());}catch(e){setMessage((e as Error).message);}finally{setReady(true);}},[]);
-  const persist=(next:DemoState)=>{saveDemo(next);setState(next);};
-  function submit(event:React.FormEvent<HTMLFormElement>,kind:'booking'|'tattoo'){
-    event.preventDefault();const form=event.currentTarget;const data=new FormData(form);const str=(key:string)=>String(data.get(key)??'');
-    try{
-      // Read fresh state so another open tab's latest saved changes are checked.
-      const current=readDemo();
-      if(kind==='booking') persist(addBooking(current,{barberId:str('barberId'),serviceId:str('serviceId'),date:str('date'),time:str('time'),name:str('name'),phone:str('phone')}));
-      else{const file=data.get('reference') as File|null;if(file?.size && (!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024))throw new Error('Usa una imagen JPG, PNG o WebP de hasta 5 MB.');persist(addTattooRequest(current,{name:str('name'),phone:str('phone'),idea:str('idea'),placement:str('placement'),size:str('size'),referenceName:file?.size?file.name:null}));}
-      setMessage(kind==='booking'?'Cita demo registrada. No es una reserva real.':'Solicitud demo pendiente de evaluación. No confirma una cita.');form.reset();
-    }catch(e){setMessage((e as Error).message);}
-  }
-  return <main><p className="notice">Base funcional en preparación · diseño premium pendiente · datos provisionales · sin reservas reales</p><nav aria-label="Principal"><a href="#servicios">Servicios</a><a href="#equipo">Equipo</a><a href="#barberia">Reservar demo</a><a href="#tattoo">Tatuajes</a><a href="#gestion">Gestión demo</a></nav><h1>Elite Barber & Tattoo</h1><p>Barbería y el arte de Jean Carlos en un mismo local. Cartagena.</p><p role="status" aria-live="polite">{message}</p>
-    <section id="servicios"><h2>Servicios</h2>{services.map(s=><p key={s.id}>{s.name} — {currency(s.priceCOP)}</p>)}<p>{artist.pricing}.</p><small>Precios provisionales aportados para esta presentación. Duraciones y disponibilidad son ejemplos.</small></section>
-    <section id="equipo"><h2>Equipo</h2>{barbers.map(b=><p key={b.id}>{b.name} · identidad pendiente</p>)}<p>Jean Carlos · tatuador</p></section>
-    <section id="barberia"><h2>Reserva de barbería demo</h2><p>Horario ficticio de prueba: 10:00–18:00. Corte: 30 min; corte con barba: 45 min.</p><form onSubmit={e=>submit(e,'booking')}><label>Profesional<select required name="barberId">{barbers.map(b=><option key={b.id} value={b.id}>{b.name}</option>)}</select></label><label>Servicio<select required name="serviceId">{services.map(s=><option key={s.id} value={s.id}>{s.name} · {currency(s.priceCOP)}</option>)}</select></label><label>Fecha<input required name="date" type="date" min={ready?todayBogota():undefined}/></label><label>Hora demo<input required name="time" type="time" min="10:00" max="17:30" step="900"/></label><Contact/><button disabled={!ready}>Registrar cita demo</button></form></section>
-    <section id="tattoo"><h2>Cuéntale tu idea a Jean Carlos</h2><p>La valoración y cotización dependen del diseño. Enviar esta solicitud no confirma una cita.</p><form onSubmit={e=>submit(e,'tattoo')}><Contact/><label>Idea<textarea required minLength={10} maxLength={3000} name="idea"/></label><label>Zona del cuerpo<input required maxLength={100} name="placement"/></label><label>Tamaño aproximado<input required maxLength={100} name="size" placeholder="Ejemplo: 10 × 15 cm"/></label><label>Referencia opcional<input name="reference" type="file" accept="image/jpeg,image/png,image/webp"/></label><small>Hasta 5 MB. En esta base demo solo se guarda el nombre del archivo; no se sube ni conserva la imagen.</small><button disabled={!ready}>Enviar solicitud demo</button></form></section>
-    <section id="gestion"><h2>Gestión demo</h2><p>Panel público de demostración, sin autenticación. Usa únicamente datos ficticios. Guardado en este navegador.</p><h3>Citas ({state.bookings.length})</h3>{!state.bookings.length&&<p>Aún no hay citas demo.</p>}{state.bookings.map(b=><article key={b.id}><p>{b.name} · {b.date} · {b.time} · {barbers.find(x=>x.id===b.barberId)?.name} · {b.status}</p>{b.status!=='cancelada'&&<button onClick={()=>{try{const fresh=readDemo();persist({...fresh,bookings:fresh.bookings.map(x=>x.id===b.id?{...x,status:'cancelada'}:x)});}catch(e){setMessage((e as Error).message);}}}>Cancelar cita demo</button>}</article>)}<h3>Solicitudes ({state.requests.length})</h3>{!state.requests.length&&<p>Aún no hay solicitudes demo.</p>}{state.requests.map(r=><article key={r.id}><p>{r.name} · {r.idea} · {r.placement} · {r.size}</p><p>Referencia: {r.referenceName??'Sin referencia'}</p><label>Estado demo<select value={r.status} onChange={e=>{try{const status=e.target.value as typeof r.status;const fresh=readDemo();persist({...fresh,requests:fresh.requests.map(x=>x.id===r.id?{...x,status}:x)});}catch(error){setMessage((error as Error).message);}}}>{tattooStatuses.map(s=><option key={s}>{s}</option>)}</select></label></article>)}<button disabled={!ready} onClick={()=>{if(window.confirm('¿Borrar todas las citas y solicitudes demo de este navegador?'))try{persist(emptyState());setMessage('Datos demo restablecidos.');}catch(e){setMessage((e as Error).message);}}}>Restablecer datos demo</button></section>
-  </main>;
+import Link from "next/link";
+import { Header, Footer } from "../components/shell";
+import { Icon } from "../components/icons";
+import { Photo, JCMark } from "../components/media";
+import { ChromeObject } from "../components/chrome-object";
+import { Gallery } from "../components/gallery";
+import { Reveal } from "../components/reveal";
+import { portfolio } from "../domain/media";
+import { services, currency, barbers } from "../domain/catalog";
+export default function Home() {
+  return (
+    <>
+      <Header />
+      <main id="main">
+        <section className="hero">
+          <div className="hero-gridlines" aria-hidden="true" />
+          <div className="hero-copy">
+            <p className="eyebrow">
+              <span className="live-dot" /> CARTAGENA · BARBER & TATTOO
+            </p>
+            <h1>
+              EL ESTILO
+              <br />
+              SE LLEVA.
+              <br />
+              <span className="outline-text">EL ARTE</span>
+              <br />
+              <span className="lime-text">SE QUEDA.</span>
+            </h1>
+            <p className="hero-description">
+              Hay formas de cambiar tu look.
+              <br />Y formas de contar quién eres.
+              <br />
+              <strong>Encuentra la tuya en Elite.</strong>
+            </p>
+            <div className="hero-actions">
+              <Link className="button" href="/reservar">
+                Reserva tu corte <Icon name="arrow" />
+              </Link>
+              <Link className="text-link" href="/tatuaje">
+                Quiero un tatuaje <Icon name="arrow" />
+              </Link>
+            </div>
+          </div>
+          <div className="hero-art">
+            <div className="art-coordinate">ELITE / EXPRESIÓN SIN LÍMITES</div>
+            <ChromeObject />
+            <div className="hero-photo">
+              <Photo item={portfolio[0]} priority />
+              <div className="photo-shade" />
+              <span className="photo-caption">EL ARTE DE HACERLO TUYO.</span>
+            </div>
+            <div className="hero-small-photo">
+              <Photo item={portfolio[2]} priority />
+              <span>JC / TATTOO</span>
+            </div>
+            <div className="rotating-seal" aria-hidden="true">
+              <span>PRECISIÓN</span>
+              <Icon name="spark" />
+              <span>CON CARÁCTER</span>
+            </div>
+            <div className="hero-art-footer">
+              <span>01 — EL UNIVERSO ELITE</span>
+              <span>DESLIZA PARA DESCUBRIR ↓</span>
+            </div>
+          </div>
+        </section>
+        <div className="marquee" aria-hidden="true">
+          <div>
+            {Array.from({ length: 4 }, (_, i) => (
+              <span key={i}>
+                BARBERÍA <b>✳</b> TATUAJE <b>✳</b> IDENTIDAD <b>✳</b> ELITE{" "}
+                <b>✳</b>{" "}
+              </span>
+            ))}
+          </div>
+        </div>
+        <section className="section universe" id="universo">
+          <div className="section-index" data-reveal>
+            <span>01 / EL UNIVERSO</span>
+            <Icon name="spark" />
+          </div>
+          <div className="universe-content" data-reveal>
+            <p className="eyebrow">DOS DISCIPLINAS. UNA MISMA ACTITUD.</p>
+            <h2>
+              No sigas el estilo.
+              <br />
+              <span className="serif">Hazlo tuyo.</span>
+            </h2>
+            <div className="universe-bottom">
+              <p>
+                Un corte que define. Un tatuaje que expresa. Elite Barber &
+                Tattoo reúne barbería y el arte de Jean Carlos en un mismo
+                espacio en Cartagena.
+              </p>
+              <a className="text-link" href="#galeria">
+                Conoce nuestro trabajo <Icon name="arrow" />
+              </a>
+            </div>
+          </div>
+        </section>
+        <section className="section services-section" id="servicios">
+          <div className="section-heading" data-reveal>
+            <div>
+              <p className="eyebrow">02 / ELIGE TU EXPERIENCIA</p>
+              <h2>
+                El detalle
+                <br />
+                <span className="serif">lo cambia todo.</span>
+              </h2>
+            </div>
+            <p className="section-note">
+              Barbería con intención.
+              <br />
+              Tatuajes con identidad.
+            </p>
+          </div>
+          <div className="service-list">
+            {services.map((s, i) => (
+              <Link
+                href={`/reservar?servicio=${s.id}`}
+                className="service-row"
+                key={s.id}
+                data-reveal
+              >
+                <span className="service-number">0{i + 1}</span>
+                <div>
+                  <h3>{s.name}</h3>
+                  <p>
+                    {i === 0
+                      ? "Un nuevo look empieza en los detalles."
+                      : "Corte y barba en una misma experiencia."}
+                  </p>
+                </div>
+                <span className="service-price">
+                  {currency(s.priceCOP)}
+                  <small>COP · precio provisional</small>
+                </span>
+                <span className="round-arrow">
+                  <Icon name="arrow" />
+                </span>
+              </Link>
+            ))}
+            <Link href="/tatuaje" className="service-row" data-reveal>
+              <span className="service-number">03</span>
+              <div>
+                <h3>Tatuaje personalizado</h3>
+                <p>Tu idea. El trazo de Jean Carlos.</p>
+              </div>
+              <span className="service-price quote-price">
+                A tu medida<small>Cotización según diseño</small>
+              </span>
+              <span className="round-arrow">
+                <Icon name="arrow" />
+              </span>
+            </Link>
+          </div>
+        </section>
+        <Gallery />
+        <section className="artist-feature section" data-reveal>
+          <div className="artist-visual">
+            <div className="artist-frame">
+              <JCMark />
+            </div>
+            <span className="eyebrow artist-signature">
+              EL TRAZO DETRÁS DEL ARTE
+            </span>
+            <span className="artist-serial">JC / 001</span>
+          </div>
+          <div className="artist-copy">
+            <p className="eyebrow">04 / EL ARTISTA</p>
+            <h2>
+              Jean
+              <br />
+              <span className="serif">Carlos.</span>
+            </h2>
+            <p>
+              Tu historia merece un trazo propio. Conoce el universo de Jean
+              Carlos, artista de tatuajes en Elite Barber & Tattoo.
+            </p>
+            <p className="muted">
+              Cada proyecto comienza con una conversación: la idea, la zona y
+              los detalles que lo hacen tuyo.
+            </p>
+            <Link className="button button-outline" href="/jean-carlos">
+              Conoce al artista <Icon name="arrow" />
+            </Link>
+          </div>
+        </section>
+        <section className="section" id="equipo">
+          <div className="section-heading" data-reveal>
+            <div>
+              <p className="eyebrow">05 / BARBERÍA</p>
+              <h2>
+                Elige quién
+                <br />
+                <span className="serif">define tu estilo.</span>
+              </h2>
+            </div>
+            <p className="section-note">
+              Perfiles provisionales.
+              <br />
+              Nombres y retratos por confirmar.
+            </p>
+          </div>
+          <div className="team-grid">
+            {barbers.map((b, i) => (
+              <Link
+                href={`/reservar?profesional=${b.id}`}
+                key={b.id}
+                className="team-card"
+                data-reveal
+              >
+                <div className="team-placeholder">
+                  <span className="team-monogram">E{i + 1}</span>
+                  <span className="eyebrow">RETRATO PRÓXIMAMENTE</span>
+                  <Icon name="plus" />
+                </div>
+                <div className="team-card-bottom">
+                  <div>
+                    <h3>{b.name}</h3>
+                    <p>Barbería · perfil demo</p>
+                  </div>
+                  <Icon name="arrow" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+        <section className="booking-teaser section" data-reveal>
+          <div>
+            <p className="eyebrow">TU MOMENTO EMPIEZA AQUÍ</p>
+            <h2>
+              Haz espacio
+              <br />
+              para <span className="serif">ti.</span>
+            </h2>
+            <p>
+              Elige tu experiencia y encuentra un espacio en la agenda demo.
+            </p>
+            <Link href="/reservar" className="button">
+              Explorar calendario <Icon name="calendar" />
+            </Link>
+          </div>
+          <Link
+            href="/reservar"
+            className="teaser-calendar"
+            aria-label="Abrir el calendario de reservas"
+          >
+            <div className="mini-calendar-top">
+              <span>ELITE / TU ESPACIO</span>
+              <Icon name="spark" />
+            </div>
+            <div className="mini-days">
+              {["L", "M", "M", "J", "V", "S", "D"].map((d, i) => (
+                <span key={i}>{d}</span>
+              ))}
+            </div>
+            <div className="mini-grid">
+              {Array.from({ length: 21 }, (_, i) => (
+                <span key={i} className={i === 11 ? "chosen" : ""}>
+                  {i + 1}
+                </span>
+              ))}
+            </div>
+            <div className="mini-calendar-bottom">
+              <span className="live-dot" />
+              Un momento para renovar tu estilo.
+              <Icon name="arrow" />
+            </div>
+          </Link>
+        </section>
+      </main>
+      <Footer />
+      <Reveal />
+    </>
+  );
 }
-function Contact(){return <><label>Nombre ficticio<input required name="name" autoComplete="off" maxLength={100}/></label><label>Teléfono de ejemplo<input required name="phone" type="tel" pattern="[+0-9 ()\-]{7,20}" maxLength={20}/></label></>;}

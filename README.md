@@ -1,35 +1,79 @@
-# Elite Barber & Tattoo
+# Elite Barber & Tattoo — ZENKO
 
-Proyecto independiente de ZENKO para Elite Barber & Tattoo, Cartagena.
+Prototipo navegable que evoluciona al proyecto final. Un único establecimiento en Cartagena: Elite (`@elite_barber_tattoo`) y su artista Jean Carlos (`@jeancarlostattoo19`).
 
-Estado: base funcional previa al diseño premium. Capturas revisadas en el chat, pendientes de importar como archivos; información comercial provisional.
+## Ejecutar
 
-## Ejecutar localmente
+Requisitos: Node.js 24 y npm. En esta carpeta:
 
-Node.js 24 y npm. En esta carpeta ejecutar `npm ci`, después `npm run dev` y abrir http://localhost:3000. Para producción local: `npm run build` y `npm start`. Comprobaciones: `npm run typecheck` y `npm test`.
+```sh
+npm ci
+npm run dev
+```
 
-## Estructura
+Abrir http://localhost:3000. Para una presentación local sin herramientas de desarrollo:
 
-- `src/app`: pantalla técnica provisional y metadata; se sustituirá durante el diseño High.
-- `src/domain`: catálogo, tipos y validaciones independientes de la interfaz.
-- `src/lib`: persistencia local versionada.
-- `tests`: pruebas de cruces, cancelaciones y validación.
-- `docs/CONTINUIDAD.md`: decisiones, datos provisionales y plan para diseño y producción.
+```sh
+npm run build
+npm start
+```
 
-No hay servidor de reservas ni autenticación. Usar datos ficticios. El panel es público y los datos solo se guardan en el navegador. La comprobación local de cruces no garantiza concurrencia real. Los archivos de referencia no se suben: solo se conserva su nombre. No hay integraciones externas activas.
+La compilación utiliza Webpack para reproducir el entorno comprobado en Windows. No requiere claves ni servicios externos. Las fuentes se sirven localmente.
 
-## Imágenes
+```sh
+npm run typecheck
+npm run lint
+npm test
+```
 
-Crear `public/media/brand`, `public/media/barber` y `public/media/tattoo` al importar los archivos originales disponibles. Mantener originales sin editar y variantes web separadas. No atribuir cortes a un barbero sin confirmación. Documentar cada archivo y reemplazarlo sin cambiar las reglas del dominio. Los adjuntos del chat aún no están importados.
+## Recorrido de presentación
 
-Un único local: @elite_barber_tattoo. Jean Carlos (@jeancarlostattoo19) es el artista de tatuajes del mismo establecimiento.
+| Ruta | Experiencia |
+|---|---|
+| `/` | Portada, objeto 3D, servicios, galería filtrable y ampliable, artista y equipo |
+| `/jean-carlos` | Identidad JC, proceso de valoración y selección de tatuajes |
+| `/reservar` | Servicio → profesional → calendario con relieve → hora → contacto → confirmación demo |
+| `/tatuaje` | Idea, zona, tamaño, referencia con previsualización y solicitud pendiente |
+| `/gestion` | Agenda, solicitudes, clientes derivados, disponibilidad del equipo y restablecimiento |
 
-## Colaboración
+Se pueden preseleccionar `?servicio=corte-barba` y `?profesional=barbero-2` en `/reservar`. `/gestion?tab=solicitudes` abre las solicitudes.
 
-Codex y Claude Code deben trabajar en ramas distintas, revisar cambios antes de integrarlos y evitar editar simultáneamente los mismos archivos. No subir credenciales ni archivos privados de clientes. No publicar ni desplegar sin autorización.
+Para demostrar: crear cita, verla en gestión, cancelarla; enviar tatuaje con imagen, revisar la referencia y avanzar su estado; pausar un profesional y comprobar su agenda. Usar siempre contactos ficticios.
 
-## Alcance acordado
+## Qué está simulado
 
-Experiencia premium responsive, galería de cortes y tatuajes, perfil Jean Carlos, reservas de barbería, solicitudes de valoración de tatuaje y panel demo. Las simulaciones deben identificarse. No inventar precios, horarios ni datos comerciales.
+- Corte $20.000 COP y corte con barba $25.000 COP: valores provisionales aportados por el usuario.
+- Barbero 1, 2 y 3: perfiles temporales sin nombres, retratos ni experiencia inventados.
+- Duraciones de 30/45 minutos, horas 10:00–18:00 y horizonte de 60 días: exclusivamente demo.
+- Se comprueban cruces parciales y disponibilidad por profesional antes de guardar. Web Locks serializa las escrituras locales cuando el navegador lo soporta. Esto **no sustituye** las transacciones y restricciones del servidor entre dispositivos.
+- Datos en `localStorage`, clave `zenko.elite.demo.v1`. La imagen opcional se conserva como data URL, hasta 1 MB por archivo, sujeto al espacio del navegador. Se informa de errores de lectura, formato o falta de espacio. No se sube ningún archivo.
+- Panel público sin autenticación. Sin correos, WhatsApp, cobros, reservas ni cotizaciones de producción.
+- Los tatuajes comienzan pendientes. Los estados posteriores se marcan manualmente en gestión para ilustrar el proceso: no generan precios, citas ni mensajes.
+- Dirección, horario comercial, teléfono, biografías y datos no confirmados no se publican como hechos.
+- Páginas con `noindex` mientras sean un prototipo. No se ha desplegado.
 
-La base usa Next.js y TypeScript. PostgreSQL/Supabase queda previsto para producción. La composición premium, Tailwind, galería y animación se implementarán en la etapa High solicitada por el usuario.
+## Organización
+
+```text
+src/app/             páginas, metadata, errores y estilos
+src/components/      calendario, formularios, galería, objeto 3D y panel
+src/domain/          catálogo, disponibilidad, validación y catálogo visual
+src/lib/             persistencia y sincronización local
+public/media/        capturas de referencia y futuros originales
+tests/               pruebas de comportamiento del dominio
+docs/                continuidad, activos y paso a producción
+```
+
+React + Next.js + TypeScript + Tailwind CSS. Animaciones de entrada con IntersectionObserver, transiciones CSS y objeto Three.js cargado de forma dinámica. Alternativa visual CSS cuando no hay WebGL. Movimiento reducido respetado; resolución del lienzo limitada; render fuera de pantalla evitado. El calendario es una interfaz HTML accesible con profundidad CSS, botones nativos y flechas de teclado.
+
+## Reemplazar fotografías y logos
+
+Leer `docs/ACTIVOS.md`. Las cuatro capturas recuperadas del chat anterior se conservan sin modificar; el navegador encuadra las áreas relevantes. No son fotografías 4K y no se han inventado detalles. Los ocho adjuntos posteriores aún no están disponibles como archivos del proyecto.
+
+En `src/domain/media.ts`, cada trabajo admite `original: '/media/tattoo/archivo.webp'` y `position` opcional. Añadir originales autorizados dentro de `public/media/` y cambiar ese campo. Sustituir las referencias de los componentes `Brand` y `JCMark` cuando lleguen los logos originales. No asignar un corte a un barbero concreto hasta confirmarlo.
+
+## Colaboración y producción
+
+Codex y Claude Code trabajan en ramas separadas y revisan antes de integrar. No editar los mismos archivos a la vez. No subir credenciales, datos de clientes ni referencias privadas al repositorio. Los archivos `.env` están excluidos.
+
+El repositorio y las vistas locales no publican el sitio en Internet. Cualquier despliegue requiere autorización. El plan de PostgreSQL/Supabase, roles, almacenamiento privado, pagos y notificaciones está en `docs/PRODUCCION.md`.

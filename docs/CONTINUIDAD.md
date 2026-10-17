@@ -1,22 +1,28 @@
-# Continuidad para diseño High y Claude Code
+# Continuidad — Elite / ZENKO
 
-Base funcional, no diseño terminado. Mantener Next.js para evolucionar al proyecto final sin reconstruir la app.
+## Estado
 
-## Datos autorizados para el prototipo
-- Corte: 20.000 COP. Corte con barba: 25.000 COP. Provisionales hasta confirmación del establecimiento.
-- Barbero 1, Barbero 2, Barbero 3: identidades temporales, sin fotos ni experiencia inventadas.
-- Jean Carlos, artista dentro del MISMO local Elite. Tatuajes cotizados según diseño.
-- Duraciones 30/45 min y disponibilidad 10–18 son ejemplos técnicos, no información comercial.
-- No inventar dirección, WhatsApp, testimonios, estadísticas ni años de experiencia.
+Primera dirección visual y flujos demo implementados sobre Next.js. Este proyecto es la base del producto final; no reconstruirlo desde cero. El usuario solicitó un calendario de aspecto 3D premium y autorizó continuar con el resto del prototipo.
 
-## Material visto en el chat
-Monograma JC blanco sobre negro; logo Elite negro sobre blanco; tres cortes; tatuaje lettering, leones y manga religiosa. Los archivos no están aún ubicados en el repositorio. No afirmar que se importaron ni mejoraron. No reconstruir artificialmente detalles del trabajo para presentarlos como reales. Una ampliación no recupera detalle perdido.
+## Decisiones
 
-## Siguiente etapa High
-Diseño premium original ZENKO. Portada cinematográfica, metal/luz, color de acento coherente con fotos reales, 3D selectivo, scroll coreografiado, galería filtrable y lightbox accesible, navegación y páginas modulares. Sustituir la página técnica actual. Tailwind y herramientas de animación se incorporarán al diseñar. Respetar reduced motion y rendimiento móvil. No atribuir trabajos a un barbero concreto sin confirmación.
+- Elite y Jean Carlos pertenecen al mismo establecimiento. JC es identidad del artista.
+- Negro carbón, blanco cálido, acento lima, metal 3D, tipografía Barlow Condensed / Manrope / serif editorial. No alterar colores reales del trabajo en las imágenes ampliadas.
+- Objetos 3D decorativos; calendario HTML con relieve CSS para conservar accesibilidad, controles táctiles y rendimiento.
+- Precio provisional: corte 20.000 COP, corte y barba 25.000 COP. Tatuajes sujetos a cotización del diseño.
+- Nombres temporales Barbero 1–3, retratos pendientes. No inventar dirección, teléfono, biografías ni testimonios.
+- Calendario: días anteriores deshabilitados, máximo 60 días, intervalos de 15 min, duración por servicio y horarios ocupados bloqueados.
+- Referencias de solicitudes locales de hasta 1 MB; sin backend ni envío. Solo datos ficticios en gestión.
+- Las solicitudes no se convierten automáticamente en citas. Los estados del panel son ilustrativos y progresan secuencialmente; cerrar es terminal.
 
-## Límites actuales
-Sin backend, login, cobros, correos ni WhatsApp integrado. Persistencia local; bloqueo de cruces solo demostrativo, no atómico entre dispositivos o pestañas simultáneas. Referencias: se valida el archivo y solo se persiste su nombre. Estados del panel editables para demostración, sin reglas de producción.
+## Material
 
-## Producción
-PostgreSQL/Supabase con transacciones y restricciones por profesional y rango horario; Auth con roles administrador/profesional; Storage con referencias privadas; auditoría; backups de base y archivos; notificaciones con reintentos; pagos mediante eventos verificados si se contratan. Separar pruebas y producción. No desplegar sin permiso.
+Cuatro capturas accesibles del primer chat fueron copiadas a `public/media/reference`. Los ocho adjuntos más recientes se vieron en la conversación, pero no se recuperaron como archivos. No afirmar que se importaron ni mejoraron. Sustituir por los originales cuando estén disponibles, siguiendo `ACTIVOS.md`.
+
+## Pendientes del cliente
+
+Logos originales, fotos individuales de trabajos y profesionales, nombres, servicios y duraciones confirmados, horario, dirección, contacto, políticas, personas que gestionan la agenda. Antes del lanzamiento confirmar tarifas, permisos de uso de imágenes y el contenido comercial final.
+
+## Continuar
+
+Revisar visualmente con el usuario esta primera dirección; ajustar efectos, composición y galería según su respuesta. Mantener la misma arquitectura. La autenticación, base remota y demás integraciones se implementan por fases según `PRODUCCION.md`. No desplegar sin permiso.
