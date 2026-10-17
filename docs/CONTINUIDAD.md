@@ -2,7 +2,7 @@
 
 ## Actualización V4 (17 de octubre de 2026)
 
-Consultar primero el README y `v4/VALIDACION.md`. La fuente de verdad activa es el servidor demo Next.js con datos en `var/demo/state.json`, SSE y comandos validados. El antiguo localStorage se conserva, pero no participa en escrituras V4. Hay rutas de turnos, monitor, barbero y offline; agenda compartida y PWA. Los apartados siguientes describen la evolución anterior y no sustituyen esta arquitectura. Los permisos siguen siendo simulados. No hay despliegue ni push V4 autorizado. Mantener el acuerdo: funciones con Light y después acabado visual con High.
+Consultar primero el README y `v4/VALIDACION.md`. La fuente de verdad activa es el servidor demo Next.js con datos en `var/demo/state.json`, SSE y comandos validados. El antiguo localStorage se conserva, pero no participa en escrituras V4. Hay rutas de turnos, monitor, barbero y offline; agenda compartida y PWA. Los apartados siguientes describen la evolución anterior y no sustituyen esta arquitectura. Los permisos siguen siendo simulados. El usuario autoriz? subir la entrega V4 a su GitHub para continuar en Claude Code; no autoriz? merge ni despliegue. Mantener el acuerdo: funciones con Light y después acabado visual con High.
 
 ## Estado
 

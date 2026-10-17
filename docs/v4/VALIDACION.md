@@ -51,4 +51,4 @@ Manifest con iconos PNG derivados del logo original, standalone, página offline
 - Estimaciones de espera basadas en duraciones y agenda demo; no son compromisos de atención.
 - Sin cobros, correos reales, WhatsApp automático o notificaciones push.
 - Diseño con High, GSAP si corresponde y revisión visual completa quedan para la fase siguiente acordada.
-- No se hizo push, merge ni despliegue V4.
+- El usuario autoriz? posteriormente subir la entrega V4 a GitHub. No se autoriza merge ni despliegue.

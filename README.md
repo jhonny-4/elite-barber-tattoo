@@ -2,6 +2,10 @@
 
 Base del producto comercial: Next.js, React, TypeScript, Tailwind y Three.js. Un único establecimiento en Cartagena; Jean Carlos es el tatuador del mismo local. La fase funcional V4 añade servidor demo, agenda compartida, fila QR y PWA. El acabado visual con High es la siguiente fase acordada.
 
+## Continuar en Claude Code
+
+Abrir la rama `feat/premium-pwa-v4`, que contiene el proyecto completo en la ra?z. Leer `CLAUDE.md` y [la gu?a de continuaci?n](docs/v4/CONTINUAR_EN_NUBE.md). No crear otra aplicaci?n porque main solo muestre la base inicial.
+
 ## Ejecutar
 
 Requisitos: Node.js 24 y npm. Desde esta carpeta:
