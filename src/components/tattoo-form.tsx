@@ -1,7 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { addTattooRequest } from "../domain/demo";
 import { useDemo } from "../lib/use-demo";
 import { ContactFields } from "./booking-flow";
 import { Icon } from "./icons";
@@ -60,8 +59,9 @@ export function TattooForm() {
     setError("");
     const data = new FormData(event.currentTarget);
     try {
-      await demo.transact((state) =>
-        addTattooRequest(state, {
+      await demo.dispatch({
+        type: "tattoo.create",
+        input: {
           name: String(data.get("name") ?? ""),
           phone: String(data.get("phone") ?? ""),
           idea: String(data.get("idea") ?? ""),
@@ -69,8 +69,8 @@ export function TattooForm() {
           size: String(data.get("size") ?? ""),
           referenceName: fileName || null,
           ...(preview ? { referenceDataUrl: preview } : {}),
-        }),
-      );
+        },
+      });
       setComplete(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
@@ -192,14 +192,17 @@ export function TattooForm() {
         )}
       </div>
       <small className="muted">
-        La referencia se guarda solo en este navegador. Usa una imagen de
-        ejemplo sin información privada.
+        La referencia se guarda en el servidor local de la demo. Usa una imagen
+        de ejemplo sin información privada.
       </small>
       <label className="checkbox-label">
         <input type="checkbox" required /> Entiendo que es una solicitud de
         ejemplo y no confirma una cita.
       </label>
-      <button className="button" disabled={busy || reading || !demo.ready}>
+      <button
+        className="button"
+        disabled={busy || reading || !demo.ready || !demo.online}
+      >
         {reading
           ? "Leyendo referencia…"
           : busy

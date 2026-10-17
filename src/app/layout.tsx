@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { PwaManager } from "../components/pwa/manager";
 import "@fontsource/space-grotesk/500.css";
 import "@fontsource/space-grotesk/600.css";
 import "@fontsource/space-grotesk/700.css";
@@ -11,11 +12,27 @@ import "./globals.css";
 import "./monochrome.css";
 import "./brand-experience.css";
 import "./refinement.css";
+import "./v4.css";
 export const metadata: Metadata = {
+  applicationName: "Elite Demo",
+  appleWebApp: {
+    capable: true,
+    title: "Elite Demo",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: "/pwa/icons/elite-192.png",
+    apple: "/pwa/icons/elite-192.png",
+  },
   title: "Elite Barber & Tattoo | Prototipo ZENKO",
   description:
     "Demostración de barbería y portafolio de Jean Carlos en Cartagena.",
   robots: { index: false, follow: false },
+};
+export const viewport: Viewport = {
+  themeColor: "#0b0b0b",
+  width: "device-width",
+  initialScale: 1,
 };
 export default function RootLayout({
   children,
@@ -24,7 +41,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" data-scroll-behavior="smooth">
-      <body>{children}</body>
+      <body>
+        {children}
+        <PwaManager />
+      </body>
     </html>
   );
 }

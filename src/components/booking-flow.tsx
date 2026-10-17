@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { barbers, currency, services } from "../domain/catalog";
-import { addBooking, todayBogota, type Booking } from "../domain/demo";
+import { todayBogota, type Booking } from "../domain/demo";
 import { getSlots, prettyDate, shiftDate } from "../domain/availability";
 import { useDemo } from "../lib/use-demo";
 import { Calendar } from "./calendar";
@@ -15,7 +15,7 @@ export function BookingFlow() {
   const demo = useDemo();
   const [contact, setContact] = useState({ name: "", phone: "" });
   const [consent, setConsent] = useState(false);
-  const [barberId, setBarber] = useState(
+  const [barberId, setBarber] = useState<string>(
     () =>
       barbers.find((b) => b.id === params.get("profesional"))?.id ??
       "barbero-1",
@@ -44,28 +44,52 @@ export function BookingFlow() {
   }, []);
   const service = services.find((s) => s.id === serviceId)!;
   const slots =
-    date && clock ? getSlots(demo.state, barberId, serviceId, date, clock) : [];
+    date && clock
+      ? barberId === "any"
+        ? [
+            ...new Set(
+              barbers.flatMap((b) =>
+                getSlots(demo.state, b.id, serviceId, date, clock).map(
+                  (s) => s.time,
+                ),
+              ),
+            ),
+          ]
+            .sort()
+            .map((time) => ({
+              time,
+              available: barbers.some((b) =>
+                getSlots(demo.state, b.id, serviceId, date, clock).some(
+                  (s) => s.time === time && s.available,
+                ),
+              ),
+              reason: "Sin profesional disponible",
+            }))
+        : getSlots(demo.state, barberId, serviceId, date, clock)
+      : [];
   const selectedAvailable = slots.some((s) => s.time === time && s.available);
-  const professional = barbers.find((b) => b.id === barberId)!;
+  const professional = barbers.find(
+    (b) => b.id === (result?.barberId ?? barberId),
+  ) ?? { id: "any", name: "Primer disponible" };
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
     setError("");
     try {
-      let created: Booking | undefined;
-      await demo.transact((state) => {
-        const next = addBooking(state, {
+      const saved = await demo.dispatch({
+        type: "booking.create",
+        input: {
           barberId,
           serviceId,
           date,
           time,
           name: contact.name,
           phone: contact.phone,
-        });
-        created = next.bookings.at(-1);
-        return next;
+          source:
+            params.get("origen") === "presencial" ? "presencial" : "online",
+        },
       });
-      setResult(created!);
+      setResult(saved.state.bookings.find((b) => b.id === saved.resultId)!);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
       setError((e as Error).message);
@@ -79,15 +103,16 @@ export function BookingFlow() {
         <span className="success-icon">
           <Icon name="check" />
         </span>
-        <p className="eyebrow">GUARDADO EN ESTE NAVEGADOR</p>
+        <p className="eyebrow">GUARDADO EN EL SERVIDOR DEMO LOCAL</p>
         <h2>
           Tu espacio
           <br />
           <span className="serif">en la demo.</span>
         </h2>
         <p>
-          La cita de ejemplo quedó registrada. No se ha enviado al
-          establecimiento ni se ha realizado ningún cobro.
+          La cita de ejemplo quedó registrada en el servidor local y se comparte
+          con el panel. No es una reserva de producción ni se ha realizado
+          ningún cobro.
         </p>
         <div className="confirmation-details">
           <span>
@@ -180,10 +205,22 @@ export function BookingFlow() {
             <fieldset>
               <legend>Elige tu profesional</legend>
               <div className="barber-options">
+                <button
+                  type="button"
+                  className={`barber-option ${barberId === "any" ? "selected" : ""}`}
+                  aria-pressed={barberId === "any"}
+                  onClick={() => {
+                    setBarber("any");
+                    setTime("");
+                  }}
+                >
+                  <span className="barber-avatar">↗</span>
+                  <strong>Primer disponible</strong>
+                  <small>Asignación al guardar</small>
+                </button>
                 {barbers.map((b, i) => {
-                  const paused = demo.state.unavailableBarberIds?.includes(
-                    b.id,
-                  );
+                  const paused = !demo.state.team.find((p) => p.id === b.id)
+                    ?.active;
                   return (
                     <button
                       type="button"
@@ -210,6 +247,7 @@ export function BookingFlow() {
               className="button"
               disabled={
                 !demo.ready ||
+                !demo.online ||
                 !date ||
                 demo.state.unavailableBarberIds?.includes(barberId)
               }
@@ -277,8 +315,8 @@ export function BookingFlow() {
               </p>
             )}
             <p className="form-disclaimer">
-              Disponibilidad simulada: 10:00–18:00, hasta 60 días. No representa
-              el horario real del negocio.
+              Jornada y pausas configurables en administración; hasta 60 días.
+              Son horarios de demostración, no horarios comerciales confirmados.
             </p>
             <div className="step-actions">
               <button className="text-link" onClick={() => setStep(1)}>
@@ -356,8 +394,8 @@ export function BookingFlow() {
               </p>
             )}
             <p className="form-disclaimer">
-              Sin pagos ni notificaciones. La cita se conserva únicamente en
-              este navegador.
+              Sin pagos ni envíos reales. La cita se guarda en el servidor local
+              de la presentación.
             </p>
           </form>
         )}
@@ -425,7 +463,9 @@ export function BookingFlow() {
               </button>
               <button
                 className="button"
-                disabled={busy || !selectedAvailable || !consent}
+                disabled={
+                  busy || !selectedAvailable || !consent || !demo.online
+                }
               >
                 {busy ? "Guardando…" : "Guardar cita demo"}
                 <Icon name="check" />
@@ -465,7 +505,7 @@ export function BookingFlow() {
         </div>
         <p className="summary-notice">
           <Icon name="calendar" /> Estás explorando una agenda demo. Tu reserva
-          no será enviada al local.
+          no es una reserva de producción.
         </p>
         <Link className="text-link" href="/tatuaje">
           ¿Buscas un tatuaje? <Icon name="arrow" />

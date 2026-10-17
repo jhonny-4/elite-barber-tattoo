@@ -1,6 +1,6 @@
 # Elite V4 — estructura y orden de trabajo
 
-Estado: carpetas preparadas; los módulos V4 aún no están implementados. Los archivos `.gitkeep` permiten conservar las carpetas vacías en Git. No hay páginas, endpoints ni PWA nuevos activos en este paso.
+Estado actual: estructura implementada con servidor demo, comandos validados, persistencia, SSE, reservas compartidas, gestión de equipo, fila QR, monitor público y PWA. Ver README y `VALIDACION.md` para el alcance probado. Algunos `.gitkeep` se conservan como marcadores de la preparación inicial.
 
 ## Base conservada
 
@@ -45,7 +45,7 @@ tests/e2e/                  futuros recorridos de presentación
 docs/v4/                    arquitectura y seguimiento de esta fase
 ```
 
-## Siguiente fase: funciones con Light
+## Orden funcional seguido con Light
 
 1. Definir contratos y reglas de barberos, jornadas y agenda. Reutilizar el dominio existente.
 2. Implementar servidor demo local como autoridad de reservas y turnos, con persistencia y prevención de duplicados. Migrar la UI de forma incremental, sin dos fuentes de verdad.

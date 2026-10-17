@@ -30,7 +30,7 @@ export function EliteSculpture() {
           element.appendChild(renderer.domElement);
           const scene = new T.Scene();
           const camera = new T.PerspectiveCamera(34, 1, 0.1, 100);
-          camera.position.set(0, 0, 12.8);
+          camera.position.set(0, 0, 14.6);
           const environment = new RoomEnvironment();
           const pmrem = new T.PMREMGenerator(renderer);
           const env = pmrem.fromScene(environment, 0.04);

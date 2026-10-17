@@ -1,92 +1,82 @@
-# Elite Barber & Tattoo — ZENKO
+# Elite Barber & Tattoo — Demo V4 / ZENKO
 
-Prototipo navegable que evoluciona al proyecto final. Un único establecimiento en Cartagena: Elite (`@elite_barber_tattoo`) y su artista Jean Carlos (`@jeancarlostattoo19`).
-
-## Preparación V4
-
-La estructura de turnos, servidor demo y PWA está preparada en la rama local `feat/premium-pwa-v4`. Los módulos nuevos aún no están implementados. Ver [estructura y fases](docs/v4/ESTRUCTURA.md). Primero funciones con Light; después revisión visual con High.
+Base del producto comercial: Next.js, React, TypeScript, Tailwind y Three.js. Un único establecimiento en Cartagena; Jean Carlos es el tatuador del mismo local. La fase funcional V4 añade servidor demo, agenda compartida, fila QR y PWA. El acabado visual con High es la siguiente fase acordada.
 
 ## Ejecutar
 
-Requisitos: Node.js 24 y npm. En esta carpeta:
+Requisitos: Node.js 24 y npm. Desde esta carpeta:
 
 ```sh
 npm ci
-npm run dev
+npm run dev -- --hostname 0.0.0.0
 ```
 
-Abrir http://localhost:3000. Para una presentación local sin herramientas de desarrollo:
+Para presentar y comprobar la PWA:
 
 ```sh
 npm run build
-npm start
+npm start -- --hostname 0.0.0.0
 ```
 
-La compilación utiliza Webpack para reproducir el entorno comprobado en Windows. No requiere claves ni servicios externos. Las fuentes se sirven localmente.
+Computador: http://localhost:3000. Celular: `http://IP-DEL-COMPUTADOR:3000`, conectado al mismo Wi-Fi. El servidor debe permanecer encendido. No abrir puertos del router. En HTTP por IP funciona la web; la instalación PWA requiere localhost en el computador o HTTPS autorizado.
+
+## Recorrido
+
+| Ruta               | Función                                                               |
+| ------------------ | --------------------------------------------------------------------- |
+| `/`                | Marca, logo 3D, servicios, galería, equipo y ubicación                |
+| `/reservar`        | Experiencia, profesional o primer disponible, fecha, datos y revisión |
+| `/tatuaje`         | Solicitud pendiente con referencia opcional de hasta 1 MB             |
+| `/jean-carlos`     | Artista, monograma y portafolio                                       |
+| `/turnos`          | Registro QR, número, posición general y espera orientativa            |
+| `/pantalla-turnos` | Monitor público: solo números, profesionales y estados                |
+| `/administracion`  | Resumen, agenda, fila, solicitudes, clientes, equipo y avisos         |
+| `/barbero`         | Vista demo de agenda y atención filtrada por profesional              |
+| `/offline`         | Aviso de pérdida de conexión                                          |
+
+El acceso **Panel administrativo · demo** aparece arriba. Pulsar **Abrir panel demo**. No hay contraseña ni autorización de producción. La vista del barbero también simula permisos; no protege datos frente a otros usuarios de la red.
+
+Desde el panel se registran turnos presenciales o citas con fecha, se reprograma, cancela, llama, inicia y finaliza atención. Los horarios, descansos, almuerzos y ausencias se editan en Equipo. Los cambios que invaliden citas existentes se rechazan: reprogramar o cancelar primero.
+
+## Datos y sincronización
+
+El servidor Next.js es la única autoridad V4. Persiste en `var/demo/state.json`, excluido de Git, y serializa escrituras con reemplazo atómico. Las claves de idempotencia impiden repetir una operación cuyo resultado se perdió al desconectar. SSE notifica cambios y hay consulta periódica de respaldo. Solo se admite un proceso servidor local; PostgreSQL y transacciones reales serán necesarios para producción y múltiples instancias.
+
+El antiguo `localStorage` permanece intacto como referencia V1; no se mezcla ni se usa para crear reservas V4. El token del turno se conserva en la pestaña para consultar su estado. **Restablecer demo compartida** limpia los datos y horarios V4 de todos los dispositivos, sin borrar el antiguo localStorage.
+
+El registro en fila no garantiza hora. La espera es una proyección de duraciones, descansos y citas; puede no estar disponible. La llamada exige un profesional libre para el servicio completo y respeta los turnos anteriores compatibles. Las citas reservadas mantienen su espacio.
+
+## Qué sigue siendo demo
+
+- Corte $20.000 y corte con barba $25.000 COP; duraciones 30/45 minutos y Barbero 1–3, provisionales.
+- Jornada inicial 10:00–18:00, almuerzo 13:00–14:00 y todos los días: configuración ficticia editable, no horario comercial confirmado.
+- Confirmaciones y correos son registros simulados en Notificaciones. No hay envíos, pagos, reservas de producción ni cotizaciones automáticas.
+- Formularios y API sin autenticación real: usar solo datos ficticios y referencias sin información privada. La API de gestión es accesible en esta red demo. El monitor público omite contactos; eso no convierte la demo completa en un sistema privado.
+- WhatsApp abre `https://wa.me/573012329541`, número provisional del usuario. Instagram abre @elite_barber_tattoo. No se envían mensajes automáticamente.
+- Dirección aportada: Cra. 59b #mz50-24, barrio Chiquinquirá, Cartagena de Indias, Bolívar. Google Maps busca el texto; no se ha verificado un pin comercial.
+- Los dos cortes adjuntos fueron incorporados sin reconstrucción. Los tatuajes siguen usando capturas de referencia. Ver `docs/ACTIVOS.md`.
+
+## PWA
+
+Manifest, iconos basados en el logo original, modo standalone, página offline y actualización por botón. El service worker solo se registra en compilación de producción y contexto seguro. No cachea respuestas de API ni encola confirmaciones: sin conexión no se guardan citas o turnos.
+
+Android: Chrome → menú → Instalar app. iPhone: Safari → Compartir → Añadir a pantalla de inicio. La disponibilidad depende del navegador y contexto. La opción de instalación en el pie informa de las limitaciones. Un QR con localhost no funciona desde otro celular: abrir el panel mediante la IP local o editar el enlace del QR.
+
+## Verificar
 
 ```sh
 npm run typecheck
 npm run lint
 npm test
+npm run build
 ```
 
-## Recorrido de presentación
+Las pruebas de persistencia crean su propia carpeta temporal y no usan la agenda de presentación. En el aislamiento de Windows, el reemplazo de archivos puede requerir ejecutar las pruebas fuera del sandbox; no se debe reemplazar la escritura atómica por una escritura parcial.
 
-| Ruta              | Experiencia                                                                           |
-| ----------------- | ------------------------------------------------------------------------------------- |
-| `/`               | Portada, objeto 3D, servicios, galería filtrable y ampliable, artista y equipo        |
-| `/jean-carlos`    | Identidad JC, proceso de valoración y selección de tatuajes                           |
-| `/reservar`       | Experiencia → fecha y hora → datos → revisión final → cita demo |
-| `/tatuaje`        | Idea, zona, tamaño, referencia con previsualización y solicitud pendiente             |
-| `/administracion` | Entrada aparte del propietario y panel administrativo demo                            |
-| `/gestion`        | Alias del panel, con la misma entrada de propietario                                  |
+## Organización y siguiente fase
 
-Se pueden preseleccionar `?servicio=corte-barba` y `?profesional=barbero-2` en `/reservar`. `/administracion?tab=solicitudes` abre las solicitudes después de entrar al modo propietario.
+`src/domain/`: reglas puras. `src/services/`: contratos y adaptadores. `src/server/demo/`: persistencia y validación de comandos. `src/app/api/demo/`: HTTP y SSE. `src/components/admin/`, `queue/`, `pwa/`: interfaces. `tests/`: dominio, persistencia y política offline.
 
-La franja superior incluye **Panel administrativo · demo**, además del acceso de propietario al pie. En `/administracion`, elegir **Abrir panel demo**: el resumen muestra métricas de los datos locales, próximas citas, solicitudes pendientes y equipo. Las pestañas separan agenda (con búsqueda, fecha y estado), tatuajes, clientes y equipo. La sesión simulada se conserva en esta pestaña; **Salir de la demo** vuelve a la entrada. Esto no constituye autenticación ni autorización real: Supabase Auth, validación en servidor y RLS son obligatorios antes de usar datos reales.
+Detalles: `docs/v4/ESTRUCTURA.md`, `docs/v4/VALIDACION.md` y `docs/PRODUCCION.md`.
 
-### Ver desde el celular
-
-Ejecutar `npm run dev -- --hostname 0.0.0.0`. Conectar el celular al mismo Wi-Fi que el computador y abrir `http://IP-DEL-COMPUTADOR:3000`. La IP puede cambiar al reconectar. El computador debe permanecer encendido y el servidor activo. `localhost` desde el celular apunta al propio teléfono. No se abre ningún puerto del router ni se modifica el firewall. `next.config.ts` permite únicamente los nombres locales y las IP del computador como orígenes de desarrollo.
-
-Para demostrar: crear cita, verla en gestión, cancelarla; enviar tatuaje con imagen, revisar la referencia y avanzar su estado; pausar un profesional y comprobar su agenda. Usar siempre contactos ficticios.
-
-## Qué está simulado
-
-Los botones de inicio abren destinos externos reales: WhatsApp `https://wa.me/573012329541` (número provisional del usuario, no teléfono confirmado del negocio) e Instagram `https://www.instagram.com/elite_barber_tattoo/`. Solo abren el chat o perfil; no envían mensajes, reservas ni notificaciones automáticamente. Reemplazar el número antes de entregar la versión final.
-
-- Corte $20.000 COP y corte con barba $25.000 COP: valores provisionales aportados por el usuario.
-- Barbero 1, 2 y 3: perfiles temporales sin nombres, retratos ni experiencia inventados.
-- Duraciones de 30/45 minutos, horas 10:00–18:00 y horizonte de 60 días: exclusivamente demo.
-- Se comprueban cruces parciales y disponibilidad por profesional antes de guardar. Web Locks serializa las escrituras locales cuando el navegador lo soporta. Esto **no sustituye** las transacciones y restricciones del servidor entre dispositivos.
-- Datos en `localStorage`, clave `zenko.elite.demo.v1`. La imagen opcional se conserva como data URL, hasta 1 MB por archivo, sujeto al espacio del navegador. Se informa de errores de lectura, formato o falta de espacio. No se sube ningún archivo.
-- Entrada separada y sesión de propietario simulada, sin autenticación real. Sin correos, WhatsApp, cobros, reservas ni cotizaciones de producción.
-- Los tatuajes comienzan pendientes. Los estados posteriores se marcan manualmente en gestión para ilustrar el proceso: no generan precios, citas ni mensajes.
-- Dirección aportada por el usuario: Cra. 59b #mz50-24, barrio Chiquinquirá, Cartagena de Indias, Bolívar. El enlace de Google Maps busca esta dirección; no se ha verificado un pin ni una ficha del negocio. Horario comercial, teléfono definitivo y biografías siguen pendientes de confirmar.
-- Páginas con `noindex` mientras sean un prototipo. No se ha desplegado.
-
-## Organización
-
-```text
-src/app/             páginas, metadata, errores y estilos
-src/components/      calendario, formularios, galería, objeto 3D y panel
-src/domain/          catálogo, disponibilidad, validación y catálogo visual
-src/lib/             persistencia y sincronización local
-public/media/        capturas de referencia y futuros originales
-tests/               pruebas de comportamiento del dominio
-docs/                continuidad, activos y paso a producción
-```
-
-React + Next.js + TypeScript + Tailwind CSS. Paleta monocromática, Space Grotesk / Manrope / Cormorant Garamond servidas localmente, botones con relieve, entradas con IntersectionObserver y progreso de scroll. Escultura Three.js inspirada en la geometría del logo Elite, con extrusión, biseles, luz de estudio y respuesta sutil al puntero y scroll. Alternativa CSS con el logo cuando no hay WebGL. Movimiento reducido respetado; resolución del lienzo limitada; render fuera de pantalla evitado. El calendario es una interfaz HTML accesible con profundidad CSS, botones nativos y flechas de teclado. Las fotografías de la galería se presentan en blanco y negro y conservan su color original al ampliarlas.
-
-## Reemplazar fotografías y logos
-
-Leer `docs/ACTIVOS.md`. Las cuatro capturas del chat anterior se conservan sin modificar. Se incorporaron los dos cortes individuales del último mensaje, sin retoque ni reconstrucción: sustituyen a ambos cortes previos en la galería y la sección de barbería. Las fotografías muestran su color real sobre superficies monocromáticas. Los tatuajes siguen usando capturas provisionales; los demás adjuntos anteriores aún no se han incorporado. No se han creado detalles ni afirmado una resolución 4K.
-
-En `src/domain/media.ts`, cada trabajo admite `original: '/media/tattoo/archivo.webp'` y `position` opcional. Añadir originales autorizados dentro de `public/media/` y cambiar ese campo. Sustituir las referencias de los componentes `Brand` y `JCMark` cuando lleguen los logos originales. No asignar un corte a un barbero concreto hasta confirmarlo.
-
-## Colaboración y producción
-
-Codex y Claude Code trabajan en ramas separadas y revisan antes de integrar. No editar los mismos archivos a la vez. No subir credenciales, datos de clientes ni referencias privadas al repositorio. Los archivos `.env` están excluidos.
-
-El repositorio y las vistas locales no publican el sitio en Internet. Cualquier despliegue requiere autorización. El plan de PostgreSQL/Supabase, roles, almacenamiento privado, pagos y notificaciones está en `docs/PRODUCCION.md`.
+Rama local `feat/premium-pwa-v4`. Respaldo previo `c171aba`. No hacer push, merge ni despliegue sin autorización. No subir `var/demo`, credenciales o referencias privadas. Al terminar la revisión funcional, avisar al usuario para cambiar a High y refinar diseño, GSAP si procede, marcas de agua y animaciones.

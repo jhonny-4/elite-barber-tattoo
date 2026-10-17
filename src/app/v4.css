@@ -1,0 +1,495 @@
+.v4-card {
+  padding: 28px;
+  border: 1px solid #626262;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #303030, #161616);
+  box-shadow:
+    inset 0 1px #ffffff30,
+    0 5px #080808,
+    0 20px 40px #0004;
+  text-align: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.v4-card h2 {
+  font-size: 32px;
+}
+.v4-card h3 {
+  font-size: 24px;
+}
+.v4-card p,
+.v4-card small {
+  font-size: 12px;
+  line-height: 1.85;
+  color: #ccc;
+}
+.v4-card small {
+  font-size: 11px;
+}
+.v4-card .text-link {
+  margin: 10px 6px;
+}
+.v4-public-page {
+  padding: 60px 6%;
+  max-width: 1050px;
+  margin: auto;
+}
+.v4-public-page > .v4-card {
+  max-width: 650px;
+  margin: auto;
+}
+.v4-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.v4-form label,
+.reschedule-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+  color: #eee;
+  font-size: 12px;
+}
+.v4-form input,
+.v4-form select {
+  min-width: 0;
+  text-align: center;
+}
+.v4-form .checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.v4-form .checkbox-label input {
+  width: 18px;
+  min-height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+}
+.v4-form .contact-fields {
+  margin: 0;
+}
+.v4-notice {
+  border: 1px solid #777;
+  border-radius: 8px;
+  padding: 14px 20px;
+  background: #ffffff0b;
+  text-align: center;
+  font-size: 12px;
+  position: sticky;
+  top: 90px;
+  z-index: 15;
+  backdrop-filter: blur(15px);
+}
+.v4-notice:empty {
+  display: none;
+}
+.v4-dashboard .dashboard-sidebar {
+  overflow-y: auto;
+  height: calc(100dvh - 90px);
+}
+.v4-dashboard .dashboard-sidebar > button {
+  font-size: 11px;
+  padding: 13px 10px;
+}
+.v4-dashboard .dashboard-sidebar-bottom a {
+  display: block;
+  margin-top: 15px;
+}
+.v4-dashboard .dashboard-toolbar label {
+  font-size: 11px;
+  text-align: center;
+}
+.v4-dashboard .dashboard-stats > div {
+  padding: 24px 10px;
+}
+.v4-records {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin: 25px 0;
+}
+.v4-records .v4-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.record-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+.record-title h3 {
+  margin: 0;
+}
+.record-actions,
+.booking-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-top: 18px;
+}
+.booking-actions {
+  width: 100%;
+}
+.record-actions .text-link,
+.booking-actions .text-link {
+  font-size: 10px;
+}
+.reschedule-form {
+  display: grid;
+  gap: 15px;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid #555;
+}
+.team-editors {
+  display: grid;
+  gap: 25px;
+}
+.team-editor .weekday-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+.weekday-options label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.weekday-options input {
+  width: 18px;
+  min-height: 18px;
+}
+.period-editor {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+  border: 1px solid #555;
+  padding: 17px;
+  border-radius: 10px;
+}
+.period-editor input {
+  width: 100%;
+  padding: 10px;
+}
+.team-editor h4 {
+  margin: 15px 0 0;
+}
+.team-editor .text-link {
+  justify-self: center;
+  align-self: center;
+}
+.team-editor > .button {
+  align-self: center;
+}
+.admin-reference {
+  display: block;
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  margin: 20px auto;
+  border: 1px solid #888;
+  border-radius: 8px;
+}
+.notification-item {
+  padding: 25px 10px;
+  border-bottom: 1px solid #555;
+  animation: notice-enter 0.3s ease;
+}
+.notification-item.read {
+  opacity: 0.65;
+}
+.qr-card img {
+  max-width: 100%;
+  height: auto;
+  margin: 20px auto;
+  display: block;
+  border: 10px solid white;
+  border-radius: 12px;
+  box-shadow: 0 5px #777;
+}
+.qr-card label {
+  font-size: 11px;
+  display: block;
+}
+.qr-card input {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 10px;
+}
+.ticket-receipt > .brand {
+  display: block;
+  margin: auto;
+}
+.ticket-number {
+  font-size: clamp(70px, 16vw, 130px);
+  font-family: var(--display);
+  display: block;
+  line-height: 1.5;
+  text-shadow:
+    0 3px #777,
+    0 8px #222;
+}
+.ticket-receipt .button,
+.ticket-receipt .text-link {
+  margin: 20px auto 0;
+  display: flex;
+  width: max-content;
+  max-width: 100%;
+}
+.queue-monitor {
+  max-width: 1500px;
+  margin: auto;
+  padding: 35px 5%;
+  text-align: center;
+}
+.queue-monitor > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 35px;
+}
+.queue-monitor h1 {
+  font-size: clamp(30px, 4vw, 65px);
+  margin: 0;
+}
+.queue-monitor .brand {
+  width: 100px;
+  height: 55px;
+}
+.monitor-called {
+  border: 1px solid #888;
+  border-radius: 18px;
+  background: linear-gradient(140deg, #fff, #d7d7d7);
+  color: #111;
+  padding: 35px;
+  min-height: 250px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 35px;
+  box-shadow:
+    0 6px #777,
+    0 30px 50px #0006;
+}
+.monitor-called > .eyebrow {
+  flex-basis: 100%;
+  color: #555;
+}
+.monitor-called strong {
+  font-size: clamp(60px, 9vw, 140px);
+  line-height: 1;
+}
+.monitor-called h2 {
+  font-size: 26px;
+}
+.monitor-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin: 35px 0;
+}
+.monitor-columns h2 {
+  font-size: 25px;
+}
+.monitor-waiting {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+.monitor-waiting span {
+  border: 1px solid #888;
+  border-radius: 8px;
+  padding: 15px 20px;
+  font-size: 25px;
+  background: #ffffff0c;
+}
+.queue-monitor > footer {
+  font-size: 12px;
+  color: #bbb;
+}
+.pwa-tools {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background: #111;
+}
+.pwa-tools > .text-link {
+  font-size: 10px;
+}
+.pwa-help {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: min(430px, calc(100% - 50px));
+  z-index: 100;
+  box-shadow: 0 20px 100px #000d;
+}
+.connection-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 15px 20px;
+  text-align: center;
+  background: #f4f4f4;
+  color: #111;
+  z-index: 100;
+  font-size: 12px;
+  border-top: 2px solid #777;
+}
+.summary-location p {
+  overflow-wrap: anywhere;
+}
+.booking-summary {
+  display: block;
+}
+.section-heading {
+  display: flex;
+}
+.section[id] {
+  scroll-margin-top: 105px;
+}
+.tattoo-form {
+  text-align: center;
+}
+.tattoo-form input,
+.tattoo-form textarea {
+  text-align: center;
+}
+.barber-options {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@keyframes notice-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 1000px) {
+  .period-editor {
+    grid-template-columns: 1fr 1fr;
+  }
+  .v4-records {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 850px) {
+  .v4-dashboard .dashboard-sidebar {
+    height: auto;
+    position: sticky;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    flex-wrap: nowrap;
+  }
+  .v4-dashboard .dashboard-sidebar > button {
+    flex-shrink: 0;
+    min-width: 100px;
+    max-width: 140px;
+  }
+  .booking-summary {
+    display: block;
+  }
+}
+@media (max-width: 650px) {
+  .v4-public-page {
+    padding: 40px 6%;
+  }
+  .v4-card {
+    padding: 24px 17px;
+    border-radius: 12px;
+  }
+  .v4-card h2 {
+    font-size: 28px;
+  }
+  .v4-card h3 {
+    font-size: 22px;
+  }
+  .v4-records {
+    gap: 18px;
+  }
+  .v4-form .field-row {
+    grid-template-columns: 1fr;
+  }
+  .v4-dashboard .dashboard-sidebar > button {
+    min-width: 100px;
+    font-size: 10px;
+  }
+  .v4-dashboard .dashboard-main {
+    padding: 25px 5%;
+  }
+  .period-editor {
+    padding: 15px;
+    gap: 12px;
+  }
+  .period-editor > .text-link {
+    padding: 10px;
+  }
+  .queue-monitor {
+    padding: 25px 5%;
+  }
+  .queue-monitor > header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .queue-monitor h1 {
+    font-size: 37px;
+  }
+  .monitor-called {
+    padding: 25px;
+    min-height: 220px;
+  }
+  .monitor-columns {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .barber-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .v4-notice {
+    top: 78px;
+  }
+  .record-actions .button,
+  .booking-actions .button {
+    font-size: 10px;
+    gap: 10px;
+  }
+  .pwa-tools {
+    flex-wrap: wrap;
+  }
+  .ticket-receipt .text-link {
+    font-size: 10px;
+  }
+  .reschedule-form input,
+  .reschedule-form select {
+    font-size: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notification-item {
+    animation: none;
+  }
+}

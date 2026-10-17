@@ -9,7 +9,11 @@ import {
 import { Dashboard } from "./dashboard";
 import { Icon } from "./icons";
 import { SectionBrand } from "./media";
-export function OwnerGate() {
+export function OwnerGate({
+  professionalView = false,
+}: {
+  professionalView?: boolean;
+}) {
   const { owner, ready } = useOwnerSession();
   const [error, setError] = useState("");
   function enter() {
@@ -27,25 +31,28 @@ export function OwnerGate() {
     return (
       <>
         <div className="owner-session-note">
-          <span>JEAN CARLOS / PROPIETARIO · SESIÓN DEMO</span>
+          <span>
+            {professionalView ? "PROFESIONAL" : "JEAN CARLOS / PROPIETARIO"} ·
+            SESIÓN DEMO
+          </span>
           <button className="text-link" onClick={endOwnerDemo}>
             Salir de la demo
           </button>
         </div>
-        <Dashboard />
+        <Dashboard professionalOnly={professionalView} />
       </>
     );
   return (
     <div className="owner-access">
       <SectionBrand />
-      <p className="eyebrow">ELITE / ACCESO DEL PROPIETARIO</p>
+      <p className="eyebrow">ELITE / ACCESO DE DEMOSTRACIÓN</p>
       <h1>
         Panel
         <br />
         <span className="serif">administrativo.</span>
       </h1>
       <p className="lead">
-        El espacio de Jean Carlos para organizar su negocio.
+        Agenda, equipo y atención del estudio en una misma demostración.
       </p>
       <button className="button owner-primary-action" onClick={enter}>
         Abrir panel demo <Icon name="arrow" />
