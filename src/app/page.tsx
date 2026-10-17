@@ -7,6 +7,7 @@ import { portfolio } from "../domain/media";
 import { EliteSculpture } from "../components/elite-sculpture";
 import { Gallery } from "../components/gallery";
 import { Reveal } from "../components/reveal";
+import { LocationMap } from "../components/location-map";
 import { services, currency, barbers } from "../domain/catalog";
 export default function Home() {
   return (
@@ -372,6 +373,7 @@ export default function Home() {
             </div>
           </Link>
         </section>
+        <LocationMap />
       </main>
       <Footer />
       <Reveal />

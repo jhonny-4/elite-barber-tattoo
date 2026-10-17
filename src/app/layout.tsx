@@ -13,6 +13,7 @@ import "./monochrome.css";
 import "./brand-experience.css";
 import "./refinement.css";
 import "./v4.css";
+import "./location.css";
 export const metadata: Metadata = {
   applicationName: "Elite Demo",
   appleWebApp: {

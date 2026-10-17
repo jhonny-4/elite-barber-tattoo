@@ -1,0 +1,76 @@
+/* Ubicación con mapa integrado. Mapa en gris monocromo que recupera el color al enfocarlo. */
+.location-section {
+  display: grid;
+  gap: clamp(28px, 4vw, 48px);
+  justify-items: center;
+  text-align: center;
+}
+
+.location-heading {
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+  max-width: 720px;
+}
+
+.location-heading h2 {
+  margin: 0;
+  text-wrap: balance;
+}
+
+.location-heading address {
+  font-style: normal;
+  color: #d4d4d4;
+  font-size: clamp(16px, 1.6vw, 19px);
+  line-height: 1.6;
+}
+
+.location-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 18px 28px;
+}
+
+.location-frame {
+  position: relative;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #111;
+  box-shadow:
+    0 5px #050505,
+    0 22px 40px #0008;
+}
+
+.location-frame iframe {
+  display: block;
+  width: 100%;
+  height: clamp(300px, 46vw, 460px);
+  border: 0;
+  filter: grayscale(1) contrast(1.08);
+  transition: filter 0.4s ease;
+}
+
+.location-frame:is(:hover, :focus-within) iframe {
+  filter: none;
+}
+
+.location-note {
+  padding: 14px 18px;
+  border-top: 1px solid #2e2e2e;
+  background: #0d0d0d;
+  color: #a3a3a3;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .location-frame iframe {
+    transition: none;
+  }
+}
