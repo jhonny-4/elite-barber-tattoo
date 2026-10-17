@@ -1,11 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Header, Footer } from "../../components/shell";
-import { JCMark, Photo } from "../../components/media";
+import { SectionBrand } from "../../components/media";
+import { ArtistMonogram } from "../../components/artist-monogram";
 import { Icon } from "../../components/icons";
 import { Gallery } from "../../components/gallery";
 import { Reveal } from "../../components/reveal";
-import { portfolio } from "../../domain/media";
 export const metadata: Metadata = { title: "Jean Carlos · El artista | Elite" };
 export default function Artist() {
   return (
@@ -18,6 +18,7 @@ export default function Artist() {
               ← El universo Elite
             </Link>
             <p className="eyebrow">ARTISTA RESIDENTE / ELITE BARBER & TATTOO</p>
+            <SectionBrand />
             <h1>
               Jean
               <br />
@@ -45,12 +46,7 @@ export default function Artist() {
             </a>
           </div>
           <div className="artist-page-art">
-            <div className="artist-page-mark">
-              <JCMark />
-            </div>
-            <div className="artist-page-photo">
-              <Photo item={portfolio[4]} />
-            </div>
+            <ArtistMonogram />
             <span className="eyebrow">DEL CONCEPTO A LA PIEL.</span>
           </div>
         </section>

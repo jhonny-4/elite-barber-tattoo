@@ -1,0 +1,623 @@
+.section-brand {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 25px;
+  color: inherit;
+}
+.section-brand .brand {
+  width: 72px;
+  height: 39px;
+}
+.section-brand > span {
+  font-size: 8px;
+  letter-spacing: 0.09em;
+  font-weight: 600;
+  line-height: 1.8;
+  color: inherit;
+}
+.section-brand small {
+  display: block;
+  font-size: 6px;
+  letter-spacing: 0.13em;
+  opacity: 0.65;
+}
+.universe .section-brand .brand svg,
+.gallery-section .section-brand .brand svg {
+  filter: none;
+  mix-blend-mode: multiply;
+}
+.section-heading > .section-brand {
+  margin-bottom: 0;
+}
+.about-editorial {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-top: 35px;
+  padding-top: 30px;
+  border-top: 1px solid #c5c5c5;
+}
+.about-editorial p {
+  color: #555;
+  font-size: 12px;
+  line-height: 1.95;
+  margin: 0;
+}
+.about-editorial strong {
+  color: #111;
+  font-weight: 600;
+}
+.about-pillars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px 23px;
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px solid #c5c5c5;
+}
+.about-pillars > span {
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  color: #4b4b4b;
+}
+.about-pillars b {
+  font-weight: 500;
+  color: #111;
+  margin-right: 8px;
+}
+.barber-culture {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 9%;
+  align-items: center;
+  background: #111;
+  border-block: 1px solid #333;
+  position: relative;
+  overflow: hidden;
+}
+.barber-culture-visual {
+  position: relative;
+  background: #1a1a1a;
+  border: 1px solid #666;
+  border-radius: 7px;
+  padding: 20px 20px 50px;
+  transform: perspective(1000px) rotateY(8deg) rotateZ(-2deg);
+  box-shadow:
+    0 6px #292929,
+    0 8px #666,
+    0 30px 60px #0007;
+  isolation: isolate;
+}
+.barber-culture-visual > .photo {
+  height: auto;
+  filter: grayscale(1);
+  display: block;
+  border: 1px solid #555;
+}
+.barber-photo-signature {
+  font-size: 8px;
+  letter-spacing: 0.17em;
+  position: absolute;
+  bottom: 17px;
+  left: 20px;
+  z-index: 3;
+}
+.barber-culture-number {
+  position: absolute;
+  bottom: -45px;
+  right: -30px;
+  font-family: var(--display);
+  font-size: 150px;
+  line-height: 1;
+  font-weight: 500;
+  color: #fff;
+  text-shadow:
+    4px 5px #555,
+    8px 10px #1b1b1b;
+  z-index: 4;
+}
+.barber-culture-copy h2 {
+  font-size: clamp(40px, 4.3vw, 62px);
+}
+.barber-culture-copy > p:not(.eyebrow) {
+  font-size: 12px;
+  line-height: 1.95;
+  max-width: 460px;
+}
+.barber-service-tags {
+  display: flex;
+  gap: 25px;
+  border-block: 1px solid #444;
+  padding: 20px 0;
+  margin: 25px 0 10px;
+}
+.barber-service-tags > span {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.barber-service-tags b {
+  display: block;
+  font-size: 23px;
+  color: #eee;
+  font-family: var(--display);
+  letter-spacing: -0.06em;
+  font-weight: 500;
+  margin-top: 6px;
+}
+.barber-culture-copy .hero-actions {
+  margin-top: 28px;
+}
+.barber-culture-copy > small {
+  font-size: 9px;
+}
+.gallery-section {
+  position: relative;
+  overflow: hidden;
+}
+.gallery-section:before {
+  content: "ELITE";
+  position: absolute;
+  top: 22px;
+  right: 4%;
+  font-family: var(--display);
+  font-size: clamp(100px, 20vw, 310px);
+  line-height: 1;
+  letter-spacing: -0.07em;
+  color: #00000005;
+  pointer-events: none;
+}
+.gallery-section > .section-heading {
+  position: relative;
+}
+.gallery-grid {
+  gap: 65px 35px;
+  padding: 20px 12px 15px;
+  perspective: 1400px;
+}
+.gallery-card.floating-work {
+  animation: elite-work-float 8s ease-in-out infinite;
+  transform-origin: center;
+  backface-visibility: hidden;
+}
+.gallery-card.floating-work:hover {
+  animation-play-state: paused;
+}
+.gallery-grid .gallery-card .gallery-image {
+  height: auto;
+  min-height: 0;
+  background: #fff;
+  padding: 9px;
+  border: 1px solid #c7c7c7;
+  border-radius: 8px;
+  overflow: visible;
+  box-shadow:
+    inset 0 1px #fff,
+    0 4px #ddd,
+    0 6px #aaa,
+    0 20px 35px #00000024;
+  transition:
+    box-shadow 0.5s,
+    transform 0.5s;
+}
+.gallery-grid .gallery-card .gallery-image .photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.gallery-card:hover .gallery-image {
+  box-shadow:
+    inset 0 1px #fff,
+    0 5px #ddd,
+    0 7px #aaa,
+    0 30px 45px #00000030;
+}
+.gallery-card:hover .photo {
+  transform: none;
+}
+.gallery-card-caption {
+  padding: 24px 5px 0;
+}
+.gallery-card:nth-child(3n + 2) {
+  margin-top: 60px;
+}
+.gallery-image .image-tag {
+  top: 20px;
+  left: 18px;
+  font-size: 7px;
+}
+.gallery-image .image-expand {
+  right: 18px;
+  bottom: 20px;
+}
+.lightbox-photo {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-photo .photo {
+  object-fit: contain;
+  max-height: 75dvh;
+}
+.gallery-bottom {
+  margin-top: 65px;
+}
+.jc-sculpture {
+  position: relative;
+  width: 100%;
+  height: 510px;
+  perspective: 1100px;
+  isolation: isolate;
+  animation: jc-levitate 9s ease-in-out infinite;
+}
+.jc-depth-stack {
+  position: absolute;
+  inset: 14% 18% 19%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--jc-x, -12deg)) rotateY(var(--jc-y, -12deg))
+    rotateZ(-4deg);
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.jc-depth-slice {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+.jc-depth-slice .jc-mark {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(2px 3px 1px #000);
+}
+.jc-orbit {
+  position: absolute;
+  border: 1px solid #85858580;
+  border-radius: 50%;
+  inset: 12% 10% 18%;
+  transform: rotateY(55deg) rotateZ(-28deg);
+  box-shadow: inset 0 1px #ffffff26;
+  pointer-events: none;
+  animation: jc-orbit 16s linear infinite;
+}
+.jc-orbit.orbit-two {
+  inset: 8% 5% 12%;
+  transform: rotateY(-55deg) rotateZ(28deg);
+  border-style: dashed;
+  opacity: 0.38;
+  animation-direction: reverse;
+  animation-duration: 24s;
+}
+.jc-sculpture-label {
+  position: absolute;
+  bottom: 25px;
+  left: 25px;
+  display: grid;
+  gap: 5px;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+.jc-sculpture-label small {
+  font-size: 6px;
+  color: #999;
+  letter-spacing: 0.14em;
+}
+.jc-studio-seal {
+  position: absolute;
+  bottom: 25px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--display);
+  font-size: 35px;
+  line-height: 1;
+  color: #eee;
+  text-shadow: 1px 2px #555;
+}
+.jc-studio-seal > span {
+  font-size: 6px;
+  line-height: 1.8;
+  letter-spacing: 0.11em;
+  font-family: var(--sans);
+  color: #aaa;
+  text-shadow: none;
+}
+.artist-visual > .artist-signature {
+  display: none;
+}
+.artist-visual:before {
+  inset: 9%;
+  opacity: 0.4;
+  animation: studio-frame 14s ease-in-out infinite;
+}
+.artist-visual {
+  overflow: hidden;
+}
+.artist-page-art > .jc-sculpture {
+  height: 560px;
+}
+.artist-page-art > .eyebrow {
+  left: 25px;
+  font-size: 7px;
+}
+.artist-copy .section-brand {
+  margin-bottom: 30px;
+}
+.sculpture-floor:before,
+.sculpture-floor:after {
+  content: "";
+  position: absolute;
+  border: 1px solid #ffffff35;
+  border-radius: 50%;
+  inset: -14%;
+  animation: elite-orbit-floor 14s linear infinite;
+}
+.sculpture-floor:after {
+  inset: -30%;
+  border-style: dashed;
+  opacity: 0.3;
+  animation-direction: reverse;
+  animation-duration: 30s;
+}
+.elite-sculpture:after {
+  content: "ELITE";
+  position: absolute;
+  top: 9%;
+  left: 7%;
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.35em;
+  line-height: 1;
+  color: #888;
+  pointer-events: none;
+}
+@keyframes elite-work-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-0.4deg);
+  }
+  50% {
+    transform: translate3d(0, -13px, 0) rotate(0.5deg);
+  }
+}
+@keyframes jc-levitate {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes jc-orbit {
+  from {
+    transform: rotateY(55deg) rotateZ(-28deg);
+  }
+  to {
+    transform: rotateY(55deg) rotateZ(332deg);
+  }
+}
+@keyframes elite-orbit-floor {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes studio-frame {
+  50% {
+    transform: rotate(6deg) scale(0.96);
+  }
+}
+@media (max-width: 850px) {
+  .gallery-grid {
+    gap: 45px 20px;
+    padding-inline: 5px;
+  }
+  .section-brand {
+    gap: 10px;
+  }
+  .section-brand .brand {
+    width: 60px;
+    height: 33px;
+  }
+  .section-brand > span {
+    font-size: 7px;
+  }
+  .section-brand small {
+    font-size: 5px;
+  }
+  .barber-culture {
+    gap: 6%;
+  }
+  .barber-culture-copy h2 {
+    font-size: 40px;
+  }
+  .barber-service-tags {
+    gap: 20px;
+  }
+  .barber-service-tags b {
+    font-size: 21px;
+  }
+  .jc-sculpture {
+    height: 400px;
+  }
+  .artist-page-art > .jc-sculpture {
+    height: 480px;
+  }
+  .jc-depth-stack {
+    inset: 16% 12% 23%;
+  }
+  .jc-studio-seal {
+    font-size: 28px;
+  }
+  .jc-sculpture-label {
+    left: 20px;
+    font-size: 8px;
+  }
+}
+@media (max-width: 650px) {
+  .about-editorial {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 25px;
+    padding-top: 25px;
+  }
+  .about-editorial p {
+    font-size: 12px;
+  }
+  .about-pillars {
+    gap: 16px;
+    flex-direction: column;
+  }
+  .about-pillars > span {
+    font-size: 7px;
+  }
+  .barber-culture {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  .barber-culture-visual {
+    max-width: 330px;
+    width: 90%;
+    justify-self: center;
+    padding: 14px 14px 42px;
+  }
+  .barber-culture-number {
+    font-size: 110px;
+    bottom: -35px;
+    right: -20px;
+  }
+  .barber-photo-signature {
+    font-size: 7px;
+    left: 14px;
+    bottom: 14px;
+  }
+  .barber-culture-copy h2 {
+    font-size: 41px;
+  }
+  .barber-culture-copy > p:not(.eyebrow) {
+    font-size: 12px;
+  }
+  .barber-culture-copy .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .barber-service-tags > span {
+    font-size: 8px;
+  }
+  .barber-service-tags b {
+    font-size: 22px;
+  }
+  .gallery-grid {
+    gap: 42px 16px;
+    padding: 15px 4px;
+  }
+  .gallery-card:nth-child(3n + 2) {
+    margin-top: 0;
+  }
+  .gallery-card:nth-child(2n) {
+    margin-top: 36px;
+  }
+  .gallery-grid .gallery-card .gallery-image {
+    padding: 6px;
+    border-radius: 6px;
+    box-shadow:
+      0 4px #ddd,
+      0 5px #aaa,
+      0 15px 25px #00000022;
+  }
+  .gallery-image .image-tag {
+    top: 13px;
+    left: 12px;
+    font-size: 5px;
+    padding: 4px 5px;
+  }
+  .gallery-image .image-expand {
+    right: 12px;
+    bottom: 13px;
+    width: 25px;
+    height: 25px;
+  }
+  .gallery-card-caption {
+    padding-top: 19px;
+  }
+  .gallery-card h3 {
+    font-size: 11px;
+  }
+  .lightbox-photo {
+    padding: 12px;
+    min-height: 0;
+  }
+  .lightbox-photo .photo {
+    max-height: 47dvh;
+  }
+  .jc-sculpture {
+    height: 405px;
+  }
+  .artist-page-art > .jc-sculpture {
+    height: 455px;
+  }
+  .jc-depth-stack {
+    inset: 13% 17% 23%;
+  }
+  .jc-sculpture-label {
+    left: 20px;
+    bottom: 25px;
+    font-size: 8px;
+  }
+  .jc-studio-seal {
+    right: 15px;
+    font-size: 30px;
+  }
+  .artist-page-art {
+    min-height: 470px;
+  }
+  .section-heading .section-brand {
+    margin-top: 25px;
+    margin-bottom: 15px;
+  }
+  .section-heading .section-note {
+    margin: 0;
+  }
+  .gallery-section:before {
+    top: 60px;
+    font-size: 100px;
+  }
+  .elite-sculpture:after {
+    top: 8%;
+    left: 10%;
+    font-size: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jc-sculpture,
+  .jc-orbit,
+  .gallery-card.floating-work,
+  .artist-visual:before,
+  .sculpture-floor:before,
+  .sculpture-floor:after {
+    animation: none !important;
+    transform: none;
+  }
+  .jc-depth-stack {
+    transform: none;
+    transition: none;
+  }
+  .gallery-card.floating-work:hover {
+    transform: none;
+  }
+}
+.jc-depth-slice,
+.jc-depth-slice .jc-mark {
+  mix-blend-mode: normal;
+}
+.jc-depth-stack {
+  filter: drop-shadow(0 20px 20px #0009);
+}

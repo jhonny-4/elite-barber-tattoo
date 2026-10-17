@@ -47,6 +47,11 @@ export function EliteSculpture() {
           const textures: InstanceType<typeof T.CanvasTexture>[] = [];
           const labelMaterials: InstanceType<typeof T.MeshBasicMaterial>[] = [];
           const planes: InstanceType<typeof T.PlaneGeometry>[] = [];
+          const parts: {
+            mesh: InstanceType<typeof T.Mesh>;
+            x: number;
+            y: number;
+          }[] = [];
           function shape(points: number[][], x: number, y: number) {
             const s = new T.Shape();
             points.forEach(([px, py], i) => {
@@ -66,6 +71,7 @@ export function EliteSculpture() {
             const mesh = new T.Mesh(geometry, material);
             mesh.position.set(x, y, 0);
             group.add(mesh);
+            parts.push({ mesh, x, y });
           }
           const rect = (w: number, h: number) => [
             [0, 0],
@@ -191,16 +197,31 @@ export function EliteSculpture() {
             if (disposed) return;
             if (visible) {
               const t = (performance.now() - start) / 1000;
+              parts.forEach(({ mesh, x, y }, index) => {
+                const p = motion.matches
+                  ? 1
+                  : Math.min(1, Math.max(0, (t - index * 0.075) / 1.5));
+                const ease = 1 - Math.pow(1 - p, 4);
+                mesh.position.set(
+                  x + (1 - ease) * (index % 2 ? 0.24 : -0.24),
+                  y + (1 - ease) * 0.25,
+                  (1 - ease) * (1.3 + index * 0.1),
+                );
+                mesh.rotation.y = (1 - ease) * 0.2;
+              });
+              light.position.x = motion.matches
+                ? -3
+                : -3 + Math.sin(t * 0.55) * 4;
               const targetY = motion.matches
                 ? 0.07
-                : 0.08 + Math.sin(t * 0.4) * 0.055 + pointerX * 0.32;
+                : 0.08 + Math.sin(t * 0.4) * 0.19 + pointerX * 0.4;
               const targetX = motion.matches
                 ? -0.06
                 : -0.08 - pointerY * 0.15 + progress * 0.12;
               group.rotation.y += (targetY - group.rotation.y) * 0.055;
               group.rotation.x += (targetX - group.rotation.x) * 0.055;
               group.rotation.z = -0.025;
-              group.position.y = motion.matches ? 0 : Math.sin(t * 0.65) * 0.07;
+              group.position.y = motion.matches ? 0 : Math.sin(t * 0.65) * 0.11;
               renderer.render(scene, camera);
             }
             if (!motion.matches) frame = requestAnimationFrame(render);

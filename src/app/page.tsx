@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Header, Footer } from "../components/shell";
 import { Icon } from "../components/icons";
-import { JCMark } from "../components/media";
+import { Photo, SectionBrand } from "../components/media";
+import { ArtistMonogram } from "../components/artist-monogram";
+import { portfolio } from "../domain/media";
 import { EliteSculpture } from "../components/elite-sculpture";
 import { Gallery } from "../components/gallery";
 import { Reveal } from "../components/reveal";
@@ -67,7 +69,8 @@ export default function Home() {
             <Icon name="spark" />
           </div>
           <div className="universe-content" data-reveal>
-            <p className="eyebrow">DOS DISCIPLINAS. UNA MISMA ACTITUD.</p>
+            <SectionBrand />
+            <p className="eyebrow">QUIÉNES SOMOS / ELITE BARBER & TATTOO</p>
             <h2>
               No sigas el estilo.
               <br />
@@ -75,13 +78,37 @@ export default function Home() {
             </h2>
             <div className="universe-bottom">
               <p>
-                Un corte que define. Un tatuaje que expresa. Elite Barber &
-                Tattoo reúne barbería y el arte de Jean Carlos en un mismo
-                espacio en Cartagena.
+                Somos Elite Barber & Tattoo, un espacio de barbería y tatuaje en
+                Cartagena. Reunimos dos formas de expresión: el estilo que
+                llevas cada día y el arte que eliges llevar en la piel.
               </p>
               <a className="text-link" href="#galeria">
                 Conoce nuestro trabajo <Icon name="arrow" />
               </a>
+            </div>
+            <div className="about-editorial">
+              <p>
+                La barbería es parte de nuestra identidad. Aquí puedes explorar
+                un corte o un corte con barba, elegir tu profesional y encontrar
+                un espacio en la agenda.
+              </p>
+              <p>
+                El tatuaje tiene su propio proceso: Jean Carlos recibe tu idea y
+                tus referencias para valorar el diseño antes de cotizar y
+                acordar una sesión. Dos disciplinas, la misma marca:{" "}
+                <strong>Elite.</strong>
+              </p>
+            </div>
+            <div className="about-pillars">
+              <span>
+                <b>01</b> BARBERÍA CON IDENTIDAD
+              </span>
+              <span>
+                <b>02</b> EL ARTE DE JEAN CARLOS
+              </span>
+              <span>
+                <b>03</b> UN SOLO LOCAL EN CARTAGENA
+              </span>
             </div>
           </div>
         </section>
@@ -95,11 +122,14 @@ export default function Home() {
                 <span className="serif">lo cambia todo.</span>
               </h2>
             </div>
-            <p className="section-note">
-              Barbería con intención.
-              <br />
-              Tatuajes con identidad.
-            </p>
+            <div>
+              <SectionBrand />
+              <p className="section-note">
+                Barbería con intención.
+                <br />
+                Tatuajes con identidad.
+              </p>
+            </div>
           </div>
           <div className="service-list">
             {services.map((s, i) => (
@@ -142,19 +172,67 @@ export default function Home() {
             </Link>
           </div>
         </section>
+        <section className="section barber-culture" data-reveal>
+          <div className="barber-culture-visual">
+            <Photo item={portfolio[3]} fit="contain" />
+            <span className="barber-photo-signature">
+              ELITE BARBER / CARTAGENA
+            </span>
+            <span className="barber-culture-number" aria-hidden="true">
+              E.
+            </span>
+          </div>
+          <div className="barber-culture-copy">
+            <SectionBrand />
+            <p className="eyebrow">NUESTRA BARBERÍA</p>
+            <h2>
+              Un buen corte.
+              <br />
+              <span className="serif">Tu sello personal.</span>
+            </h2>
+            <p>
+              En Elite, barbería y estilo van de la mano. Elige un corte para
+              renovar tu imagen o combina corte y barba en una misma
+              experiencia.
+            </p>
+            <p>
+              La web te permite escoger servicio, profesional y horario. El
+              portafolio reúne trabajos del negocio para que explores la forma,
+              la textura y los detalles antes de elegir.
+            </p>
+            <div className="barber-service-tags">
+              <span>
+                CORTE <b>{currency(20000)}</b>
+              </span>
+              <span>
+                CORTE + BARBA <b>{currency(25000)}</b>
+              </span>
+            </div>
+            <small className="muted">
+              Precios provisionales para la presentación.
+            </small>
+            <div className="hero-actions">
+              <Link href="/reservar" className="button">
+                Reserva en Elite <Icon name="arrow" />
+              </Link>
+              <a href="#equipo" className="text-link">
+                Conoce al equipo <Icon name="arrow" />
+              </a>
+            </div>
+          </div>
+        </section>
         <Gallery />
         <section className="artist-feature section" data-reveal>
           <div className="artist-visual">
-            <div className="artist-frame">
-              <JCMark />
-            </div>
+            <ArtistMonogram />
             <span className="eyebrow artist-signature">
               EL TRAZO DETRÁS DEL ARTE
             </span>
             <span className="artist-serial">JC / 001</span>
           </div>
           <div className="artist-copy">
-            <p className="eyebrow">04 / EL ARTISTA</p>
+            <SectionBrand />
+            <p className="eyebrow">04 / EL ARTISTA DE ELITE</p>
             <h2>
               Jean
               <br />

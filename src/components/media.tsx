@@ -3,10 +3,12 @@ export function Photo({
   item,
   className = "",
   priority = false,
+  fit = "cover",
 }: {
   item: PortfolioItem;
   className?: string;
   priority?: boolean;
+  fit?: "cover" | "contain";
 }) {
   if (item.original)
     return (
@@ -15,14 +17,18 @@ export function Photo({
         src={item.original}
         alt={item.title}
         loading={priority ? "eager" : "lazy"}
-        style={{ objectPosition: item.position ?? "center" }}
+        style={{ objectPosition: item.position ?? "center", objectFit: fit }}
       />
     );
   return (
     <svg
       className={`photo ${className}`}
       viewBox={item.crop.join(" ")}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio={
+        fit === "contain" ? "xMidYMid meet" : "xMidYMid slice"
+      }
+      width={item.crop[2]}
+      height={item.crop[3]}
       role="img"
       aria-label={`${item.title}. Captura de referencia provisional.`}
     >
@@ -32,6 +38,16 @@ export function Photo({
         height={item.sourceHeight}
       />
     </svg>
+  );
+}
+export function SectionBrand() {
+  return (
+    <div className="section-brand">
+      <Brand />
+      <span>
+        ELITE BARBER & TATTOO<small>CARTAGENA · UNA FIRMA PROPIA</small>
+      </span>
+    </div>
   );
 }
 export function Brand({ className = "" }: { className?: string }) {

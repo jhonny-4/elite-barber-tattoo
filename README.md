@@ -39,7 +39,7 @@ npm test
 
 Se pueden preseleccionar `?servicio=corte-barba` y `?profesional=barbero-2` en `/reservar`. `/administracion?tab=solicitudes` abre las solicitudes después de entrar al modo propietario.
 
-El visitante no ve un enlace al panel. Para presentarlo, abrir `/administracion` y elegir **Probar panel administrativo · demo**. La sesión simulada se conserva en esta pestaña; **Salir de la demo** vuelve a la entrada. Esto organiza la experiencia, pero no constituye autenticación ni autorización real: Supabase Auth, validación en servidor y RLS son obligatorios antes de usar datos reales.
+La navegación principal no incluye el panel. El enlace **Propietario · Panel administrativo** del pie abre la entrada separada en `/administracion`. Para presentarlo, elegir **Probar panel administrativo · demo**. La sesión simulada se conserva en esta pestaña; **Salir de la demo** vuelve a la entrada. El enlace público lleva a la entrada, no abre directamente la gestión. Esto organiza la experiencia, pero no constituye autenticación ni autorización real: Supabase Auth, validación en servidor y RLS son obligatorios antes de usar datos reales.
 
 ### Ver desde el celular
 

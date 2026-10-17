@@ -14,7 +14,8 @@ Primera dirección visual y flujos demo implementados sobre Next.js. Este proyec
 - Calendario: días anteriores deshabilitados, máximo 60 días, intervalos de 15 min, duración por servicio y horarios ocupados bloqueados.
 - Referencias de solicitudes locales de hasta 1 MB; sin backend ni envío. Solo datos ficticios en gestión.
 - Las solicitudes no se convierten automáticamente en citas. Los estados del panel son ilustrativos y progresan secuencialmente; cerrar es terminal.
-- Panel administrativo en `/administracion`, fuera de la navegación pública. Sesión de propietario solo simulada en `sessionStorage`; NO es seguridad de producción. El dueño tendrá cuenta y rol verificados en servidor y RLS cuando se conecte Supabase. `/gestion` queda como alias con el mismo control de presentación.
+- Panel administrativo en `/administracion`, con acceso discreto **Propietario** en el pie solicitado para encontrarlo fácilmente. Lleva a la entrada, no al dashboard directamente. Sesión de propietario solo simulada en `sessionStorage`; NO es seguridad de producción. El dueño tendrá cuenta y rol verificados en servidor y RLS cuando se conecte Supabase. `/gestion` queda como alias con el mismo control de presentación.
+- Más presencia de Elite en las secciones, presentación ampliada de quiénes somos y bloque de barbería, sin inventar datos comerciales. Animación inicial de ensamblaje del logo, luz móvil, monograma JC en capas CSS 3D y órbitas. Galería con marcos flotantes y proporción natural; ampliación con `contain` para no recortar el encuadre disponible de las capturas.
 - Vista LAN mediante `npm run dev -- --hostname 0.0.0.0`. Se añadió generación de IDs compatible con HTTP local de teléfonos, donde `crypto.randomUUID` puede no existir.
 
 ## Material

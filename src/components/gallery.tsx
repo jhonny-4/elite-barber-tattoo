@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { portfolio, type PortfolioItem } from "../domain/media";
-import { Photo } from "./media";
+import { Photo, SectionBrand } from "./media";
 import { Icon } from "./icons";
 export function Gallery({ tattooOnly = false }: { tattooOnly?: boolean }) {
   const [filter, setFilter] = useState(tattooOnly ? "tattoo" : "todos"),
@@ -23,20 +23,23 @@ export function Gallery({ tattooOnly = false }: { tattooOnly?: boolean }) {
     <section className="section gallery-section" id="galeria">
       <div className="section-heading" data-reveal>
         <div>
-          <p className="eyebrow">03 / EL TRABAJO HABLA</p>
+          <p className="eyebrow">03 / EL TRABAJO DE ELITE</p>
           <h2>
             Una galería.
             <br />
             <span className="serif">Muchas identidades.</span>
           </h2>
         </div>
-        <p className="section-note">
-          {tattooOnly
-            ? "Selección de tatuajes de Jean Carlos."
-            : "Cortes y tatuajes del negocio."}
-          <br />
-          Capturas provisionales para esta demo.
-        </p>
+        <div>
+          <SectionBrand />
+          <p className="section-note">
+            {tattooOnly
+              ? "Selección de tatuajes de Jean Carlos."
+              : "Cortes y tatuajes del negocio."}
+            <br />
+            Capturas provisionales para esta demo.
+          </p>
+        </div>
       </div>
       <div
         className="gallery-filter"
@@ -69,18 +72,21 @@ export function Gallery({ tattooOnly = false }: { tattooOnly?: boolean }) {
       <div className={`gallery-grid filter-${filter}`}>
         {items.map((item, i) => (
           <button
-            className={`gallery-card card-${i}`}
+            className={`gallery-card floating-work card-${i}`}
+            style={{ animationDelay: `${i * -1.3}s` }}
             key={item.id}
             onClick={() => setActive(item)}
             aria-label={`Ampliar ${item.title}`}
           >
             <div className="gallery-image">
-              <Photo item={item} />
+              <Photo item={item} fit="contain" />
               <span className="image-expand">
                 <Icon name="plus" />
               </span>
               <span className="image-tag">
-                {item.category === "tattoo" ? "TATTOO" : "BARBER"}
+                {item.category === "tattoo"
+                  ? "ELITE / TATTOO"
+                  : "ELITE / BARBER"}
               </span>
             </div>
             <div className="gallery-card-caption">
@@ -126,7 +132,7 @@ export function Gallery({ tattooOnly = false }: { tattooOnly?: boolean }) {
               <Icon name="close" />
             </button>
             <div className="lightbox-photo">
-              <Photo item={active} />
+              <Photo item={active} fit="contain" />
             </div>
             <div className="lightbox-info">
               <p className="eyebrow">{active.subtitle}</p>

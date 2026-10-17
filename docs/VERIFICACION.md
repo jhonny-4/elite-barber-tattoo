@@ -37,3 +37,11 @@ La revisión no certifica producción, disponibilidad simultánea entre disposit
 - Nueve pruebas de dominio aprobadas después de añadir cobertura para HTTP local.
 
 La IP local no demuestra por sí sola conexión desde un teléfono físico: requiere que ambos dispositivos compartan Wi-Fi y que la red permita la comunicación. No se modificó el firewall.
+
+## Revisión visual 03 — identidad y marcos flotantes
+
+- Firma Elite repetida en las secciones y contenido ampliado de quiénes somos y barbería, limitado a datos conocidos.
+- Galería de tatuajes comprobada con proporciones naturales de aproximadamente 0,74–0,75; `preserveAspectRatio="xMidYMid meet"` muestra el encuadre disponible completo. Marcos flotantes y ampliación sin recorte adicional.
+- Logo principal con entrada de ensamblaje, oscilación y recorrido de luz. Monograma JC con capas de profundidad y acabado metálico mediante máscara SVG del logo proporcionado; sin modificar archivos originales.
+- Acceso al propietario añadido al pie. Lleva a la entrada administrativa demo, manteniendo la distinción frente a una sesión segura de producción.
+- TypeScript, lint y nueve pruebas de dominio aprobados durante esta revisión.

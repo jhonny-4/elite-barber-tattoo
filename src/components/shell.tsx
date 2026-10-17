@@ -43,7 +43,7 @@ export function Header() {
           aria-label="Principal"
         >
           <Link href="/#universo" onClick={() => setOpen(false)}>
-            El universo Elite
+            Quiénes somos
           </Link>
           <Link href="/#servicios" onClick={() => setOpen(false)}>
             Servicios
@@ -116,6 +116,9 @@ export function Footer() {
         <div>
           <Link href="/reservar">Reservar barbería</Link>
           <Link href="/tatuaje">Proponer un tatuaje</Link>
+          <Link href="/administracion">
+            Propietario · Panel administrativo ↗
+          </Link>
         </div>
       </div>
       <div className="footer-bottom">

@@ -28,7 +28,7 @@ export const portfolio: PortfolioItem[] = [
     title: "Trazos que cuentan",
     subtitle: "Jean Carlos · Tatuaje",
     ...tattoo,
-    crop: [8, 568, 185, 275],
+    crop: [2, 534, 231, 312],
   },
   {
     id: "barber-01",
@@ -44,7 +44,7 @@ export const portfolio: PortfolioItem[] = [
     title: "Carácter en la piel",
     subtitle: "Jean Carlos · Tatuaje",
     ...tattoo,
-    crop: [242, 1168, 225, 305],
+    crop: [237, 1164, 234, 313],
   },
   {
     id: "barber-02",
@@ -60,7 +60,7 @@ export const portfolio: PortfolioItem[] = [
     title: "Cada línea, una intención",
     subtitle: "Jean Carlos · Tatuaje",
     ...tattoo,
-    crop: [241, 853, 225, 304],
+    crop: [237, 848, 234, 315],
   },
   {
     id: "tattoo-04",
@@ -68,6 +68,6 @@ export const portfolio: PortfolioItem[] = [
     title: "Arte con identidad",
     subtitle: "Jean Carlos · Tatuaje",
     ...tattoo,
-    crop: [480, 1168, 221, 303],
+    crop: [474, 1164, 234, 313],
   },
 ];
