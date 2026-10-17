@@ -621,3 +621,139 @@
 .jc-depth-stack {
   filter: drop-shadow(0 20px 20px #0009);
 }
+.hero-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px solid #ffffff1c;
+  max-width: 500px;
+  perspective: 900px;
+}
+.hero-socials .social-button {
+  flex: 1 1 205px;
+  min-width: 0;
+  min-height: 67px;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  overflow: hidden;
+  transform: rotateX(5deg);
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.35s,
+    background 0.35s;
+}
+.social-button > span:not(.social-button-icon) {
+  text-align: left;
+  line-height: 1.5;
+}
+.social-button small {
+  display: block;
+  font-size: 8px;
+  font-weight: 500;
+  opacity: 0.75;
+  letter-spacing: 0.01em;
+}
+.social-button > svg {
+  width: 15px;
+  height: 15px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.social-button-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #fff8, #0001);
+  box-shadow:
+    inset 0 1px #fff8,
+    0 3px #0003;
+  transition: transform 0.35s;
+}
+.social-button-icon svg {
+  width: 21px;
+  height: 21px;
+}
+.button-outline .social-button-icon {
+  background: linear-gradient(145deg, #ffffff18, #0004);
+  box-shadow:
+    inset 0 1px #ffffff38,
+    0 3px #0008;
+}
+.hero-socials .social-button:before {
+  opacity: 0.6;
+  animation: social-glint 7s ease-in-out infinite;
+}
+.hero-socials .social-button:nth-child(2):before {
+  animation-delay: 1.5s;
+}
+.hero-socials .social-button:is(:hover, :focus-visible) {
+  transform: translateY(-5px) rotateX(9deg) rotateY(-3deg);
+}
+.social-button:is(:hover, :focus-visible) .social-button-icon {
+  transform: translateY(-2px) rotate(-8deg);
+}
+.hero-socials .social-button:active {
+  transform: translateY(4px) rotateX(0);
+}
+@keyframes social-glint {
+  0%,
+  65% {
+    transform: translateX(-130%);
+    opacity: 0;
+  }
+  72% {
+    opacity: 0.7;
+  }
+  85%,
+  100% {
+    transform: translateX(130%);
+    opacity: 0;
+  }
+}
+@media (max-width: 650px) {
+  .hero-socials {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 27px;
+    padding-top: 22px;
+  }
+  .hero-socials .social-button {
+    padding: 12px 10px;
+    gap: 9px;
+    min-height: 69px;
+    font-size: 11px;
+  }
+  .social-button small {
+    font-size: 6px;
+  }
+  .social-button-icon {
+    flex-basis: 25px;
+    height: 29px;
+  }
+  .social-button-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  .social-button > svg {
+    width: 11px;
+    height: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-socials .social-button,
+  .hero-socials .social-button:is(:hover, :focus-visible, :active),
+  .social-button:is(:hover, :focus-visible) .social-button-icon {
+    transform: none;
+    transition: none;
+  }
+  .hero-socials .social-button:before {
+    animation: none;
+    opacity: 0;
+  }
+}

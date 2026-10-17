@@ -45,3 +45,9 @@ La IP local no demuestra por sí sola conexión desde un teléfono físico: requ
 - Logo principal con entrada de ensamblaje, oscilación y recorrido de luz. Monograma JC con capas de profundidad y acabado metálico mediante máscara SVG del logo proporcionado; sin modificar archivos originales.
 - Acceso al propietario añadido al pie. Lleva a la entrada administrativa demo, manteniendo la distinción frente a una sesión segura de producción.
 - TypeScript, lint y nueve pruebas de dominio aprobados durante esta revisión.
+
+## Contacto en portada
+
+- Botones monocromáticos con relieve, inclinación al interactuar, reflejo animado y movimiento reducido respetado.
+- Destinos revisados en el DOM: `https://wa.me/573012329541` y `https://www.instagram.com/elite_barber_tattoo/`, con nueva pestaña y `noopener noreferrer`. No envían mensajes automáticamente.
+- Vista de escritorio y móvil de 390 px revisadas; botones sin desbordamiento. Compilación con TypeScript y lint aprobados.

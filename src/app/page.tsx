@@ -37,6 +37,38 @@ export default function Home() {
                 Quiero un tatuaje <Icon name="arrow" />
               </Link>
             </div>
+            <div className="hero-socials" aria-label="Contacta y sigue a Elite">
+              <a
+                className="button social-button"
+                href="https://wa.me/573012329541"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp al +57 301 232 9541, contacto provisional (abre otra pestaña)"
+              >
+                <span className="social-button-icon">
+                  <Icon name="whatsapp" />
+                </span>
+                <span>
+                  WhatsApp<small>Hablemos de tu estilo</small>
+                </span>
+                <Icon name="arrow" />
+              </a>
+              <a
+                className="button button-outline social-button"
+                href="https://www.instagram.com/elite_barber_tattoo/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram de Elite Barber & Tattoo (abre otra pestaña)"
+              >
+                <span className="social-button-icon">
+                  <Icon name="instagram" />
+                </span>
+                <span>
+                  Instagram<small>@elite_barber_tattoo</small>
+                </span>
+                <Icon name="arrow" />
+              </a>
+            </div>
           </div>
           <div className="hero-art">
             <div className="art-coordinate">ELITE / ESTUDIO DE ESTILO</div>

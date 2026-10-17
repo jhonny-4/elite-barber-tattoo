@@ -49,6 +49,8 @@ Para demostrar: crear cita, verla en gestión, cancelarla; enviar tatuaje con im
 
 ## Qué está simulado
 
+Los botones de inicio abren destinos externos reales: WhatsApp `https://wa.me/573012329541` (número provisional del usuario, no teléfono confirmado del negocio) e Instagram `https://www.instagram.com/elite_barber_tattoo/`. Solo abren el chat o perfil; no envían mensajes, reservas ni notificaciones automáticamente. Reemplazar el número antes de entregar la versión final.
+
 - Corte $20.000 COP y corte con barba $25.000 COP: valores provisionales aportados por el usuario.
 - Barbero 1, 2 y 3: perfiles temporales sin nombres, retratos ni experiencia inventados.
 - Duraciones de 30/45 minutos, horas 10:00–18:00 y horizonte de 60 días: exclusivamente demo.
@@ -56,7 +58,7 @@ Para demostrar: crear cita, verla en gestión, cancelarla; enviar tatuaje con im
 - Datos en `localStorage`, clave `zenko.elite.demo.v1`. La imagen opcional se conserva como data URL, hasta 1 MB por archivo, sujeto al espacio del navegador. Se informa de errores de lectura, formato o falta de espacio. No se sube ningún archivo.
 - Entrada separada y sesión de propietario simulada, sin autenticación real. Sin correos, WhatsApp, cobros, reservas ni cotizaciones de producción.
 - Los tatuajes comienzan pendientes. Los estados posteriores se marcan manualmente en gestión para ilustrar el proceso: no generan precios, citas ni mensajes.
-- Dirección, horario comercial, teléfono, biografías y datos no confirmados no se publican como hechos.
+- Dirección, horario comercial, teléfono definitivo y biografías siguen pendientes de confirmar.
 - Páginas con `noindex` mientras sean un prototipo. No se ha desplegado.
 
 ## Organización

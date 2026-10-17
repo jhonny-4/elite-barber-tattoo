@@ -15,9 +15,24 @@ export function Icon({
     | "spark"
     | "grid"
     | "users"
+    | "whatsapp"
+    | "instagram"
     | "clock";
 }) {
   const paths = {
+    whatsapp: (
+      <>
+        <path d="M21 11.5a9 9 0 0 1-13.4 7.8L3 21l1.6-4.7A9 9 0 1 1 21 11.5Z" />
+        <path d="m8.1 7.2 1.5 2.4-1 1.2a8.6 8.6 0 0 0 4.6 4.4l1.1-1.2 2.5 1.3c-.5 2.2-2 2.4-3.8 1.6-3.6-1.6-5.7-3.7-6.8-6.9-.6-1.7.1-2.7 1.9-2.8Z" />
+      </>
+    ),
+    instagram: (
+      <>
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" />
+      </>
+    ),
     arrow: (
       <>
         <path d="M5 19 19 5M5 5h14v14" />
