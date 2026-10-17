@@ -6,3 +6,5 @@ dist/
 !.env.example
 *.log
 *.tsbuildinfo
+/var/demo/*
+!/var/demo/.gitkeep

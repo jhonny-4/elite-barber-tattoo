@@ -2,6 +2,10 @@
 
 Prototipo navegable que evoluciona al proyecto final. Un único establecimiento en Cartagena: Elite (`@elite_barber_tattoo`) y su artista Jean Carlos (`@jeancarlostattoo19`).
 
+## Preparación V4
+
+La estructura de turnos, servidor demo y PWA está preparada en la rama local `feat/premium-pwa-v4`. Los módulos nuevos aún no están implementados. Ver [estructura y fases](docs/v4/ESTRUCTURA.md). Primero funciones con Light; después revisión visual con High.
+
 ## Ejecutar
 
 Requisitos: Node.js 24 y npm. En esta carpeta:
