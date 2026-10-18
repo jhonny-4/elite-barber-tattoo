@@ -12,6 +12,11 @@
   # Igual que .nvmrc. Netlify usa esta versión para el build y las funciones.
   NODE_VERSION = "24"
 
+# Este sitio ya existía antes de vincular el repositorio. Su build no estaba
+# ejecutando el adaptador automático y publicaba .next como archivos sueltos.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 # Cabeceras de los archivos estáticos que sirve la CDN (public/ y _next/static).
 # Las páginas y la API las responde la función de Next.js: sus cabeceras se
 # definen en next.config.ts. Ninguna bloquea el iframe de Google Maps ni los

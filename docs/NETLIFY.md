@@ -10,6 +10,8 @@ Esta versión permite presentar el diseño y recorrer reservas, solicitudes y ge
 4. Netlify está conectado al repositorio GitHub. Un push a `main` inicia su build; revisar el resultado en el panel del sitio.
 5. Configuración: `netlify.toml`, comando `npm run build`, salida `.next`. No subir `.env`, `var/`, credenciales ni datos personales.
 
+El adaptador oficial `@netlify/plugin-nextjs` está declarado explícitamente. Se añadió tras comprobar que el sitio existente compilaba pero publicaba `.next` sin ejecutar el adaptador, devolviendo 404. La función y las rutas se preparan durante el build de Netlify. Referencias: [Next.js en Netlify](https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/overview/) e [instalación de plugins](https://docs.netlify.com/extend/install-and-use/build-plugins/).
+
 ## Almacenamiento de presentación
 
 - Local: JSON en `var/demo/`, escritura atómica y cola de operaciones en un único proceso. `ELITE_DEMO_DIR` permite cambiar el directorio.
