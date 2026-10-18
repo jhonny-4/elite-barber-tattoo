@@ -1,1 +1,158 @@
-[]
+[
+  {
+    "id": "tattoo-anubis-0",
+    "category": "tattoo",
+    "title": "Egipto en la piel",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/portfolio/anubis-01.webp",
+    "original": "/media/tattoos/portfolio/anubis-01.webp",
+    "capture": true,
+    "sourceWidth": 1210,
+    "sourceHeight": 1600,
+    "crop": [
+      0,
+      0,
+      1210,
+      1600
+    ],
+    "views": [
+      {
+        "id": "tattoo-anubis-1",
+        "category": "tattoo",
+        "title": "Egipto en la piel",
+        "subtitle": "Jean Carlos · Tatuaje",
+        "source": "/media/tattoos/portfolio/anubis-02.webp",
+        "original": "/media/tattoos/portfolio/anubis-02.webp",
+        "capture": true,
+        "sourceWidth": 1188,
+        "sourceHeight": 1600,
+        "crop": [
+          0,
+          0,
+          1188,
+          1600
+        ]
+      },
+      {
+        "id": "tattoo-anubis-2",
+        "category": "tattoo",
+        "title": "Egipto en la piel",
+        "subtitle": "Jean Carlos · Tatuaje",
+        "source": "/media/tattoos/portfolio/anubis-03.webp",
+        "original": "/media/tattoos/portfolio/anubis-03.webp",
+        "capture": true,
+        "sourceWidth": 1227,
+        "sourceHeight": 1600,
+        "crop": [
+          0,
+          0,
+          1227,
+          1600
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tattoo-faith-3",
+    "category": "tattoo",
+    "title": "Retrato & carácter",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/portfolio/faith-01.webp",
+    "original": "/media/tattoos/portfolio/faith-01.webp",
+    "capture": true,
+    "sourceWidth": 1290,
+    "sourceHeight": 1585,
+    "crop": [
+      0,
+      0,
+      1290,
+      1585
+    ],
+    "views": [
+      {
+        "id": "tattoo-faith-4",
+        "category": "tattoo",
+        "title": "Retrato & carácter",
+        "subtitle": "Jean Carlos · Tatuaje",
+        "source": "/media/tattoos/portfolio/faith-02.webp",
+        "original": "/media/tattoos/portfolio/faith-02.webp",
+        "capture": true,
+        "sourceWidth": 1215,
+        "sourceHeight": 1600,
+        "crop": [
+          0,
+          0,
+          1215,
+          1600
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tattoo-joker-5",
+    "category": "tattoo",
+    "title": "Joker · Realismo",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/portfolio/joker-01.webp",
+    "original": "/media/tattoos/portfolio/joker-01.webp",
+    "capture": true,
+    "sourceWidth": 1290,
+    "sourceHeight": 1465,
+    "crop": [
+      0,
+      0,
+      1290,
+      1465
+    ]
+  },
+  {
+    "id": "tattoo-lettering-estrellas-6",
+    "category": "tattoo",
+    "title": "Lettering & estrellas",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/portfolio/lettering-estrellas-01.webp",
+    "capture": true,
+    "sourceWidth": 709,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      190,
+      709,
+      1167
+    ]
+  },
+  {
+    "id": "tattoo-mujer-cuervo-7",
+    "category": "tattoo",
+    "title": "Mirada & cuervo",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/portfolio/mujer-cuervo-01.webp",
+    "original": "/media/tattoos/portfolio/mujer-cuervo-01.webp",
+    "capture": true,
+    "sourceWidth": 1091,
+    "sourceHeight": 1600,
+    "crop": [
+      0,
+      0,
+      1091,
+      1600
+    ]
+  },
+  {
+    "id": "tattoo-zeus-aguila-8",
+    "category": "tattoo",
+    "title": "Zeus & águila",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/portfolio/zeus-aguila-01.webp",
+    "original": "/media/tattoos/portfolio/zeus-aguila-01.webp",
+    "capture": true,
+    "sourceWidth": 1115,
+    "sourceHeight": 1600,
+    "crop": [
+      0,
+      0,
+      1115,
+      1600
+    ]
+  }
+]

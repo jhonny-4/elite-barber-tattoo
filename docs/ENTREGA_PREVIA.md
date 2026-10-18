@@ -33,3 +33,10 @@ Pendiente para producción: contenido original confirmado, autenticación/roles,
 - Carruseles de ángulos de un mismo trabajo y script de importación listos. Pendiente incorporar los archivos de las nuevas fotos; no llegaron al sistema de archivos de esta sesión.
 - API publicada comprobada: lectura 200, creación ficticia persistida, reintento sin duplicación y conflicto 409. Se canceló la cita técnica y se liberó el horario. El timeout se resolvió usando el fetch capturado por el adaptador de Netlify, región compatible y SDK externo al bundle de Next.
 - TypeScript, lint, 46 pruebas y build correctos tras la actualización principal. La conexión del navegador de automatización se cerró antes de la nueva inspección visual; la validación responsive visual anterior corresponde al acabado previo.
+
+
+## Portafolio recibido por ZIP
+
+Se recibieron 10 capturas: 9 fotografías útiles, agrupadas en 6 trabajos nuevos; la décima repite el Joker con menor resolución. Anubis agrupa 3 ángulos y Faith 2; Joker, mujer/cuervo, Zeus/águila y lettering tienen una vista. Se conservan los JPEG recibidos y se publican versiones WebP sin ampliación. Las barras de Instagram del lettering se ocultan mediante viewport, conservando íntegro el tatuaje.
+
+El visor abre el ángulo seleccionado en la tarjeta. En escritorio la foto ocupa el alto disponible, con información lateral. Los controles se colocan debajo de cada tarjeta y se revisaron en móvil (355 px CSS), tableta (769 px) y escritorio. También se comprobó visualmente la cabecera del monitor: título, reloj y fecha ya no se superponen. Se corrigió la selección de fotos de barbería para que añadir tatuajes no cambie esas imágenes por depender de índices numéricos.

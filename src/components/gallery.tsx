@@ -370,7 +370,7 @@ export function Gallery({
               {shots.length > 1 && (
                 <div className="gallery-angle-controls" role="group" aria-label={`Ángulos de ${item.title}`}>
                   <button type="button" className="icon-button" aria-label={`Foto anterior de ${item.title}`} onClick={() => setAngles((previous) => ({ ...previous, [item.id]: (angle - 1 + shots.length) % shots.length }))}><Icon name="chevron" /></button>
-                  <span aria-live="polite">Foto {angle + 1} de {shots.length} · mismo tatuaje</span>
+                  <span aria-live="polite">Foto {angle + 1} de {shots.length}</span>
                   <button type="button" className="icon-button" aria-label={`Foto siguiente de ${item.title}`} onClick={() => setAngles((previous) => ({ ...previous, [item.id]: (angle + 1) % shots.length }))}><Icon name="chevron" /></button>
                 </div>
               )}
@@ -416,6 +416,7 @@ export function Gallery({
       <Lightbox
         items={items}
         activeId={activeId}
+        initialAngle={activeId ? angles[activeId] ?? 0 : 0}
         onNavigate={setActiveId}
         onClosed={(lastId) => {
           setActiveId(null);

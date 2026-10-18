@@ -79,7 +79,7 @@ Guardar las imágenes en `public/media/tattoos/nuevos/`, con nombres como `anubi
 npm run import:tattoos
 ```
 
-El importador crea WebP sin ampliar ni alterar el diseño y genera `src/domain/portfolio-extra.json`. Cada prefijo agrupa un tatuaje en una tarjeta con controles de carrusel y varias vistas en el visor. El encuadre se conserva completo. Las nuevas capturas visibles en el chat aún no estaban disponibles como archivos binarios en este entorno; no se añadieron imágenes inventadas en su lugar.
+El importador crea WebP sin ampliar ni alterar el diseño y genera `src/domain/portfolio-extra.json`. Cada prefijo agrupa un tatuaje en una tarjeta con controles de carrusel y varias vistas en el visor. El encuadre se conserva completo. El ZIP de Jean Carlos ya se incorporó: 9 fotografías de 6 tatuajes nuevos. Anubis tiene 3 vistas y el retrato Faith tiene 2. La segunda captura del Joker era la misma foto con menor resolución y se excluyó. Los originales recibidos se conservan en `nuevos/`; `manifest.json` define títulos y encuadres. El lettering usa un viewport para ocultar las barras de Instagram sin recortar el tatuaje.
 
 Ubicación corregida a **Los Ejecutivos, Cartagena, Colombia**. El mapa muestra el sector, sin afirmar un pin exacto del local. El QR del monitor y del panel apunta a `/reservar`, incluida la migración del enlace guardado en este navegador. El acceso a la fila presencial continúa en `/turnos`.
 

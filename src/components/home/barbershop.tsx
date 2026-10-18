@@ -5,7 +5,7 @@ import { portfolio } from "../../domain/media";
 import { currency, services } from "../../domain/catalog";
 
 /** Las dos fotos de cortes seleccionadas, completas y en marcos flotantes. */
-const photos = [portfolio[3], portfolio[1]];
+const photos = portfolio.filter((item) => item.category === "barberia").slice(0, 2).reverse();
 
 export function HomeBarbershop() {
   return (

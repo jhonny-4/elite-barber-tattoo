@@ -199,6 +199,7 @@
 .gallery-item {
   --row-min: 46cqw;
   display: flex;
+  flex-direction: column;
   flex: var(--grow) 1 calc(var(--ar) * var(--row-min) + 2 * var(--mat));
   min-width: 0;
   max-width: calc(var(--ar) * var(--row-max) + 2 * var(--mat));
@@ -743,6 +744,19 @@
 
 .lightbox-info .button {
   margin-top: 6px;
+}
+
+/* On desktop, give the full photograph the height of the viewport and keep
+   captions beside it rather than shrinking it under a long information block. */
+@media (min-width: 960px) {
+  .lightbox-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: "bar bar" "stage info";
+  }
+  .lightbox-bar { grid-area: bar; }
+  .lightbox-stage { grid-area: stage; }
+  .lightbox-info { grid-area: info; align-self: center; min-height: 0; padding: 20px; }
 }
 
 @media (max-width: 759px) {

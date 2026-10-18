@@ -40,11 +40,13 @@ type Swipe = {
 export function Lightbox({
   items,
   activeId,
+  initialAngle = 0,
   onNavigate,
   onClosed,
 }: {
   items: PortfolioItem[];
   activeId: string | null;
+  initialAngle?: number;
   onNavigate: (id: string) => void;
   /** Se llama al cerrarse, con el id de la última imagen vista. */
   onClosed: (lastId: string) => void;
@@ -57,7 +59,9 @@ export function Lightbox({
   const [direction, setDirection] = useState<"next" | "prev" | "none">(
     "none",
   );
-  const [angle, setAngle] = useState(0);
+  const [angleState, setAngleState] = useState<{ work: string | null; value: number }>({ work: null, value: 0 });
+  const angle = angleState.work === activeId ? angleState.value : initialAngle;
+  const setAngle = (value: number) => setAngleState({ work: activeId, value });
   const baseId = useId();
   const titleId = `${baseId}-title`;
   const noteId = `${baseId}-note`;
@@ -110,7 +114,7 @@ export function Lightbox({
     (target: number, dir: "next" | "prev") => {
       if (target < 0 || target >= total || target === index) return;
       setDirection(dir);
-      setAngle(0);
+      setAngleState({ work: items[target].id, value: 0 });
       onNavigate(items[target].id);
     },
     [index, items, onNavigate, total],
@@ -142,7 +146,7 @@ export function Lightbox({
     if (dialog) delete dialog.dataset.closing;
     window.clearTimeout(closeTimer.current);
     setDirection("none");
-    setAngle(0);
+    setAngleState({ work: null, value: 0 });
     if (item) onClosed(item.id);
   }
 

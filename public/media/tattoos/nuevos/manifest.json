@@ -1,0 +1,11 @@
+{
+  "anubis": { "title": "Egipto en la piel" },
+  "faith": { "title": "Retrato & carácter" },
+  "joker": { "title": "Joker · Realismo" },
+  "lettering-estrellas": {
+    "title": "Lettering & estrellas",
+    "crops": { "lettering-estrellas-01": [0, 190, 709, 1167] }
+  },
+  "mujer-cuervo": { "title": "Mirada & cuervo" },
+  "zeus-aguila": { "title": "Zeus & águila" }
+}
