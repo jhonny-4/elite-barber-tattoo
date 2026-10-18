@@ -269,7 +269,7 @@ export function createNetlifyBlobsBackend(
       const blobs = await import("@netlify/blobs");
       if (scope === "site") return blobs.getStore({ name, fetch: unpatchedFetch });
       try {
-        return blobs.getDeployStore({ name, fetch: unpatchedFetch, region: env.AWS_REGION || "us-east-2" });
+        return blobs.getDeployStore({ name, fetch: unpatchedFetch, region: "us-east-2" });
       } catch (error) {
         const message = error instanceof Error ? error.message : "";
         // Sin región en el contexto: la misma región por defecto que usa el runtime de Next.js en Netlify.
