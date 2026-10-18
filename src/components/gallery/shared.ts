@@ -9,7 +9,7 @@ export type GalleryFilter = "todos" | "barberia" | "tattoo";
 export const CAPTURE_MAX_SCALE = 1.6;
 
 /** Las imágenes sin `original` son recortes de capturas de pantalla. */
-export const isCapture = (item: PortfolioItem) => !item.original;
+export const isCapture = (item: PortfolioItem) => item.capture ?? !item.original;
 
 /** Proporción completa de la foto (ancho / alto) para no recortarla nunca. */
 export const aspectOf = (item: PortfolioItem) => item.crop[2] / item.crop[3];

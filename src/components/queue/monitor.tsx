@@ -115,7 +115,7 @@ function MonitorJoin() {
         )}
       </div>
       <p className="monitor-join-copy">
-        <b>Toma tu turno</b>
+        <b>Reserva tu corte</b>
         <span>Escanea el código con tu celular</span>
       </p>
     </div>
@@ -289,8 +289,8 @@ export function QueueMonitor() {
           Solo se muestran número, profesional y servicio. Sin nombres ni
           teléfonos.
         </p>
-        <Link href="/turnos" className="button button-outline button-small monitor-join-link">
-          Tomar o ver mi turno <Icon name="ticket" />
+        <Link href="/reservar" className="button button-outline button-small monitor-join-link">
+          Elegir barbero y reservar <Icon name="ticket" />
         </Link>
       </footer>
     </main>

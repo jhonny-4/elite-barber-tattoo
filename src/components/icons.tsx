@@ -40,9 +40,9 @@ export function Icon({
   const paths = {
     razor: (
       <>
-        <path d="M2.5 7.5h11.5v3.5H6.8C4.6 11 3 9.6 2.5 7.5Z" />
-        <path d="M14 7.5 21 15.5a1.4 1.4 0 0 1-2 1.9l-6.3-6.4" />
-        <circle cx="14.6" cy="9.1" r=".75" />
+        <path d="M5 3.5v5.3c0 4.6 2.2 8.2 7 10.7 4.8-2.5 7-6.1 7-10.7V3.5M5.5 8.5l3 2 3.5-1 3.5 1 3-2" />
+        <path d="M8.5 12.5c1.2-1 2.3-1 3.5.2 1.2-1.2 2.3-1.2 3.5-.2M9.5 16l2.5 1.2 2.5-1.2M9 4l3-1 3 1" />
+        <path d="M2 21h14l5-3v3H2Z" strokeWidth="1.1" />
       </>
     ),
     whatsapp: (
@@ -127,8 +127,11 @@ export function Icon({
     ),
     needle: (
       <>
-        <path d="M19 5 8.5 15.5" />
-        <path d="m15.5 4.5 4 4M7 14l3 3-4.5 3.5L4 19Z" />
+        <g transform="rotate(38 12 12)">
+          <rect x="8.5" y="3" width="7" height="6" rx="2" />
+          <path d="M10 3V1.5h4V3M9.5 9v7h5V9M8.5 11h7M8.5 13.5h7M10.5 16l.7 3h1.6l.7-3M12 19v3M15.5 5h3v5" />
+          <circle cx="12" cy="6" r="1.1" />
+        </g>
       </>
     ),
     bell: (

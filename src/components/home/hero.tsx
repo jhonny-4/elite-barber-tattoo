@@ -12,6 +12,7 @@ import { instagramUrl, whatsappUrl } from "../../domain/business";
 export function HomeHero() {
   return (
     <section
+      id="inicio"
       className="home-hero grain"
       aria-labelledby="home-hero-title"
       data-home-hero
@@ -112,7 +113,7 @@ export function HomeHero() {
           <span className="home-hero-scroll-track" aria-hidden="true" />
         </a>
         <span className="home-hero-foot-label" aria-hidden="true">
-          Chiquinquirá · Cartagena
+          Los Ejecutivos · Cartagena
         </span>
       </div>
     </section>

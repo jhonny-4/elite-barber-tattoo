@@ -15,7 +15,7 @@ import {
 export const metadata: Metadata = {
   title: "Jean Carlos · Tatuaje",
   description:
-    "Jean Carlos, tatuador y dueño de Elite Barber & Tattoo, en el mismo local de Chiquinquirá, Cartagena. Comparte tu idea y solicita la valoración de tu tatuaje.",
+    "Jean Carlos, tatuador y dueño de Elite Barber & Tattoo, en el mismo local de Los Ejecutivos, Cartagena. Comparte tu idea y solicita la valoración de tu tatuaje.",
 };
 
 const steps = [
@@ -62,7 +62,7 @@ export default function JeanCarlosPage() {
               Tatuador y dueño de <strong>Elite Barber &amp; Tattoo</strong>.
             </p>
             <p className="lead">
-              Tatúa en el mismo local de la barbería, en Chiquinquirá,
+              Tatúa en el mismo local de la barbería, en Los Ejecutivos,
               Cartagena. Cada proyecto se valora y se cotiza de forma personal.
             </p>
           </div>

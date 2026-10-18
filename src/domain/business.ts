@@ -1,7 +1,7 @@
 export const businessName = "Elite Barber & Tattoo";
 export const businessCity = "Cartagena de Indias";
 export const businessAddress =
-  "Cra. 59b #mz50-24, barrio Chiquinquirá, Cartagena de Indias, Bolívar";
+  "Los Ejecutivos, Cartagena de Indias, Colombia";
 
 // Búsqueda por dirección: referencia provisional, no un pin verificado del negocio.
 // Para cambiarla por el pin confirmado, reemplazar solo `mapQuery`.

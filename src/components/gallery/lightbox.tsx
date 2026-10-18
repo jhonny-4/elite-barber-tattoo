@@ -57,12 +57,15 @@ export function Lightbox({
   const [direction, setDirection] = useState<"next" | "prev" | "none">(
     "none",
   );
+  const [angle, setAngle] = useState(0);
   const baseId = useId();
   const titleId = `${baseId}-title`;
   const noteId = `${baseId}-note`;
 
   const index = activeId ? items.findIndex((i) => i.id === activeId) : -1;
   const item = index >= 0 ? items[index] : null;
+  const shots = item ? [item, ...(item.views ?? [])] : [];
+  const photo = shots[angle] ?? item;
   const total = items.length;
   const open = item !== null;
 
@@ -107,6 +110,7 @@ export function Lightbox({
     (target: number, dir: "next" | "prev") => {
       if (target < 0 || target >= total || target === index) return;
       setDirection(dir);
+      setAngle(0);
       onNavigate(items[target].id);
     },
     [index, items, onNavigate, total],
@@ -138,6 +142,7 @@ export function Lightbox({
     if (dialog) delete dialog.dataset.closing;
     window.clearTimeout(closeTimer.current);
     setDirection("none");
+    setAngle(0);
     if (item) onClosed(item.id);
   }
 
@@ -246,11 +251,11 @@ export function Lightbox({
     }
   }
 
-  const capture = item ? isCapture(item) : false;
-  const frameStyle = item
+  const capture = photo ? isCapture(photo) : false;
+  const frameStyle = photo
     ? ({
-        "--ar": aspectOf(item),
-        "--cap": `${maxWidthOf(item)}px`,
+        "--ar": aspectOf(photo),
+        "--cap": `${maxWidthOf(photo)}px`,
       } as CSSProperties)
     : undefined;
 
@@ -306,11 +311,11 @@ export function Lightbox({
             <div className="lightbox-figure" ref={figureRef} data-dismiss="">
               <figure
                 className="lightbox-frame"
-                key={item.id}
+                key={photo?.id}
                 data-dir={direction}
                 style={frameStyle}
               >
-                <Photo item={item} fit="contain" priority sizes={LIGHTBOX_SIZES} />
+                {photo && <Photo item={photo} fit="contain" priority sizes={LIGHTBOX_SIZES} />}
               </figure>
             </div>
             <p className="lightbox-count" aria-hidden="true">
@@ -330,6 +335,13 @@ export function Lightbox({
           </div>
 
           <div className="lightbox-info">
+            {shots.length > 1 && (
+              <div className="gallery-angle-controls" role="group" aria-label="Fotos del mismo tatuaje">
+                <button type="button" className="icon-button" aria-label="Ángulo anterior" onClick={() => setAngle((angle - 1 + shots.length) % shots.length)}><Icon name="chevron" /></button>
+                <span aria-live="polite">Mismo tatuaje · foto {angle + 1} de {shots.length}</span>
+                <button type="button" className="icon-button" aria-label="Ángulo siguiente" onClick={() => setAngle((angle + 1) % shots.length)}><Icon name="chevron" /></button>
+              </div>
+            )}
             <p className="eyebrow">{item.subtitle}</p>
             <h2 id={titleId}>{item.title}</h2>
             <p id={noteId} className="lightbox-note">
@@ -338,7 +350,7 @@ export function Lightbox({
               )}
               {capture
                 ? "Tomada de Instagram: la nitidez mejorará con la fotografía original. Cada diseño se valora y se cotiza de forma personal."
-                : "Corte seleccionado del trabajo de Elite."}
+                : item.category === "tattoo" ? "Tatuaje de Jean Carlos en Elite. Cada diseño requiere valoración personal." : "Corte seleccionado del trabajo de Elite."}
             </p>
             <Link
               className="button button-accent button-small"

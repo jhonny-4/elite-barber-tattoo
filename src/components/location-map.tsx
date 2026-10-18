@@ -19,12 +19,13 @@ export function LocationMap() {
       id="ubicacion"
       aria-labelledby="ubicacion-title"
     >
+      <span className="elite-section-watermark" aria-hidden="true" />
       <header className="section-heading home-heading" data-anim="heading">
         <p className="eyebrow home-eyebrow">Ubicación</p>
         <h2 id="ubicacion-title" data-split>
           Encuéntranos
           <br />
-          <span className="serif">en Chiquinquirá.</span>
+          <span className="serif">en Los Ejecutivos.</span>
         </h2>
       </header>
 
@@ -69,7 +70,7 @@ export function LocationMap() {
             />
           </div>
           <figcaption className="home-location-note">
-            Mapa de referencia por dirección. Si no carga, usa «Abrir en Google
+            Mapa del sector Los Ejecutivos; punto exacto del local por confirmar. Si no carga, usa «Abrir en Google
             Maps».
           </figcaption>
         </figure>

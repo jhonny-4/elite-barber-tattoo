@@ -9,12 +9,18 @@ import QRCode from "qrcode";
 const STORAGE_KEY = "elite.queue.qr-url";
 
 export function defaultQueueUrl() {
-  return `${window.location.origin}/turnos`;
+  return `${window.location.origin}/reservar`;
 }
 
 export function readQueueUrl() {
   try {
-    return localStorage.getItem(STORAGE_KEY) || "";
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return "";
+    const url = new URL(saved);
+    url.pathname = "/reservar";
+    url.search = "";
+    url.hash = "";
+    return url.toString();
   } catch {
     return "";
   }
@@ -31,7 +37,8 @@ export function storeQueueUrl(url: string) {
 
 export function validQueueUrl(url: string) {
   try {
-    return ["http:", "https:"].includes(new URL(url).protocol);
+    const parsed = new URL(url);
+    return ["http:", "https:"].includes(parsed.protocol) && parsed.pathname === "/reservar";
   } catch {
     return false;
   }
@@ -46,7 +53,7 @@ export function useQrImage(url: string, width = 320) {
     setImage("");
     if (!url) return;
     if (!validQueueUrl(url)) {
-      setError("Escribe una URL http o https válida.");
+      setError("Usa una URL http o https terminada en /reservar.");
       return;
     }
     QRCode.toDataURL(url, {

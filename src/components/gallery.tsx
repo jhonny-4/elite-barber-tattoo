@@ -70,6 +70,7 @@ export function Gallery({
     tattooOnly ? "tattoo" : initialFilter,
   );
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [angles, setAngles] = useState<Record<string, number>>({});
   const [announcement, setAnnouncement] = useState("");
   const gridRef = useRef<HTMLUListElement>(null);
   const cards = useRef(new Map<string, HTMLButtonElement>());
@@ -310,6 +311,9 @@ export function Gallery({
         aria-label={tattooOnly ? "Tatuajes de Jean Carlos" : "Trabajos de Elite"}
       >
         {items.map((item) => {
+          const shots = [item, ...(item.views ?? [])];
+          const angle = angles[item.id] ?? 0;
+          const photo = shots[angle] ?? item;
           const capture = isCapture(item);
           const [author, kind] = splitSubtitle(item.subtitle);
           return (
@@ -319,7 +323,7 @@ export function Gallery({
               data-id={item.id}
               style={
                 {
-                  "--ar": aspectOf(item).toFixed(4),
+                  "--ar": aspectOf(photo).toFixed(4),
                   // ×10 para que la suma de factores de una fila nunca baje de 1.
                   "--grow": (aspectOf(item) * 10).toFixed(3),
                 } as CSSProperties
@@ -339,7 +343,8 @@ export function Gallery({
                 onPointerLeave={untilt}
               >
                 <span className="gallery-frame">
-                  <Photo item={item} fit="contain" sizes={CARD_SIZES} />
+                  <Photo item={photo} fit="contain" sizes={CARD_SIZES} />
+                  {shots.length > 1 && <span className="gallery-angle-badge">{angle + 1} / {shots.length} fotos</span>}
                   {capture && (
                     <span className="gallery-tag">Captura de referencia</span>
                   )}
@@ -362,6 +367,13 @@ export function Gallery({
                   )}
                 </span>
               </button>
+              {shots.length > 1 && (
+                <div className="gallery-angle-controls" role="group" aria-label={`Ángulos de ${item.title}`}>
+                  <button type="button" className="icon-button" aria-label={`Foto anterior de ${item.title}`} onClick={() => setAngles((previous) => ({ ...previous, [item.id]: (angle - 1 + shots.length) % shots.length }))}><Icon name="chevron" /></button>
+                  <span aria-live="polite">Foto {angle + 1} de {shots.length} · mismo tatuaje</span>
+                  <button type="button" className="icon-button" aria-label={`Foto siguiente de ${item.title}`} onClick={() => setAngles((previous) => ({ ...previous, [item.id]: (angle + 1) % shots.length }))}><Icon name="chevron" /></button>
+                </div>
+              )}
             </li>
           );
         })}

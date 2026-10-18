@@ -1,4 +1,6 @@
 // Browser SVG viewboxes frame the original screenshots without inventing image detail.
+import additionalPortfolio from "./portfolio-extra.json";
+
 export type PortfolioItem = {
   id: string;
   category: "barberia" | "tattoo";
@@ -12,6 +14,9 @@ export type PortfolioItem = {
   /** Variantes responsivas del original (`src 720w, src 1290w`). */
   srcSet?: string;
   position?: string;
+  /** Additional angles of the same tattoo, grouped under one gallery card. */
+  views?: PortfolioItem[];
+  capture?: boolean;
 };
 const tattoo = {
   source: "/media/reference/tattoo-source.jpeg",
@@ -24,6 +29,7 @@ const barber = {
   sourceHeight: 1536,
 };
 export const portfolio: PortfolioItem[] = [
+  ...(additionalPortfolio as PortfolioItem[]),
   {
     id: "tattoo-01",
     category: "tattoo",

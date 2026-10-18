@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: "Elite Barber & Tattoo",
     title: "Elite Barber & Tattoo · Barbería y tatuaje en Cartagena",
     description:
-      "Barbería y tatuaje en un mismo lugar en Chiquinquirá, Cartagena.",
+      "Barbería y tatuaje en un mismo lugar en Los Ejecutivos, Cartagena.",
   },
   twitter: { card: "summary_large_image" },
   title: {
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     template: "%s · Elite Barber & Tattoo",
   },
   description:
-    "Barbería y tatuaje en un mismo lugar en Chiquinquirá, Cartagena. Reserva tu corte o solicita la valoración de tu tatuaje con Jean Carlos.",
+    "Barbería y tatuaje en un mismo lugar en Los Ejecutivos, Cartagena. Reserva tu corte o solicita la valoración de tu tatuaje con Jean Carlos.",
   // Sin indexar hasta el lanzamiento con dominio y datos confirmados (docs/PRODUCCION.md).
   robots: { index: false, follow: false },
 };

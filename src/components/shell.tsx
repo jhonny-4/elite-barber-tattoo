@@ -17,6 +17,7 @@ import {
 } from "../domain/business";
 
 const navLinks = [
+  { href: "/#inicio", label: "Inicio" },
   { href: "/#universo", label: "Quiénes somos" },
   { href: "/#servicios", label: "Servicios" },
   { href: "/#galeria", label: "Trabajos" },
@@ -88,8 +89,11 @@ export function Header() {
         </p>
         <Link href="/administracion" className="topbar-team">
           <Icon name="lock" />
-          Panel administrativo
+          Iniciar sesión
         </Link>
+        <button type="button" className="topbar-install" onClick={() => window.dispatchEvent(new Event("elite:install"))}>
+          <Icon name="download" /> Instalar app
+        </button>
       </div>
       <header
         ref={header}
@@ -265,7 +269,7 @@ export function Footer() {
           <Icon name="pin" />
         </span>
         <div>
-          <h3 id="footer-location-title">Nos vemos en Chiquinquirá</h3>
+          <h3 id="footer-location-title">Nos vemos en Los Ejecutivos</h3>
           <address>{businessAddress}</address>
         </div>
         <div className="footer-location-actions">

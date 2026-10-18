@@ -9,6 +9,7 @@ import {
 import { EliteLogo } from "./brand/logos";
 import { Dashboard } from "./dashboard";
 import { Icon } from "./icons";
+import { DemoLogin } from "./demo-login";
 
 type IconName = Parameters<typeof Icon>[0]["name"];
 
@@ -84,15 +85,8 @@ export function OwnerGate({
           <span className="serif">{text.serif}</span>
         </h1>
         <p className="adm-gate-lead">{text.lead}</p>
-        <button
-          type="button"
-          className="button button-accent button-large adm-gate-cta"
-          onClick={enter}
-        >
-          {text.cta}
-          <Icon name="arrow" />
-        </button>
-        <p className="adm-gate-sub">Acceso simulado · sin contraseña · datos ficticios</p>
+        <DemoLogin onEnter={enter} />
+        <p className="adm-gate-sub">Sesión de prueba · datos ficticios</p>
         {error ? (
           <p className="inline-error" role="alert">
             {error}
@@ -116,9 +110,8 @@ export function OwnerGate({
             </span>
             <h2>Hoy: acceso simulado</h2>
             <p>
-              El botón abre el panel sin inicio de sesión ni autenticación.
-              Cualquiera con el enlace puede entrar; por eso aquí solo hay datos
-              ficticios.
+              El formulario usa credenciales públicas de presentación y recuerda
+              la sesión en este navegador. No protege la API; utiliza solo datos ficticios.
             </p>
           </article>
           <article>

@@ -81,11 +81,22 @@ export function PwaManager() {
   }
   async function install() {
     if (prompt) {
-      await prompt.prompt();
-      const choice = await prompt.userChoice;
-      if (choice.outcome === "accepted") setPrompt(null);
+      try {
+        await prompt.prompt();
+        const choice = await prompt.userChoice;
+        setPrompt(null);
+        if (choice.outcome === "accepted") setMessage("Elite se está añadiendo a tu dispositivo.");
+      } catch {
+        setPrompt(null);
+        setHelp(true);
+      }
     } else setHelp(!help);
   }
+  useEffect(() => {
+    const open = () => { void install(); };
+    window.addEventListener("elite:install", open);
+    return () => window.removeEventListener("elite:install", open);
+  });
   return (
     <>
       <div className="pwa-tools">

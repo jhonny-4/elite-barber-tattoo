@@ -41,9 +41,9 @@ export function QrCard() {
   return (
     <section className="v4-card qr-card" aria-labelledby={`${uid}-title`}>
       <header className="qr-card-head">
-        <p className="eyebrow">Acceso a la fila</p>
+        <p className="eyebrow">Reserva con tu barbero</p>
         <h3 id={`${uid}-title`}>
-          Escanea. Elige. <span className="serif">Espera tu turno.</span>
+          Escanea. Elige. <span className="serif">Reserva tu corte.</span>
         </h3>
       </header>
       <figure className="qr-frame">
@@ -90,11 +90,11 @@ export function QrCard() {
       <div className="qr-actions">
         <a
           className="button button-outline button-small"
-          href={valid ? url : "/turnos"}
+          href={valid ? url : "/reservar"}
           target="_blank"
           rel="noopener noreferrer"
         >
-          Abrir registro <Icon name="arrow" />
+          Abrir reservas <Icon name="arrow" />
           <span className="visually-hidden"> (abre otra pestaña)</span>
         </a>
         {image && (

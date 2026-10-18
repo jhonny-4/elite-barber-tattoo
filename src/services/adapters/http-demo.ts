@@ -55,10 +55,15 @@ export async function postDemo<T>(path: string, body: unknown): Promise<T> {
 }
 export const httpDemo: DemoService = {
   async read(): Promise<SharedState> {
-    const response = await fetch("/api/demo", {
-      cache: "no-store",
-      signal: AbortSignal.timeout(10000),
-    });
+    let response: Response;
+    try {
+      response = await fetch("/api/demo", {
+        cache: "no-store",
+        signal: AbortSignal.timeout(10000),
+      });
+    } catch {
+      throw new Error("La agenda está tardando en responder. Revisa tu conexión y vuelve a intentar.");
+    }
     if (!response.ok)
       throw new Error(
         errorText(

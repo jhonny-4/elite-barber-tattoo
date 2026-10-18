@@ -28,7 +28,7 @@ const pillars = [
     index: "03",
     icon: "pin",
     title: "Un solo local en Cartagena",
-    text: "Dos disciplinas, la misma marca: Elite. Barbería y tatuaje bajo el mismo techo, en el barrio Chiquinquirá.",
+    text: "Dos disciplinas, la misma marca: Elite. Barbería y tatuaje bajo el mismo techo, en Los Ejecutivos.",
   },
 ] as const;
 

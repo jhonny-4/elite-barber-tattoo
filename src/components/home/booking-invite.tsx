@@ -10,6 +10,7 @@ const chosen = 18;
 export function HomeBookingInvite() {
   return (
     <section className="section home-book" aria-labelledby="home-book-title">
+      <span className="elite-section-watermark" aria-hidden="true" />
       <div className="section-heading home-heading" data-anim="heading">
         <p className="eyebrow home-eyebrow">Tu momento empieza aquí</p>
         <h2 id="home-book-title" data-split>

@@ -1,6 +1,6 @@
 # Elite Barber & Tattoo · ZENKO
 
-Versión navegable de presentación del proyecto real. Un único local en Cartagena: Elite es la marca del negocio y Jean Carlos es su dueño y tatuador. Interfaz blanca, negra y gris, con logos 3D, animación de scroll, galería, agenda, solicitudes, turnos y panel administrativo.
+Versión navegable de presentación del proyecto real. Un único local en Cartagena: Elite es la marca del negocio y Jean Carlos es su dueño y tatuador. Interfaz blanca y negra con acentos rojos y colores originales de redes, con logos 3D, animación de scroll, galería, agenda, solicitudes, turnos y panel administrativo.
 
 ## Ejecutar
 
@@ -36,7 +36,7 @@ La instalación PWA requiere localhost o HTTPS. La web por IP local funciona sin
 | `/barbero` | Agenda y atención filtradas por profesional |
 | `/offline` | Estado sin conexión |
 
-Para revisar la gestión, pulsar **Panel administrativo → Abrir panel**. El acceso es simulado, sin contraseña. La autenticación y los permisos reales están pendientes; usar solo datos ficticios.
+Para revisar la gestión, pulsar **Iniciar sesión**, completar los datos públicos de prueba (`jean@elite.demo` / `EliteDemo2026!`) y entrar. El formulario incluye logo 3D y validación; el acceso sigue siendo simulado. La autenticación y los permisos reales están pendientes; usar solo datos ficticios.
 
 ## Qué funciona y qué se simula
 
@@ -56,7 +56,7 @@ src/components/gallery/   Visor y utilidades de galería
 src/components/booking/   Pasos y resumen de reserva
 src/components/admin/     Panel administrativo
 src/components/queue/     Turnos y monitor
-src/styles/               Tokens, base, áreas y acabado monocromo
+src/styles/               Tokens, base, áreas y acabado premium y acentos rojos
 src/domain/               Reglas de negocio y catálogo
 src/services/             Contratos y sincronización
 src/server/               Persistencia y comandos
@@ -70,6 +70,18 @@ recovery/                 Respaldo original de Claude, fuera de compilación
 Mantener los originales en `public/media/reference/`. Las fotos actuales son capturas de referencia, sin promesa de calidad 4K. Actualizar `src/domain/media.ts` con las fotos finales y sus variantes responsive, proporciones, texto alternativo y encuadre. Usar fotografías completas, sin recortar tatuajes.
 
 Los vectores reconstruidos están en `src/components/brand/logo-data.ts` y `public/media/brand/`. Cuando lleguen los oficiales, sustituir sus trazados y revisar las cajas de encuadre de `src/components/three/presets.ts`; regenerar también iconos PWA e imagen social. Ver [activos](docs/ACTIVOS.md).
+
+## Fotos nuevas y carruseles
+
+Guardar las imágenes en `public/media/tattoos/nuevos/`, con nombres como `anubis-01.jpg`, `anubis-02.jpg` y `faith-01.jpg`, `faith-02.jpg`. Ejecutar:
+
+```sh
+npm run import:tattoos
+```
+
+El importador crea WebP sin ampliar ni alterar el diseño y genera `src/domain/portfolio-extra.json`. Cada prefijo agrupa un tatuaje en una tarjeta con controles de carrusel y varias vistas en el visor. El encuadre se conserva completo. Las nuevas capturas visibles en el chat aún no estaban disponibles como archivos binarios en este entorno; no se añadieron imágenes inventadas en su lugar.
+
+Ubicación corregida a **Los Ejecutivos, Cartagena, Colombia**. El mapa muestra el sector, sin afirmar un pin exacto del local. El QR del monitor y del panel apunta a `/reservar`, incluida la migración del enlace guardado en este navegador. El acceso a la fila presencial continúa en `/turnos`.
 
 ## Verificación
 

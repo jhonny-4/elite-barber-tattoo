@@ -14,6 +14,8 @@ export function HomeArtist() {
       aria-labelledby="home-artist-title"
     >
       <span className="home-artist-beam" aria-hidden="true" />
+      <span className="elite-section-watermark" aria-hidden="true" />
+      <span className="elite-section-watermark" aria-hidden="true" />
 
       <div className="home-artist-stage" data-artist-stage>
         <span className="home-artist-glow" aria-hidden="true" />

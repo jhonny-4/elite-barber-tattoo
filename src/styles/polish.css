@@ -1,8 +1,14 @@
-/* Monochrome finish: stronger brand scale and a clear silver primary action. */
+/* Elite: monochrome foundation, chrome actions and restrained red accents. */
 :root {
-  --accent-text: #ededed;
-  --red-400: #dedede;
-  --red-glow: rgb(255 255 255 / 0.18);
+  --accent-text: #ff777d;
+  --red-700: #781e29;
+  --red-600: #b92738;
+  --red-500: #e13c4c;
+  --red-400: #ff777d;
+  --red-glow: rgb(225 60 76 / 0.2);
+  --whatsapp: #25d366;
+  --whatsapp-ink: #052d15;
+  --instagram-gradient: linear-gradient(115deg, #833ab4, #c13584 35%, #e1306c 58%, #f77737 82%, #fcaf45);
 }
 
 .home-hero {
@@ -29,3 +35,115 @@
     --hero-reserve: 430px;
   }
 }
+
+.button-whatsapp {
+  --btn-face: linear-gradient(180deg, #50e789, #25d366 52%, #1bb454);
+  --btn-face-hover: linear-gradient(180deg, #6aee9b, #32e575 52%, #22c45e);
+  --btn-edge: #117936;
+  --btn-cast: rgb(0 40 12 / .7);
+}
+.button-whatsapp:not(:disabled, [aria-disabled="true"]):hover { --btn-glow: 0 0 32px -8px rgb(37 211 102 / .55); }
+.button-whatsapp .button-glyph { color: #128c4b; }
+.button-instagram { --btn-edge: #6d235b; --btn-cast: rgb(55 9 40 / .7); }
+.button-instagram .button-glyph { color: #c13584; }
+.button-instagram:not(:disabled, [aria-disabled="true"]):hover { --btn-glow: 0 0 32px -8px rgb(225 48 108 / .5); }
+.dot { color: var(--red-400); }
+.topbar { gap: 12px; }
+.topbar-place { margin-right: auto; }
+.topbar-install { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 36px; padding: 4px 14px; border: 1px solid #8c3840; border-radius: 8px; background: linear-gradient(#4c1e25, #271216); color: #fff; box-shadow: inset 0 1px 0 #ffffff20, 0 2px 0 #14070a; font-size: .7rem; font-weight: 800; letter-spacing: .08em; cursor: pointer; }
+.topbar-install svg { width: 16px; height: 16px; }
+.topbar-install:hover { background: #6b2632; }
+.main-nav { gap: clamp(12px, 1.7vw, 26px); }
+
+/* Repeated vector brand, behind content and deliberately low contrast. */
+.home-page, .adm-gate-stage, .queue-monitor { isolation: isolate; position: relative; }
+.home-page::after, .adm-gate-stage::after, .queue-monitor::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-color: rgb(255 255 255 / .027);
+  mask: url('/media/brand/elite-logo.svg') center 140px / min(76vw, 700px) 600px repeat;
+  -webkit-mask: url('/media/brand/elite-logo.svg') center 140px / min(76vw, 700px) 600px repeat;
+}
+.home-hero-halo { box-shadow: 0 0 130px 10px rgb(171 24 42 / .08); }
+.home-hero-floor { border-color: rgb(225 60 76 / .2); }
+.home-about-statement .serif { font-size: 1em; line-height: 1.03; }
+.home-heading h2 .serif, .home-hero-title .serif { font-size: 1em; }
+:is(h1, h2) .serif { font-size: 1em; }
+.elite-section-watermark { position: absolute; inset: 30px 5%; z-index: -1; pointer-events: none; background: #fff; opacity: .025; mask: url('/media/brand/elite-logo.svg') center / min(90%, 740px) auto no-repeat; -webkit-mask: url('/media/brand/elite-logo.svg') center / min(90%, 740px) auto no-repeat; }
+.home-artist, .home-book, .home-location { isolation: isolate; }
+
+/* Login: sculpted identity and a readable, keyboard-friendly form. */
+.elite-login { width: 100%; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #ffffff24; border-top-color: #ffffff50; border-radius: 28px; background: linear-gradient(145deg, #232323, #0c0c0c 55%); overflow: hidden; box-shadow: inset 0 1px 0 #ffffff16, 0 9px 0 #030303, 0 38px 65px -26px #000; text-align: left; }
+.elite-login-art { display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 0; padding: 30px 8px; border-right: 1px solid #ffffff12; background: radial-gradient(ellipse at center, #651e2d38, transparent 70%); }
+.elite-login-art .elite-sculpture { width: 100%; }
+.elite-login-art > span { font-size: .6rem; letter-spacing: .3em; color: var(--text-muted); margin-top: 28px; }
+.elite-login-form { display: grid; gap: 12px; min-width: 0; padding: clamp(22px, 4vw, 42px); }
+.elite-login-form .eyebrow { display: flex; gap: 8px; align-items: center; color: var(--red-400); font-size: .65rem; }
+.elite-login-form .eyebrow svg { width: 14px; height: 14px; }
+.elite-login-form h2 { font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.08; }
+.elite-login-form h2 .serif { display: block; font-size: 1em; }
+.elite-login-form > p:not(.eyebrow), .elite-login-demo small { font-size: .8rem; color: var(--text-muted); line-height: 1.6; }
+.elite-login-form label { margin-top: 8px; font-size: .75rem; font-weight: 700; }
+.elite-login-form input { width: 100%; min-height: 48px; padding: 12px 14px; border: 1px solid #ffffff28; border-radius: 10px; background: #080808; color: #fff; font-size: .9rem; }
+.elite-login-form input:focus { outline: 2px solid var(--red-400); outline-offset: 2px; }
+.elite-password { position: relative; }
+.elite-password input { padding-right: 70px; }
+.elite-password button { position: absolute; right: 4px; top: 4px; bottom: 4px; padding: 0 12px; color: var(--text-soft); cursor: pointer; font-size: .75rem; }
+.elite-login-form > .button { margin-top: 12px; width: 100%; font-size: .75rem; }
+.elite-login-form .text-link { justify-self: start; font-size: .75rem; }
+.elite-login-demo { display: grid; gap: 5px; margin-top: 12px; padding: 16px; border: 1px solid #ffffff16; border-radius: 12px; background: #ffffff04; font-size: .75rem; overflow-wrap: anywhere; }
+.elite-login-demo code { font-size: .8rem; color: var(--text-soft); }
+.elite-login-demo .text-link { margin: 7px 0; }
+
+/* Explicit grid areas prevent implicit columns from overlaying title and clock. */
+.monitor-head { grid-template-areas: "brand" "title" "meta"; grid-template-columns: minmax(0, 1fr); }
+.monitor-brand { grid-area: brand; }
+.monitor-title { min-width: 0; }
+.monitor-title h1 { line-height: 1.15; }
+.monitor-meta { min-width: 0; }
+.monitor-clock-block { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.monitor-clock { display: grid; gap: 8px; }
+.monitor-clock .monitor-time { grid-column: auto; }
+.monitor-time { line-height: 1; }
+.monitor-date { white-space: normal; }
+.monitor-connection { font-size: max(.65rem, calc(var(--text-s) * .85)); letter-spacing: .08em; justify-content: center; }
+.monitor-col { position: relative; overflow: hidden; border-top-color: #ffffff38; box-shadow: inset 0 1px 0 #ffffff10, 0 12px 0 -7px #000, 0 30px 50px -35px #000; }
+.monitor-called { background: radial-gradient(ellipse at 50% 0, #701c2920, transparent 65%), linear-gradient(#1c1c1c, #090909); }
+.monitor-col-title { flex-wrap: wrap; row-gap: 10px; line-height: 1.15; }
+.monitor-empty-title { font-size: clamp(1.7rem, 3vw, 3rem); line-height: 1.15; text-wrap: balance; }
+.monitor-empty p + p { margin-top: 12px; }
+.monitor-next-grid li, .monitor-call, .monitor-row { animation: elite-ticket-arrive .7s cubic-bezier(.16,1,.3,1) both; }
+.monitor-call { border-color: var(--red-600); }
+.monitor-called .live-dot { background: var(--red-400); box-shadow: 0 0 20px #e13c4c44; animation: elite-live 2.4s ease-in-out infinite; }
+.monitor-join { border-top-color: #ffffff50; box-shadow: 0 5px 0 #000, inset 0 1px 0 #ffffff08; }
+.monitor-join-copy b { line-height: 1.1; }
+@keyframes elite-ticket-arrive { from { opacity: 0; transform: perspective(900px) translateY(24px) rotateX(-12deg) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes elite-live { 50% { box-shadow: 0 0 0 7px #e13c4c14, 0 0 22px #e13c4c55; } }
+@media (min-width: 900px) {
+  .monitor-head { grid-template-areas: "brand title meta"; grid-template-columns: minmax(140px, 1fr) minmax(260px, 1.3fr) minmax(220px, 1fr); }
+  .monitor-meta { justify-self: end; }
+  .monitor-clock-block { text-align: right; }
+  .monitor-connection { justify-content: flex-end; }
+}
+@media (min-width: 700px) and (max-width: 899px) {
+  .monitor-head { grid-template-areas: "brand meta" "title title"; grid-template-columns: 1fr 1fr; }
+  .monitor-meta { justify-self: end; }
+}
+@media (max-width: 767px) {
+  .elite-login { grid-template-columns: 1fr; }
+  .elite-login-art { max-height: 220px; padding: 0 20px 20px; border-right: 0; border-bottom: 1px solid #ffffff12; }
+  .elite-login-art .elite-sculpture { max-width: 280px; }
+  .elite-login-art > span { margin-top: 0; }
+  .topbar { justify-content: space-between; font-size: .6rem; letter-spacing: .08em; }
+  .topbar-install { font-size: .65rem; padding-inline: 10px; }
+  .home-about-statement { text-wrap: balance; }
+  .monitor-brand, .monitor-meta { justify-self: center; }
+  .monitor-clock-block { text-align: center; }
+  .monitor-clock .monitor-time { justify-self: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .monitor-next-grid li, .monitor-call, .monitor-row, .monitor-called .live-dot { animation: none; }
+}
+.gallery-angle-badge { position: absolute; top: 12px; right: 12px; padding: 7px 10px; border: 1px solid #ffffff40; border-radius: 100px; background: #090909d9; color: #fff; font-size: .7rem; font-weight: 800; }
+.gallery-angle-controls { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 16px auto 4px; color: var(--text-soft); font-size: .7rem; text-align: center; }
+.gallery-angle-controls .icon-button { flex: none; width: 40px; height: 40px; }
+.gallery-angle-controls .icon-button:first-child svg { transform: rotate(180deg); }
