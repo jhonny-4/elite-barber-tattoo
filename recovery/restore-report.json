@@ -1,0 +1,1317 @@
+[
+  {
+    "file": "src/components/home/hero.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/hero.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/hero.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/marquee.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/about.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/services.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/icons.tsx",
+    "result": "needs-review",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/icons.tsx",
+    "result": "needs-review",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/barbershop.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/artist.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/team.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/booking-invite.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/location-map.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/motion/hover-tilt.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/motion/home-motion.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/motion/home-motion.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/motion/home-motion.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/motion/home-motion.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/reveal.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/hero.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/barbershop.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/motion/home-motion.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "created",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/motion/home-motion.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/motion/home-motion.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/hero.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched-unique-whitespace-context",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched-unique-hunks",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/icons.tsx",
+    "result": "needs-review",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/home/hero.tsx",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/styles/areas/home.css",
+    "result": "patched",
+    "dataset": "home-leaves.history.json"
+  },
+  {
+    "file": "src/components/gallery/shared.ts",
+    "result": "created",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/gallery/lightbox.tsx",
+    "result": "created",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/gallery.tsx",
+    "result": "created",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/app/jean-carlos/page.tsx",
+    "result": "created",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "created",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/gallery.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/gallery.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/gallery.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/app/jean-carlos/page.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/app/jean-carlos/page.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/app/jean-carlos/page.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/gallery.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/gallery.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/gallery.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/gallery.tsx",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/styles/areas/gallery.css",
+    "result": "patched",
+    "dataset": "gallery.history.json"
+  },
+  {
+    "file": "src/components/booking/copy.ts",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/contact-fields.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/availability-view.ts",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/contact-fields.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/calendar.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/contact-fields.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/progress.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/contact-fields.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/progress.tsx",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/contact-fields.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/time-slots.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/contact-fields.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/time-slots.tsx",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/time-slots.tsx",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/contact-fields.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/contact-fields.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/summary.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/summary.tsx",
+    "result": "patched-unique-hunks",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/tattoo-process.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/tattoo-process.tsx",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking-flow.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking-flow.tsx",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking-flow.tsx",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking/tattoo-aside.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/tattoo-form.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/app/reservar/page.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/app/tatuaje/page.tsx",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking-flow.tsx",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/booking-flow.tsx",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/styles/areas/booking.css",
+    "result": "created",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/styles/areas/booking.css",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/styles/areas/booking.css",
+    "result": "needs-review",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/styles/areas/booking.css",
+    "result": "patched",
+    "dataset": "booking.history.json"
+  },
+  {
+    "file": "src/components/three/types.ts",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/framing.ts",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/framing.ts",
+    "result": "patched-unique-hunks",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/geometry.ts",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/look.ts",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/engine.ts",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/engine.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/engine.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/engine.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/use-sculpture.ts",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/sculpture-stage.tsx",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/elite-sculpture.tsx",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/artist-monogram.tsx",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/styles/areas/sculpture.css",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/styles/areas/sculpture.css",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/app/lab-3d/page.tsx",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/engine.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/app/lab-3d/page.tsx",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/geometry.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/geometry.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/look.ts",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/look.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/look.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/elite-sculpture.tsx",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/artist-monogram.tsx",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/look.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/presets.ts",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/elite-sculpture.tsx",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/artist-monogram.tsx",
+    "result": "created",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/three/presets.ts",
+    "result": "patched",
+    "dataset": "three.history.json"
+  },
+  {
+    "file": "src/components/icons.tsx",
+    "result": "needs-review",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/icons.tsx",
+    "result": "patched-unique-hunks",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/labels.ts",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/runner.ts",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/ui.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/confirm-action.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/booking-actions.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/items.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/agenda.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/queue-section.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/tattoo-section.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/clients.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/notifications.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/overview.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/team-editor.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/barber-view.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/barber-view.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/barber-view.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/workspace.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/workspace.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/workspace.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/workspace.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/workspace.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/workspace.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/owner-gate.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/lib/owner-session.ts",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/app/administracion/page.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/app/gestion/page.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/app/barbero/page.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/booking-actions.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/labels.ts",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/overview.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/overview.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/overview.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched-unique-hunks",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "needs-review",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "needs-review",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/labels.ts",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/tattoo-section.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/tattoo-section.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/items.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/notifications.tsx",
+    "result": "created",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/barber-view.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/admin/barber-view.tsx",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "needs-review",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched-unique-hunks",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/styles/areas/admin.css",
+    "result": "patched",
+    "dataset": "admin.history.json"
+  },
+  {
+    "file": "src/components/icons.tsx",
+    "result": "needs-review",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/icons.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/ticket-format.ts",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/qr.ts",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/join-form.tsx",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/qr-card.tsx",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/monitor.tsx",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/app/turnos/page.tsx",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/app/pantalla-turnos/page.tsx",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/app/offline/page.tsx",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/app/not-found.tsx",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/app/error.tsx",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/pwa/manager.tsx",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/pwa/manager.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/monitor.tsx",
+    "result": "patched-unique-hunks",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/monitor.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/join-form.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/pwa/manager.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/system.css",
+    "result": "created",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/join-form.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/join-form.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/join-form.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "needs-review",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched-unique-hunks",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "needs-review",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "needs-review",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "needs-review",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/components/queue/monitor.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/app/not-found.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/app/error.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/app/offline/page.tsx",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/system.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/system.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/system.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/styles/areas/queue.css",
+    "result": "patched",
+    "dataset": "queue.history.json"
+  },
+  {
+    "file": "src/server/demo/store/runtime.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/state.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/references.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/file-backend.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/blobs-backend.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/backend.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/repository.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/commands.ts",
+    "result": "patched",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/commands.ts",
+    "result": "patched",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/app/api/demo/reference/[id]/route.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/http.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/app/api/demo/events/route.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/app/api/demo/route.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/services/adapters/live-sync.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/services/adapters/http-demo.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/lib/use-demo.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/services/contracts/demo.ts",
+    "result": "patched",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/repository.ts",
+    "result": "patched",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/lib/use-public-queue.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/lib/use-public-queue.ts",
+    "result": "patched",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/lib/use-demo.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "tests/references.test.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "tests/helpers/fake-blobs.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "tests/integration/blobs-backend.test.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "tests/backend-select.test.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "tests/integration/file-references.test.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "tests/live-sync.test.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/app/api/demo/queue/route.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "tests/integration/http-hardening.test.ts",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "netlify.toml",
+    "result": "created",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/blobs-backend.ts",
+    "result": "patched-unique-hunks",
+    "dataset": "netlify.history.json"
+  },
+  {
+    "file": "src/server/demo/store/repository.ts",
+    "result": "patched",
+    "dataset": "netlify.history.json"
+  }
+]
