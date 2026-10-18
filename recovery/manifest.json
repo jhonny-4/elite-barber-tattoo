@@ -1,0 +1,171 @@
+{
+  "status": "partial_recovery_not_deployable",
+  "source_session": "https://claude.ai/code/session_012g5QXUXtSE3y6sAfSL1v2j",
+  "files": [
+    {
+      "path": "docs/ACTIVOS.md",
+      "bytes": 3466,
+      "sha256": "bd7512beb1d876b61b52674d5029e9d364616e71b91226300d27e28e7ee5c5da"
+    },
+    {
+      "path": "docs/DISENO.md",
+      "bytes": 8100,
+      "sha256": "39d6e107e94e8a9590809c378c85bd13e3353a1f51c7835c66ee0c0e63f5bd1c"
+    },
+    {
+      "path": "src/app/error.tsx",
+      "bytes": 1681,
+      "sha256": "a33bbf2fd7182d4d1f1e3fee630ecc52d59ad8d29fbf5449eee7919621471628"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "bytes": 2392,
+      "sha256": "5fe8b582ab8765968e07cdb949c97a23b157f3f85ecb144a460df1b9945ebf59"
+    },
+    {
+      "path": "src/app/manifest.ts",
+      "bytes": 979,
+      "sha256": "6d804cbdaf9be85808d668b01fb39ee451c73abf00eea6186f645c870c79e19f"
+    },
+    {
+      "path": "src/app/not-found.tsx",
+      "bytes": 1435,
+      "sha256": "6412089d7dc9cb842e3fb3c260582c64202d4ed4335108419814711fceea721c"
+    },
+    {
+      "path": "src/app/opengraph-image.alt.txt",
+      "bytes": 56,
+      "sha256": "10b4ea388f17747b0efb5ffa9c86beca6a85917267ed823e455674972c448206"
+    },
+    {
+      "path": "src/components/media.tsx",
+      "bytes": 2169,
+      "sha256": "0af3075bdec71e48c8edcefdfaff90027a4ea07d70ef23cf2a1f48a2b37296ef"
+    },
+    {
+      "path": "src/components/shell.tsx",
+      "bytes": 11098,
+      "sha256": "e1b436cc951df348f03c5780e359ef13f58bc7e30bae2cfcd6cc82bf43aad261"
+    },
+    {
+      "path": "src/domain/business.ts",
+      "bytes": 1165,
+      "sha256": "cfd40362ca8c5b6f67baa07bf8b5cee64f861580f211b85bebfd5b82f4f311c4"
+    },
+    {
+      "path": "src/styles/base.css",
+      "bytes": 8512,
+      "sha256": "399c06ee5ec1bb719e4227a5e420dd2aa06dae2a6fb34f4ebb3a8a19eab00c3f"
+    },
+    {
+      "path": "src/styles/components.css",
+      "bytes": 18619,
+      "sha256": "ac4d817c414de8874c8b0a2e92c15e2b185a7dc7061fffa12607a7864fb500de"
+    },
+    {
+      "path": "src/styles/shell.css",
+      "bytes": 9622,
+      "sha256": "d5366bec36d4bca4cbe1a00a3bdc1163e7b90c2e9df7fc5599487a1cc7cd4387"
+    },
+    {
+      "path": "src/styles/tokens.css",
+      "bytes": 3663,
+      "sha256": "0b703b4be1239ba8fbf53be0d878daf957b997daa2cb53a788a59287ba7f29cb"
+    },
+    {
+      "path": "src/components/brand/logos.tsx",
+      "bytes": 1620,
+      "sha256": "ba74f2ecdc4f4582e94c1c1d9756847c87d030846821141cbc1dc56fcb90a06f"
+    },
+    {
+      "path": "src/app/administracion/page.tsx",
+      "bytes": 711,
+      "sha256": "cfd9bea86f21e886f454f56e4c3bd2b61d4ab804769d8f305d64cf9d7b8fde88"
+    },
+    {
+      "path": "src/app/barbero/page.tsx",
+      "bytes": 729,
+      "sha256": "f4f9ad10c16178d883721fbec5017a92acca2867182ac8535f6e265505047e51"
+    },
+    {
+      "path": "src/app/gestion/page.tsx",
+      "bytes": 766,
+      "sha256": "688c16f5550e935e0029316d4fe192131f8d7c02ed309445c7cd04e89f2104b0"
+    },
+    {
+      "path": "src/app/jean-carlos/page.tsx",
+      "bytes": 5808,
+      "sha256": "fd92b7edd218d34f67c0ace1dcff33a374eb86a055a6f83e28de6b12c3466fd2"
+    },
+    {
+      "path": "src/app/lab-3d/page.tsx",
+      "bytes": 1534,
+      "sha256": "8c5de7f1a8428e04f4a27322e4356eee8e05d6e903a71e75a127bb6ac283ac85"
+    },
+    {
+      "path": "src/app/offline/page.tsx",
+      "bytes": 1381,
+      "sha256": "dd740bee56d961769b558aa2d0d4cff3e5b183c7f06992a916568d8f85a8b12b"
+    },
+    {
+      "path": "src/app/pantalla-turnos/page.tsx",
+      "bytes": 348,
+      "sha256": "a8d341a682aeb88dba35b2392d93c6761158ab7b777faefe8df0f2640a9362cc"
+    },
+    {
+      "path": "src/app/reservar/page.tsx",
+      "bytes": 1352,
+      "sha256": "6a44b2e9fe4de60e3ba196755d3398d2d4826a2d5b65395081d60b8304447b56"
+    },
+    {
+      "path": "src/app/tatuaje/page.tsx",
+      "bytes": 1174,
+      "sha256": "91798248309d5772c8daae8f3b8d36f59a744ddf8be4f76768598f79fad58e18"
+    },
+    {
+      "path": "src/app/turnos/page.tsx",
+      "bytes": 2474,
+      "sha256": "c82be9775a191e3a491044ef763c484375de025546cf872a012a2106c40cabc5"
+    },
+    {
+      "path": "src/app/api/demo/route.ts",
+      "bytes": 868,
+      "sha256": "b83adf913475e68fd0aaafa219ac8d64e1105eec54c0ed8c7828cdaf71cf7c37"
+    },
+    {
+      "path": "src/app/api/demo/bookings/route.ts",
+      "bytes": 205,
+      "sha256": "d52885444f499d378bc2081660fd7aecf42b98ae6cfd04fe8fad4208179abec0"
+    },
+    {
+      "path": "src/app/api/demo/events/route.ts",
+      "bytes": 2018,
+      "sha256": "d888cc6e6ac42fb74ea3dec14026bbc4b0f820df2b31dd58cf0c2366396ca282"
+    },
+    {
+      "path": "src/app/api/demo/queue/route.ts",
+      "bytes": 2016,
+      "sha256": "45cbcc0b59478ab5137851072980f75da5ce0a08561876e08345239ea21ca159"
+    },
+    {
+      "path": "src/app/api/demo/reset/route.ts",
+      "bytes": 176,
+      "sha256": "d2b2e52d3524793b0e18ba967b49aefaa5936ea6d8625a1439261b6a9fc672ed"
+    },
+    {
+      "path": "src/app/api/demo/team/route.ts",
+      "bytes": 182,
+      "sha256": "4e62a63038c68cace98b7555f2f7e841f7fe452ca5e569000a5c6a28dcd5cfe8"
+    },
+    {
+      "path": "src/app/api/demo/reference/[id]/route.ts",
+      "bytes": 1826,
+      "sha256": "14282a0504e78017ca87a616be2b04147d3b662d2511d9aa446be16eba4a90c7"
+    },
+    {
+      "path": "scripts/qa/visual-qa.cjs",
+      "bytes": 6932,
+      "sha256": "ceaf1b1f3746eba81c3705a253467e0742871bacf40cd13e6dbf59ef2b228ff2"
+    }
+  ]
+}
