@@ -245,8 +245,15 @@ type PatchedFetch = typeof fetch & { _nextOriginalFetch?: typeof fetch };
 /** fetch sin la caché de datos de Next.js (lo mismo que hace el runtime de Netlify). */
 const unpatchedFetch: typeof fetch = (input, init) => {
   const current = globalThis.fetch as PatchedFetch;
-  const original = current._nextOriginalFetch ?? current;
-  return original(input, { ...init, next: { internal: true } } as RequestInit);
+  // Netlify captures fetch before Next wraps it. Reusing that implementation
+  // avoids recursively reading Next's own Blobs data cache from this store.
+  const captured = (globalThis as unknown as Record<symbol, typeof fetch>)[
+    Symbol.for("nf-not-patched-fetch")
+  ];
+  const original = captured ?? current._nextOriginalFetch ?? current;
+  const timeout = AbortSignal.timeout(7000);
+  const signal = init?.signal ? AbortSignal.any([init.signal, timeout]) : timeout;
+  return original(input, { ...init, signal, next: { internal: true } } as RequestInit);
 };
 
 const sharedConsistency = { strong: true };
@@ -262,7 +269,7 @@ export function createNetlifyBlobsBackend(
       const blobs = await import("@netlify/blobs");
       if (scope === "site") return blobs.getStore({ name, fetch: unpatchedFetch });
       try {
-        return blobs.getDeployStore({ name, fetch: unpatchedFetch });
+        return blobs.getDeployStore({ name, fetch: unpatchedFetch, region: env.AWS_REGION || "us-east-2" });
       } catch (error) {
         const message = error instanceof Error ? error.message : "";
         // Sin región en el contexto: la misma región por defecto que usa el runtime de Next.js en Netlify.

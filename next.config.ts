@@ -35,6 +35,7 @@ const securityHeaders = [
 export default function nextConfig(phase: string): NextConfig {
   return {
     poweredByHeader: false,
+    serverExternalPackages: ["@netlify/blobs"],
     // allowedDevOrigins solo lo usa `next dev`; el build y Netlify no lo necesitan.
     ...(phase === PHASE_DEVELOPMENT_SERVER
       ? { allowedDevOrigins: ["localhost", "127.0.0.1", ...localAddresses()] }
