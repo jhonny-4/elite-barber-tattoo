@@ -1,24 +1,31 @@
 import type { PortfolioItem } from "../domain/media";
+import { EliteLogo, JCMonogram } from "./brand/logos";
 export function Photo({
   item,
   className = "",
   priority = false,
   fit = "cover",
+  sizes = "(max-width: 760px) 92vw, 640px",
 }: {
   item: PortfolioItem;
   className?: string;
   priority?: boolean;
   fit?: "cover" | "contain";
+  /** Ancho visible estimado para elegir la variante del `srcSet`. */
+  sizes?: string;
 }) {
   if (item.original)
     return (
       <img
         className={`photo ${className}`}
         src={item.original}
+        srcSet={item.srcSet}
+        sizes={item.srcSet ? sizes : undefined}
         alt={item.title}
         width={item.crop[2]}
         height={item.crop[3]}
         loading={priority ? "eager" : "lazy"}
+        decoding="async"
         style={{ objectPosition: item.position ?? "center", objectFit: fit }}
       />
     );
@@ -52,36 +59,26 @@ export function SectionBrand() {
     </div>
   );
 }
-export function Brand({ className = "" }: { className?: string }) {
+/** Logo Elite en vector. El color sale de `color` (blanco sobre fondos oscuros). */
+export function Brand({
+  className = "",
+  title = "Elite Barber & Tattoo",
+}: {
+  className?: string;
+  /** Pasa una cadena vacía cuando un enlace ya da el nombre accesible. */
+  title?: string;
+}) {
   return (
     <span className={`brand ${className}`}>
-      <svg
-        viewBox="175 588 357 193"
-        role="img"
-        aria-label="Elite Barber & Tattoo"
-      >
-        <image
-          href="/media/reference/elite-logo-source.jpeg"
-          width="709"
-          height="1536"
-        />
-      </svg>
+      <EliteLogo title={title || undefined} />
     </span>
   );
 }
-export function JCMark() {
+export function JCMark({ className = "" }: { className?: string }) {
   return (
-    <svg
-      className="jc-mark"
-      viewBox="12 700 1130 1255"
-      role="img"
-      aria-label="Monograma JC de Jean Carlos"
-    >
-      <image
-        href="/media/reference/jc-logo-source.png"
-        width="1290"
-        height="2796"
-      />
-    </svg>
+    <JCMonogram
+      className={`jc-mark ${className}`}
+      title="Monograma JC de Jean Carlos"
+    />
   );
 }

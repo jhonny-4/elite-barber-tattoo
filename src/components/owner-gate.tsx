@@ -6,9 +6,44 @@ import {
   beginOwnerDemo,
   endOwnerDemo,
 } from "../lib/owner-session";
+import { EliteLogo } from "./brand/logos";
 import { Dashboard } from "./dashboard";
 import { Icon } from "./icons";
-import { SectionBrand } from "./media";
+
+type IconName = Parameters<typeof Icon>[0]["name"];
+
+const copy = {
+  owner: {
+    title: "Panel",
+    serif: "administrativo.",
+    lead: "Agenda, fila de turnos, solicitudes de tatuaje y equipo de Elite en un solo lugar.",
+    cta: "Abrir panel",
+    features: [
+      ["calendar", "Agenda", "Citas del día, reprogramación y cancelación."],
+      ["ticket", "Fila y QR", "Turnos presenciales y por QR en vivo."],
+      ["needle", "Tatuajes", "Solicitudes y su seguimiento manual."],
+      ["users", "Equipo", "Jornadas, descansos y clientes."],
+    ] as [IconName, string, string][],
+    other: { href: "/barbero", label: "Vista de barbero" },
+  },
+  barber: {
+    title: "Vista de",
+    serif: "barbero.",
+    lead: "La agenda y la fila de cada profesional, con botones grandes para la tablet del puesto.",
+    cta: "Abrir vista de barbero",
+    features: [
+      ["clock", "Ahora", "Quién está en tu silla y qué sigue."],
+      ["ticket", "Tu fila", "Llama e inicia los turnos compatibles."],
+      ["calendar", "Tus citas", "Agenda de hoy y próximos días."],
+    ] as [IconName, string, string][],
+    other: { href: "/administracion", label: "Panel administrativo" },
+  },
+};
+
+/**
+ * Entrada al panel. El acceso es simulado: no hay autenticación ni autorización
+ * en servidor, y la marca en sessionStorage es solo una comodidad de la presentación.
+ */
 export function OwnerGate({
   professionalView = false,
 }: {
@@ -16,85 +51,103 @@ export function OwnerGate({
 }) {
   const { owner, ready } = useOwnerSession();
   const [error, setError] = useState("");
+  const text = professionalView ? copy.barber : copy.owner;
+
   function enter() {
     try {
       beginOwnerDemo();
+      setError("");
+      window.scrollTo({ top: 0 });
     } catch {
       setError(
-        "Este navegador no permite guardar la sesión demo. Prueba en una ventana normal.",
+        "Este navegador bloquea el almacenamiento de la sesión. Abre el panel en una ventana normal, no privada.",
       );
     }
   }
-  if (!ready)
-    return <p className="loading-state">Preparando acceso administrativo…</p>;
-  if (owner)
-    return (
-      <>
-        <div className="owner-session-note">
-          <span>
-            {professionalView ? "PROFESIONAL" : "JEAN CARLOS / PROPIETARIO"} ·
-            SESIÓN DEMO
-          </span>
-          <button className="text-link" onClick={endOwnerDemo}>
-            Salir de la demo
-          </button>
-        </div>
-        <Dashboard professionalOnly={professionalView} />
-      </>
-    );
+
+  function exit() {
+    endOwnerDemo();
+    window.scrollTo({ top: 0 });
+  }
+
+  if (!ready) return <p className="loading-state">Preparando acceso…</p>;
+  if (owner) return <Dashboard professionalOnly={professionalView} onExit={exit} />;
+
   return (
-    <div className="owner-access">
-      <SectionBrand />
-      <p className="eyebrow">ELITE / ACCESO DE DEMOSTRACIÓN</p>
-      <h1>
-        Panel
-        <br />
-        <span className="serif">administrativo.</span>
-      </h1>
-      <p className="lead">
-        Agenda, equipo y atención del estudio en una misma demostración.
-      </p>
-      <button className="button owner-primary-action" onClick={enter}>
-        Abrir panel demo <Icon name="arrow" />
-      </button>
-      <p className="form-disclaimer">
-        Vista de presentación sin contraseña. Solo datos ficticios.
-      </p>
-      <p className="inline-error" role="alert">
-        {error}
-      </p>
-      <div className="owner-explainer">
-        <article>
-          <Icon name="calendar" />
-          <h2>La agenda</h2>
-          <p>Citas de barbería y disponibilidad del equipo.</p>
-        </article>
-        <article>
-          <Icon name="spark" />
-          <h2>Las solicitudes</h2>
-          <p>Ideas de tatuajes, referencias y seguimiento.</p>
-        </article>
-        <article>
-          <Icon name="users" />
-          <h2>Los clientes</h2>
-          <p>Contactos e historial en un mismo lugar.</p>
-        </article>
-      </div>
-      <div className="owner-demo-access">
-        <h2>Vista previa del acceso</h2>
-        <p>
-          En la web final, Jean Carlos iniciará sesión con su cuenta y los
-          permisos de propietario. Los clientes no verán el panel ni tendrán
-          acceso a sus datos.
+    <div className="adm-gate-stage">
+      <section className="adm-gate" aria-labelledby="acceso-titulo">
+        <EliteLogo className="adm-gate-logo" title="Elite Barber & Tattoo" />
+        <p className="eyebrow">Elite / Acceso del equipo</p>
+        <h1 id="acceso-titulo">
+          {text.title}
+          <br />
+          <span className="serif">{text.serif}</span>
+        </h1>
+        <p className="adm-gate-lead">{text.lead}</p>
+        <button
+          type="button"
+          className="button button-accent button-large adm-gate-cta"
+          onClick={enter}
+        >
+          {text.cta}
+          <Icon name="arrow" />
+        </button>
+        <p className="adm-gate-sub">Acceso simulado · sin contraseña · datos ficticios</p>
+        {error ? (
+          <p className="inline-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+
+        <ul className="adm-gate-features" aria-label="Qué incluye">
+          {text.features.map(([icon, title, detail]) => (
+            <li key={title}>
+              <Icon name={icon} />
+              <strong>{title}</strong>
+              <span>{detail}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="adm-gate-honest">
+          <article data-tone="now">
+            <span className="adm-gate-honest-icon" aria-hidden="true">
+              <Icon name="lock" />
+            </span>
+            <h2>Hoy: acceso simulado</h2>
+            <p>
+              El botón abre el panel sin inicio de sesión ni autenticación.
+              Cualquiera con el enlace puede entrar; por eso aquí solo hay datos
+              ficticios.
+            </p>
+          </article>
+          <article>
+            <span className="adm-gate-honest-icon" aria-hidden="true">
+              <Icon name="users" />
+            </span>
+            <h2>En producción</h2>
+            <p>
+              Solo Jean Carlos y los roles que él autorice entrarán con su
+              cuenta, y el servidor comprobará los permisos antes de entregar
+              cualquier dato.
+            </p>
+          </article>
+        </div>
+        <p className="adm-gate-note">
+          Ocultar el enlace o recordar la sesión en este navegador no protege la
+          información: es solo una comodidad de la presentación.
         </p>
-        <p className="form-disclaimer">
-          Ahora es una simulación de presentación, sin contraseña ni protección
-          de producción. Utiliza solo datos ficticios.
-        </p>
-        <Link className="text-link" href="/">
-          Volver a la web pública
-        </Link>
-      </div>
+
+        <nav className="adm-gate-links" aria-label="Otros accesos">
+          <Link className="text-link" href="/">
+            Volver a la web pública
+          </Link>
+          <Link className="text-link" href={text.other.href}>
+            {text.other.label}
+            <Icon name="arrow" />
+          </Link>
+        </nav>
+      </section>
     </div>
   );
 }

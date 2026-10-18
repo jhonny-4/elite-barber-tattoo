@@ -13,6 +13,7 @@ import {
 } from "../../../domain/team/model.ts";
 import { scheduleReason } from "../../../domain/scheduling/rules.ts";
 import { activeTicket } from "../../../domain/queue/model.ts";
+import { MAX_STORED_REFERENCES, referenceIdFromUrl } from "./references.ts";
 import type {
   SharedState,
   DemoCommand,
@@ -247,7 +248,33 @@ export function applyCommand(
           input.referenceDataUrl.length > 1450000)
       )
         throw new Error("Referencia inválida o mayor a 1 MB.");
-      state = { ...state, requests: addTattooRequest(state, input).requests };
+      // El repositorio guarda la imagen aparte y solo deja aquí su ruta de lectura.
+      if (
+        input.referenceUrl !== undefined &&
+        referenceIdFromUrl(input.referenceUrl) === null
+      )
+        throw new Error("Referencia inválida.");
+      if (
+        input.referenceUrl &&
+        state.requests.filter((r) => r.referenceUrl || r.referenceDataUrl)
+          .length >= MAX_STORED_REFERENCES
+      )
+        throw new Error(
+          "Se alcanzó el límite de imágenes de referencia. Envía la idea sin imagen o restablece la demo.",
+        );
+      // Solo campos conocidos: el data URL nunca se guarda en el estado compartido.
+      state = {
+        ...state,
+        requests: addTattooRequest(state, {
+          name: input.name,
+          phone: input.phone,
+          idea: input.idea,
+          placement: input.placement,
+          size: input.size,
+          referenceName: input.referenceName,
+          ...(input.referenceUrl ? { referenceUrl: input.referenceUrl } : {}),
+        }).requests,
+      };
       resultId = state.requests.at(-1)!.id;
       notify(state, "Nueva solicitud de tatuaje pendiente de valoración");
       mail(state, "Solicitud recibida, sin confirmar sesión");

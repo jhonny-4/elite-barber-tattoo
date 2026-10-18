@@ -5,6 +5,12 @@ import type { DemoNotification } from "../../domain/notifications/model.ts";
 export type SharedState = DemoState & {
   schema: 4;
   revision: number;
+  /**
+   * Identificador aleatorio del almacén vigente: cambia con un reset o si el
+   * almacén se reemplaza (p. ej. un despliegue nuevo en Netlify). Permite al
+   * cliente aceptar una revisión menor que pertenece a otro almacén.
+   */
+  epoch?: string;
   team: TeamMember[];
   queue: QueueTicket[];
   notifications: DemoNotification[];

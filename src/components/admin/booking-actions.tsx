@@ -1,150 +1,207 @@
 "use client";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { barbers } from "../../domain/catalog";
 import { getSlots } from "../../domain/availability";
-import { todayBogota, type Booking } from "../../domain/demo";
+import type { Booking } from "../../domain/demo";
 import type { DemoCommand, SharedState } from "../../services/contracts/demo";
 import { ConfirmAction } from "../confirm-action";
+import { Icon } from "../icons";
+import { dayLabel, isClosedBooking } from "./labels";
+import type { Runner } from "./runner";
+
+/** Acciones de una cita: iniciar, finalizar, reprogramar y cancelar (con confirmación). */
 export function BookingActions({
   booking,
   state,
-  run,
-  busy,
+  runner,
+  today,
+  large = false,
 }: {
   booking: Booking;
   state: SharedState;
-  run: (command: DemoCommand) => Promise<unknown>;
-  busy: boolean;
+  runner: Runner;
+  today: string;
+  /** Botones grandes para la vista de barbero en tablet. */
+  large?: boolean;
 }) {
-  const [edit, setEdit] = useState(false),
-    [date, setDate] = useState(booking.date),
-    [barberId, setBarber] = useState(booking.barberId),
-    [time, setTime] = useState(booking.time);
-  if (["cancelada", "finalizada"].includes(booking.status)) return null;
-  const slots = getSlots(
-    { ...state, bookings: state.bookings.filter((b) => b.id !== booking.id) },
-    barberId,
-    booking.serviceId,
+  const [edit, setEdit] = useState(false);
+  const [date, setDate] = useState(booking.date);
+  const [barberId, setBarber] = useState(booking.barberId);
+  const [time, setTime] = useState(booking.time);
+  const formId = useId();
+  if (isClosedBooking(booking)) return null;
+
+  const size = large ? "" : " button-small";
+  const start: DemoCommand = {
+    type: "booking.change",
+    id: booking.id,
+    action: "start",
+  };
+  const finish: DemoCommand = {
+    type: "booking.change",
+    id: booking.id,
+    action: "finish",
+  };
+  const cancel: DemoCommand = {
+    type: "booking.change",
+    id: booking.id,
+    action: "cancel",
+  };
+  const reschedule: DemoCommand = {
+    type: "booking.change",
+    id: booking.id,
+    action: "reschedule",
     date,
-  );
+    time,
+    barberId,
+  };
+  const slots = edit
+    ? getSlots(
+        {
+          ...state,
+          bookings: state.bookings.filter((b) => b.id !== booking.id),
+        },
+        barberId,
+        booking.serviceId,
+        date,
+      ).filter((s) => s.available)
+    : [];
+  const cancelControl = runner.control(cancel);
+
   return (
-    <div className="booking-actions">
+    <div className="adm-actions">
       {booking.status === "reservada-demo" ? (
         <>
+          {booking.date === today ? (
+            <button
+              type="button"
+              className={`button${size}`}
+              {...runner.control(start)}
+              onClick={() => void runner.run(start)}
+            >
+              <Icon name="scissors" />
+              Iniciar atención
+            </button>
+          ) : null}
           <button
-            className="text-link"
-            disabled={busy}
-            onClick={() =>
-              void run({
-                type: "booking.change",
-                id: booking.id,
-                action: "start",
-              })
-            }
+            type="button"
+            className={`button button-outline${size}`}
+            aria-expanded={edit}
+            aria-controls={formId}
+            disabled={!runner.online}
+            onClick={() => setEdit(!edit)}
           >
-            Iniciar atención
-          </button>
-          <button className="text-link" onClick={() => setEdit(!edit)}>
+            <Icon name="calendar" />
             Reprogramar
           </button>
         </>
       ) : (
         <button
-          className="button button-small"
-          disabled={busy}
-          onClick={() =>
-            void run({
-              type: "booking.change",
-              id: booking.id,
-              action: "finish",
-            })
-          }
+          type="button"
+          className={`button${size}`}
+          {...runner.control(finish)}
+          onClick={() => void runner.run(finish)}
         >
+          <Icon name="check" />
           Finalizar atención
         </button>
       )}
       <ConfirmAction
-        disabled={busy}
-        title="¿Cancelar esta cita demo?"
-        description="Se liberará su horario en todos los dispositivos de la presentación."
-        onConfirm={() =>
-          void run({ type: "booking.change", id: booking.id, action: "cancel" })
-        }
+        className={`button button-danger${size}`}
+        title="¿Cancelar esta cita?"
+        description={`${booking.name} · ${dayLabel(booking.date, today)} a las ${booking.time}. El horario quedará libre en todos los dispositivos. No se enviará ningún mensaje.`}
+        confirmLabel="Sí, cancelar cita"
+        cancelLabel="Mantener cita"
+        disabled={cancelControl.disabled}
+        busy={cancelControl["aria-busy"]}
+        onConfirm={() => runner.run(cancel)}
       >
         Cancelar cita
       </ConfirmAction>
-      {edit && (
+      {edit ? (
         <form
-          className="reschedule-form"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            await run({
-              type: "booking.change",
-              id: booking.id,
-              action: "reschedule",
-              date,
-              time,
-              barberId,
-            });
+          id={formId}
+          className="adm-reschedule"
+          aria-label={`Reprogramar la cita de ${booking.name}`}
+          onSubmit={async (event) => {
+            event.preventDefault();
+            if (await runner.run(reschedule)) setEdit(false);
           }}
         >
-          <label>
-            Nueva fecha
-            <input
-              type="date"
-              min={todayBogota()}
-              required
-              aria-label="Nueva fecha"
-              value={date}
-              onChange={(e) => {
-                setDate(e.target.value);
-                setTime("");
-              }}
-            />
-          </label>
-          <label>
-            Profesional
-            <select
-              aria-label="Profesional para reprogramar"
-              value={barberId}
-              onChange={(e) => {
-                setBarber(e.target.value);
-                setTime("");
-              }}
-            >
-              {barbers.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Hora disponible
-            <select
-              required
-              aria-label="Hora disponible"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-            >
-              <option value="">Elegir</option>
-              {slots
-                .filter((s) => s.available)
-                .map((s) => (
-                  <option key={s.time}>{s.time}</option>
+          <div className="adm-reschedule-fields">
+            <label>
+              Nueva fecha
+              <input
+                type="date"
+                min={today}
+                required
+                value={date}
+                onChange={(e) => {
+                  setDate(e.target.value);
+                  setTime("");
+                }}
+              />
+            </label>
+            <label>
+              Profesional
+              <select
+                value={barberId}
+                onChange={(e) => {
+                  setBarber(e.target.value);
+                  setTime("");
+                }}
+              >
+                {barbers.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name}
+                  </option>
                 ))}
-            </select>
-          </label>
-          <button
-            className="button button-small"
-            disabled={
-              busy || !slots.some((s) => s.available && s.time === time)
-            }
-          >
-            Guardar cambio demo
-          </button>
+              </select>
+            </label>
+            <label>
+              Hora disponible
+              <select
+                required
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+              >
+                <option value="">
+                  {slots.length ? "Elige una hora" : "Sin horas libres"}
+                </option>
+                {slots.map((s) => (
+                  <option key={s.time} value={s.time}>
+                    {s.time}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          {!slots.length ? (
+            <p className="adm-hint">
+              No quedan horas libres ese día para este profesional. Prueba otra
+              fecha o profesional.
+            </p>
+          ) : null}
+          <div className="adm-reschedule-actions">
+            <button
+              className="button button-small"
+              {...runner.control(
+                reschedule,
+                !slots.some((s) => s.time === time),
+              )}
+            >
+              Guardar nuevo horario
+            </button>
+            <button
+              type="button"
+              className="button button-outline button-small"
+              onClick={() => setEdit(false)}
+            >
+              Descartar
+            </button>
+          </div>
         </form>
-      )}
+      ) : null}
     </div>
   );
 }

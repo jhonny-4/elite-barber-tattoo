@@ -1,7 +1,26 @@
-import { subscribe } from "../../../../server/demo/store/repository";
+import {
+  storeInfo,
+  subscribe,
+} from "../../../../server/demo/store/repository.ts";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+/**
+ * SSE solo con un único proceso servidor (backend de archivo). En serverless
+ * (Netlify Blobs) los avisos en memoria no cruzan instancias: se responde 204 y
+ * EventSource deja de reconectar; los clientes pasan a sondeo adaptativo.
+ */
 export function GET(request: Request) {
+  let singleProcess = false;
+  try {
+    singleProcess = storeInfo().singleProcess;
+  } catch {
+    /* Configuración inválida: sin SSE; la API informa del error. */
+  }
+  if (!singleProcess)
+    return new Response(null, {
+      status: 204,
+      headers: { "Cache-Control": "no-store, max-age=0", "X-Elite-Sync": "polling" },
+    });
   const encoder = new TextEncoder();
   let dispose = () => {};
   const stream = new ReadableStream({
@@ -42,6 +61,7 @@ export function GET(request: Request) {
       "Cache-Control": "no-cache, no-transform",
       Connection: "keep-alive",
       "X-Accel-Buffering": "no",
+      "X-Elite-Sync": "sse",
     },
   });
 }

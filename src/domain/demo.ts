@@ -31,7 +31,10 @@ export type TattooRequest = {
   placement: string;
   size: string;
   referenceName: string | null;
+  /** Solo en la entrada del formulario; el servidor la guarda aparte y la quita del estado compartido. */
   referenceDataUrl?: string;
+  /** Ruta servida por la API para ver la referencia guardada (`/api/demo/reference/{id}`). */
+  referenceUrl?: string;
   status: (typeof tattooStatuses)[number];
 };
 export type DemoState = {

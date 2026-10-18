@@ -1,0 +1,31 @@
+/* Monochrome finish: stronger brand scale and a clear silver primary action. */
+:root {
+  --accent-text: #ededed;
+  --red-400: #dedede;
+  --red-glow: rgb(255 255 255 / 0.18);
+}
+
+.home-hero {
+  --hero-reserve: 310px;
+  --stage-max: 760px;
+}
+
+.button-accent {
+  --btn-face: linear-gradient(180deg, #fff 0%, #ebebeb 48%, #bdbdbd 100%);
+  --btn-face-hover: linear-gradient(180deg, #fff 0%, #f5f5f5 48%, #d6d6d6 100%);
+  --btn-ink: #090909;
+  --btn-border: rgb(255 255 255 / 0.85);
+  --btn-edge: #707070;
+  --btn-highlight: #fff;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.5);
+}
+
+.button-accent:not(:disabled, [aria-disabled="true"]):hover {
+  --btn-glow: 0 0 32px -8px rgb(255 255 255 / 0.24);
+}
+
+@media (max-width: 767px) {
+  .home-hero {
+    --hero-reserve: 430px;
+  }
+}

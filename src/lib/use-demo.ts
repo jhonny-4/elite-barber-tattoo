@@ -8,6 +8,10 @@ import type {
   CommandResult,
 } from "../services/contracts/demo";
 import { httpDemo, postDemo } from "../services/adapters/http-demo";
+import {
+  startLiveSync,
+  type SyncMode,
+} from "../services/adapters/live-sync";
 const initial = {
   state: {
     ...emptyState(),
@@ -20,25 +24,49 @@ const initial = {
   } as SharedState,
   ready: false,
   online: false,
+  /** SSE conectado (servidor local de un solo proceso). */
   live: false,
+  /** live: SSE · polling: consulta cada 4 s · paused: pestaña oculta · offline: sin red. */
+  sync: "polling" as SyncMode,
   error: "",
 };
 let snapshot = initial,
   users = 0,
   stop = () => {},
-  inflight: Promise<void> | null = null;
+  inflight: Promise<void> | null = null,
+  // Orden de las peticiones de este cliente y la que produjo el estado visible.
+  sequence = 0,
+  shownSequence = 0;
 const listeners = new Set<() => void>();
 function emit(patch: Partial<typeof initial>) {
   snapshot = { ...snapshot, ...patch };
   listeners.forEach((fn) => fn());
 }
+/**
+ * Evita mostrar respuestas viejas: dentro de la misma época solo avanza la
+ * revisión; si la época cambió (reset o almacén nuevo, p. ej. otro despliegue)
+ * se acepta el estado de la petición más reciente aunque su revisión sea menor.
+ */
+function accept(state: SharedState, requestSequence: number) {
+  const current = snapshot.state;
+  const fresh =
+    state.epoch === current.epoch
+      ? state.revision >= current.revision
+      : requestSequence > shownSequence;
+  if (fresh) shownSequence = Math.max(shownSequence, requestSequence);
+  return fresh;
+}
 async function refresh() {
   if (inflight) return inflight;
   inflight = (async () => {
+    const requestSequence = ++sequence;
     try {
       const state = await httpDemo.read();
-      if (state.revision >= snapshot.state.revision)
-        emit({ state, ready: true, online: true, error: "" });
+      emit(
+        accept(state, requestSequence)
+          ? { state, ready: true, online: true, error: "" }
+          : { ready: true, online: true, error: "" },
+      );
     } catch (e) {
       emit({ ready: true, online: false, error: (e as Error).message });
     } finally {
@@ -47,34 +75,34 @@ async function refresh() {
   })();
   return inflight;
 }
+/** Consulta posterior a una escritura: espera la consulta en curso y lanza otra. */
+async function refreshAfterWrite() {
+  if (inflight) await inflight;
+  return refresh();
+}
 function connect() {
-  const events = new EventSource("/api/demo/events");
-  events.onopen = () => emit({ live: true });
-  events.onmessage = () => void refresh();
-  events.onerror = () => emit({ live: false });
-  const online = () => void refresh(),
-    offline = () =>
+  stop = startLiveSync({
+    refresh,
+    onLiveChange: (live) => emit({ live }),
+    onModeChange: (sync) => emit({ sync }),
+    onOffline: () =>
       emit({
         online: false,
         live: false,
         error:
           "Sin conexión. Los datos visibles pueden estar desactualizados; no se pueden confirmar operaciones.",
-      });
-  window.addEventListener("online", online);
-  window.addEventListener("offline", offline);
-  const poll = setInterval(() => void refresh(), 15000);
-  void refresh();
-  stop = () => {
-    events.close();
-    clearInterval(poll);
-    window.removeEventListener("online", online);
-    window.removeEventListener("offline", offline);
-  };
+      }),
+  });
 }
 async function dispatch(command: DemoCommand): Promise<CommandResult> {
+  const requestSequence = ++sequence;
   const result = await postDemo<CommandResult>("/api/demo", command);
-  emit({ state: result.state, online: true, ready: true, error: "" });
-  void refresh();
+  emit(
+    accept(result.state, requestSequence)
+      ? { state: result.state, online: true, ready: true, error: "" }
+      : { online: true, ready: true, error: "" },
+  );
+  void refreshAfterWrite();
   return result;
 }
 const reset = () => dispatch({ type: "reset" });

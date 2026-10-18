@@ -1,0 +1,14 @@
+/* Punto de entrada de estilos. Orden: Tailwind → tokens → base → componentes → estructura → áreas. */
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./base.css";
+@import "./components.css";
+@import "./shell.css";
+@import "./areas/home.css";
+@import "./areas/sculpture.css";
+@import "./areas/gallery.css";
+@import "./areas/booking.css";
+@import "./areas/admin.css";
+@import "./areas/queue.css";
+@import "./areas/system.css";
+@import "./polish.css";

@@ -9,6 +9,8 @@ export type PortfolioItem = {
   sourceHeight: number;
   crop: [number, number, number, number];
   original?: string;
+  /** Variantes responsivas del original (`src 720w, src 1290w`). */
+  srcSet?: string;
   position?: string;
 };
 const tattoo = {
@@ -37,7 +39,9 @@ export const portfolio: PortfolioItem[] = [
     subtitle: "Elite · Barbería",
     ...barber,
     crop: [0, 0, 1290, 1514],
-    original: "/media/barber/barber-precision.png",
+    original: "/media/barber/barber-precision-1290.webp",
+    srcSet:
+      "/media/barber/barber-precision-720.webp 720w, /media/barber/barber-precision-1290.webp 1290w",
   },
   {
     id: "tattoo-02",
@@ -54,7 +58,9 @@ export const portfolio: PortfolioItem[] = [
     subtitle: "Elite · Barbería",
     ...barber,
     crop: [0, 0, 1290, 1165],
-    original: "/media/barber/barber-texture.png",
+    original: "/media/barber/barber-texture-1290.webp",
+    srcSet:
+      "/media/barber/barber-texture-720.webp 720w, /media/barber/barber-texture-1290.webp 1290w",
   },
   {
     id: "tattoo-03",

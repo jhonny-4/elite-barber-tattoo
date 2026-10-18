@@ -1,0 +1,46 @@
+# Netlify · Elite Barber & Tattoo (versión de presentación).
+# Este archivo prevalece sobre los ajustes de build de la interfaz de Netlify.
+# Guía, variables, límites y riesgos: docs/NETLIFY.md
+
+[build]
+  command = "npm run build"
+  # Carpeta de salida de Next.js; el runtime de Netlify (OpenNext) la transforma
+  # en archivos estáticos para la CDN y una función para páginas y API.
+  publish = ".next"
+
+[build.environment]
+  # Igual que .nvmrc. Netlify usa esta versión para el build y las funciones.
+  NODE_VERSION = "24"
+
+# Cabeceras de los archivos estáticos que sirve la CDN (public/ y _next/static).
+# Las páginas y la API las responde la función de Next.js: sus cabeceras se
+# definen en next.config.ts. Ninguna bloquea el iframe de Google Maps ni los
+# enlaces externos a WhatsApp o Instagram.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    X-Frame-Options = "SAMEORIGIN"
+
+# El service worker se revalida siempre para que las actualizaciones lleguen.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Content-Type = "application/javascript; charset=utf-8"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'"
+
+# Página sin conexión que precarga el service worker.
+[[headers]]
+  for = "/offline.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# El manifest lo genera src/app/manifest.ts y lo sirve Next.js con su propio
+# Content-Type; esta regla solo actúa si Netlify lo sirviera como estático.
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

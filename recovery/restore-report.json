@@ -496,7 +496,7 @@
   },
   {
     "file": "src/styles/areas/booking.css",
-    "result": "needs-review",
+    "result": "patched",
     "dataset": "booking.history.json"
   },
   {
@@ -656,12 +656,12 @@
   },
   {
     "file": "src/components/icons.tsx",
-    "result": "needs-review",
+    "result": "patched",
     "dataset": "admin.history.json"
   },
   {
     "file": "src/components/icons.tsx",
-    "result": "patched-unique-hunks",
+    "result": "patched",
     "dataset": "admin.history.json"
   },
   {
@@ -856,12 +856,12 @@
   },
   {
     "file": "src/styles/areas/admin.css",
-    "result": "needs-review",
+    "result": "patched",
     "dataset": "admin.history.json"
   },
   {
     "file": "src/styles/areas/admin.css",
-    "result": "needs-review",
+    "result": "patched",
     "dataset": "admin.history.json"
   },
   {
@@ -906,12 +906,12 @@
   },
   {
     "file": "src/styles/areas/admin.css",
-    "result": "needs-review",
+    "result": "patched",
     "dataset": "admin.history.json"
   },
   {
     "file": "src/styles/areas/admin.css",
-    "result": "patched-unique-hunks",
+    "result": "patched",
     "dataset": "admin.history.json"
   },
   {
@@ -931,7 +931,7 @@
   },
   {
     "file": "src/components/icons.tsx",
-    "result": "needs-review",
+    "result": "patched",
     "dataset": "queue.history.json"
   },
   {

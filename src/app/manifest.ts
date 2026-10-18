@@ -1,15 +1,15 @@
 import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Elite Barber & Tattoo · Demo",
-    short_name: "Elite Demo",
-    description: "Agenda y turnos de demostración de Elite, Cartagena.",
+    name: "Elite Barber & Tattoo",
+    short_name: "Elite",
+    description: "Reservas, turnos y tatuajes de Elite Barber & Tattoo, Cartagena.",
     id: "/",
     start_url: "/",
     scope: "/",
     display: "standalone",
-    background_color: "#0b0b0b",
-    theme_color: "#0b0b0b",
+    background_color: "#0a0a0a",
+    theme_color: "#0a0a0a",
     lang: "es-CO",
     icons: [
       {
@@ -25,7 +25,7 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "any",
       },
       {
-        src: "/pwa/icons/elite-512.png",
+        src: "/pwa/icons/elite-maskable-512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",

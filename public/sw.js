@@ -1,5 +1,5 @@
 /* Service worker for a local demonstration: never cache API responses or queue writes. */
-const CACHE = "elite-offline-v4-1";
+const CACHE = "elite-premium-recovery-v5";
 const OFFLINE = "/offline.html";
 self.addEventListener("install", (event) => {
   event.waitUntil(

@@ -1,12 +1,25 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import { barbers, services } from "../../domain/catalog";
+import { barbers, currency, services } from "../../domain/catalog";
 import { postDemo } from "../../services/adapters/http-demo";
 import type { DemoCommand, PublicTicket } from "../../services/contracts/demo";
 import { usePublicQueue } from "../../lib/use-public-queue";
 import { ContactFields } from "../booking-flow";
 import { Brand } from "../media";
+import { Icon } from "../icons";
+import { ticketHint, ticketStatus, waitValue } from "./ticket-format";
+
+const TICKET_KEY = "elite.queue.ticket";
+
+/** Mensajes del servidor o de red en lenguaje de cliente. */
+function friendly(message: string) {
+  if (!message) return "";
+  if (/demo|failed to fetch|networkerror|load failed/i.test(message))
+    return "No se pudo completar con la fila. Revisa tu conexión e inténtalo de nuevo.";
+  return message;
+}
+
 export function JoinForm({
   manual = false,
   onCreate,
@@ -17,20 +30,33 @@ export function JoinForm({
   const [token, setToken] = useState(""),
     [created, setCreated] = useState<PublicTicket | null>(null),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [notice, setNotice] = useState("");
   const live = usePublicQueue(token);
+  const uid = useId();
+  const receipt = useRef<HTMLElement>(null);
   useEffect(() => {
     if (!manual)
       try {
-        setToken(sessionStorage.getItem("elite.queue.ticket") ?? "");
+        setToken(sessionStorage.getItem(TICKET_KEY) ?? "");
       } catch {}
   }, [manual]);
+  // Al recibir el turno, el formulario desaparece: lleva la vista y el foco al recibo.
+  useEffect(() => {
+    const node = receipt.current;
+    if (!created || !node) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    node.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" });
+    node.focus({ preventScroll: true });
+  }, [created]);
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (busy) return;
     const form = event.currentTarget,
       data = new FormData(form);
     setBusy(true);
     setError("");
+    setNotice("");
     try {
       const command: DemoCommand = {
         type: "queue.join",
@@ -47,7 +73,7 @@ export function JoinForm({
         if (!saved)
           throw new Error("No se guardó el turno. Revisa el aviso del panel.");
         form.reset();
-        setError("Turno presencial guardado en la fila compartida.");
+        setNotice("Turno presencial guardado en la fila compartida.");
       } else {
         const result = await postDemo<{ ticket: PublicTicket; token: string }>(
           "/api/demo/queue",
@@ -56,115 +82,267 @@ export function JoinForm({
         setCreated(result.ticket);
         setToken(result.token);
         try {
-          sessionStorage.setItem("elite.queue.ticket", result.token);
+          sessionStorage.setItem(TICKET_KEY, result.token);
         } catch {
-          setError("Conserva esta pantalla para consultar tu turno.");
+          setNotice("Conserva esta pantalla para consultar tu turno.");
         }
       }
     } catch (e) {
-      setError((e as Error).message);
+      setError(friendly((e as Error).message));
     } finally {
       setBusy(false);
     }
   }
+  function backToForm() {
+    setToken("");
+    setCreated(null);
+    setNotice("");
+    try {
+      sessionStorage.removeItem(TICKET_KEY);
+    } catch {}
+  }
   const ticket = live.missing ? null : (live.ticket ?? created);
-  if (token && !manual)
+  const connecting = !live.online && !live.error;
+
+  if (token && !manual) {
+    const status = ticket ? ticketStatus[ticket.status] : null;
+    const closed =
+      live.missing ||
+      ticket?.status === "finalizado" ||
+      ticket?.status === "cancelado";
+    const wait = ticket ? waitValue(ticket.estimatedMinutes) : null;
     return (
-      <section className="v4-card ticket-receipt">
-        <Brand />
-        <p className="eyebrow">TU TURNO / DEMOSTRACIÓN LOCAL</p>
-        {ticket ? (
-          <>
-            <strong className="ticket-number">{ticket.number}</strong>
-            <span className="status-badge">{ticket.status}</span>
-            <h3>{ticket.service}</h3>
-            <p>{ticket.barber}</p>
-            {ticket.position !== null && (
-              <p>
-                Posición general: <strong>{ticket.position}</strong>
-              </p>
-            )}
-            <p>
-              {ticket.estimatedMinutes !== null
-                ? `Espera orientativa: ${ticket.estimatedMinutes} min`
-                : "La espera se confirmará según la disponibilidad del equipo."}
+      <section
+        ref={receipt}
+        className="queue-receipt"
+        aria-labelledby={`${uid}-ticket`}
+        tabIndex={-1}
+      >
+        <div
+          className="queue-ticket"
+          data-status={ticket?.status ?? (live.missing ? "missing" : "loading")}
+        >
+          <div className="queue-ticket-top">
+            <Brand className="queue-ticket-brand" />
+            <p className="eyebrow" id={`${uid}-ticket`}>
+              Tu turno · Elite
             </p>
-            <small>
-              Estimación de ejemplo. El orden de llamada puede variar según el
-              profesional elegido y las citas.
-            </small>
-          </>
-        ) : (
-          <p>
-            {live.missing
-              ? "Este turno ya no está disponible. Vuelve al registro para comenzar una nueva demostración."
-              : "Consultando turno…"}
+            {ticket && status ? (
+              <>
+                <strong className="ticket-number">{ticket.number}</strong>
+                <p className="queue-ticket-state" aria-live="polite">
+                  <span className="status-badge" data-tone={status.tone}>
+                    {status.label}
+                  </span>
+                </p>
+                <p className="queue-ticket-hint">{ticketHint(ticket)}</p>
+              </>
+            ) : live.missing ? (
+              <div className="queue-ticket-missing">
+                <h2>Turno no disponible</h2>
+                <p>
+                  Puede que la fila se haya reiniciado. Puedes tomar un turno
+                  nuevo cuando quieras.
+                </p>
+              </div>
+            ) : (
+              <p className="loading-state">Consultando tu turno…</p>
+            )}
+          </div>
+          {ticket && (
+            <div className="queue-ticket-bottom">
+              <dl className="queue-ticket-facts">
+                {ticket.status === "esperando" && (
+                  <>
+                    <div className="queue-fact queue-fact-key">
+                      <dt>Posición en la fila</dt>
+                      <dd>{ticket.position ?? "—"}</dd>
+                    </div>
+                    <div className="queue-fact queue-fact-key">
+                      <dt>Espera estimada</dt>
+                      <dd>
+                        {wait ?? (
+                          <span className="queue-fact-soft">Por confirmar</span>
+                        )}
+                      </dd>
+                    </div>
+                  </>
+                )}
+                <div className="queue-fact">
+                  <dt>Profesional</dt>
+                  <dd>{ticket.barber}</dd>
+                </div>
+                <div className="queue-fact">
+                  <dt>Servicio</dt>
+                  <dd>{ticket.service}</dd>
+                </div>
+              </dl>
+              {ticket.status === "esperando" && (
+                <p className="queue-ticket-note">
+                  {wait
+                    ? "Espera orientativa: se recalcula con cada cambio de la fila. El orden de llamada puede variar según el profesional elegido y las citas reservadas."
+                    : "La espera se confirmará según la disponibilidad del equipo. El orden de llamada puede variar según el profesional elegido y las citas reservadas."}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+        {!live.online && live.error && !live.missing ? (
+          <p className="notice queue-notice" data-tone="alert" role="status">
+            <Icon name="offline" />
+            <span>
+              Sin conexión con la fila. Tu turno sigue registrado; esta pantalla
+              se actualizará al reconectar.
+            </span>
+          </p>
+        ) : live.online && ticket && !closed ? (
+          <p className="queue-live" role="status">
+            <span className="live-dot" aria-hidden="true" />
+            Actualización en vivo
+          </p>
+        ) : null}
+        {notice && (
+          <p className="notice queue-notice" role="status">
+            {notice}
           </p>
         )}
-        <p role="status">{live.error || error}</p>
-        <Link href="/pantalla-turnos" className="button">
-          Ver pantalla de turnos ↗
-        </Link>
-        <button
-          className="text-link"
-          onClick={() => {
-            setToken("");
-            setCreated(null);
-            try {
-              sessionStorage.removeItem("elite.queue.ticket");
-            } catch {}
-          }}
-        >
-          Volver al registro (no cancela el turno)
-        </button>
+        <div className="queue-receipt-actions">
+          {closed ? (
+            <button
+              type="button"
+              className="button button-accent"
+              onClick={backToForm}
+            >
+              Tomar un turno nuevo <Icon name="ticket" />
+            </button>
+          ) : (
+            <>
+              <Link href="/pantalla-turnos" className="button button-outline">
+                Ver pantalla de turnos <Icon name="screen" />
+              </Link>
+              <button type="button" className="text-link" onClick={backToForm}>
+                Volver al registro · no cancela el turno
+              </button>
+            </>
+          )}
+        </div>
       </section>
     );
+  }
+
   return (
-    <form className="v4-card v4-form" onSubmit={submit}>
-      <p className="eyebrow">
-        {manual ? "RECEPCIÓN / CLIENTE PRESENCIAL" : "REGISTRO QR / FILA DEMO"}
-      </p>
-      <h2>
-        {manual
-          ? "Registrar un turno presencial"
-          : "Tu siguiente corte empieza aquí."}
-      </h2>
-      <p>
-        Solo datos ficticios. Registrarse en la fila no confirma una hora de
-        atención.
-      </p>
-      <ContactFields />
-      <div className="field-row">
-        <label>
-          Servicio
-          <select name="serviceId">
-            {services.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
+    <form
+      className="v4-card v4-form queue-join"
+      data-variant={manual ? "manual" : "public"}
+      onSubmit={submit}
+      aria-labelledby={`${uid}-title`}
+    >
+      <header className="queue-join-head">
+        <p className="eyebrow">
+          {manual ? "Recepción · cliente presencial" : "Registro en la fila"}
+        </p>
+        <h2 id={`${uid}-title`}>
+          {manual ? (
+            "Registrar turno presencial"
+          ) : (
+            <>
+              Tu siguiente corte <span className="serif">empieza aquí.</span>
+            </>
+          )}
+        </h2>
+        <p>
+          {manual
+            ? "El turno entra en la misma fila que los registros por QR."
+            : "Tomar turno no reserva una hora: te da un número, tu posición y una espera estimada."}
+        </p>
+      </header>
+      <div className="queue-join-fields">
+        <ContactFields />
+        <fieldset className="queue-fieldset">
+          <legend>Servicio</legend>
+          <div className="queue-options" data-kind="service">
+            {services.map((s, index) => (
+              <label key={s.id} className="queue-option">
+                <input
+                  type="radio"
+                  name="serviceId"
+                  value={s.id}
+                  defaultChecked={index === 0}
+                  required
+                />
+                <span className="queue-option-name">{s.name}</span>
+                <span className="queue-option-meta">{currency(s.priceCOP)}</span>
+              </label>
             ))}
-          </select>
-        </label>
-        <label>
-          Profesional
-          <select name="barberId">
-            <option value="any">Primer disponible</option>
-            {barbers.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name}
-              </option>
-            ))}
-          </select>
+          </div>
+          <p className="queue-fieldset-note">Precios de referencia.</p>
+        </fieldset>
+        <fieldset className="queue-fieldset">
+          <legend>Profesional</legend>
+          <div className="queue-options" data-kind="barber">
+            {[{ id: "any", name: "Primer disponible" }, ...barbers].map(
+              (b) => (
+                <label key={b.id} className="queue-option">
+                  <input
+                    type="radio"
+                    name="barberId"
+                    value={b.id}
+                    defaultChecked={b.id === "any"}
+                    required
+                  />
+                  <span className="queue-option-name">{b.name}</span>
+                </label>
+              ),
+            )}
+          </div>
+        </fieldset>
+        <label className="checkbox-label queue-consent">
+          <input type="checkbox" name="consent" required />
+          <span>
+            {manual
+              ? "Confirmo que registro datos ficticios: esta versión del sistema aún no debe guardar datos reales."
+              : "Entiendo que la espera es estimada y puede cambiar, y que en esta versión debo usar un nombre y un teléfono ficticios."}
+          </span>
         </label>
       </div>
-      <label className="checkbox-label">
-        <input type="checkbox" required /> Entiendo que es una demostración y
-        usaré datos ficticios.
-      </label>
-      <p role="status">{error || live.error}</p>
-      <button className="button" disabled={busy || !live.online}>
-        {busy ? "Registrando…" : "Tomar turno demo"}
-      </button>
+      {error ? (
+        <p className="inline-error" role="alert">
+          {error}
+        </p>
+      ) : notice ? (
+        <p className="notice queue-notice" role="status">
+          <Icon name="check" />
+          <span>{notice}</span>
+        </p>
+      ) : connecting ? (
+        <p className="queue-connecting" role="status">
+          Conectando con la fila…
+        </p>
+      ) : !live.online ? (
+        <p className="notice queue-notice" data-tone="alert" role="status">
+          <Icon name="offline" />
+          <span>
+            Sin conexión con la fila. No se pueden registrar turnos hasta
+            reconectar.
+          </span>
+        </p>
+      ) : null}
+      <div className="queue-join-actions">
+        <button
+          className={`button button-large queue-submit${manual ? "" : " button-accent"}`}
+          disabled={!live.online}
+          aria-busy={busy || undefined}
+        >
+          {busy ? "Registrando…" : manual ? "Registrar turno" : "Tomar turno"}
+          {!busy && <Icon name="ticket" />}
+        </button>
+        {!manual && (
+          <p className="queue-join-foot">
+            La pantalla pública solo muestra el número, el profesional y el
+            servicio. Nunca tu nombre ni tu teléfono.
+          </p>
+        )}
+      </div>
     </form>
   );
 }
