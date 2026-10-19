@@ -14,7 +14,7 @@ import { whatsappUrl } from "../domain/business";
 import { useDemo } from "../lib/use-demo";
 import { Calendar, type CalendarDayStatus } from "./calendar";
 import { Icon } from "./icons";
-import { BrandGlyph } from "./brand/logos";
+import { BrandGlyph, EliteLogo } from "./brand/logos";
 import {
   ANY_BARBER,
   barberUnavailable,
@@ -343,7 +343,7 @@ export function BookingFlow() {
       <div className="bk bk-done" ref={topRef}>
         <section className="success-panel bk-success" aria-labelledby="bk-success-title">
           <span className="bk-seal" aria-hidden="true">
-            <Icon name="check" />
+            <EliteLogo className="bk-seal-logo" />
           </span>
           <p className="eyebrow">Reserva registrada</p>
           <h2 id="bk-success-title" ref={headingRef} tabIndex={-1}>
@@ -420,9 +420,6 @@ export function BookingFlow() {
               Otra reserva <Icon name="plus" />
             </button>
           </div>
-          <Link className="text-link bk-team-link" href="/administracion?tab=citas">
-            Ver en el panel del equipo <Icon name="grid" />
-          </Link>
         </section>
       </div>
     );
@@ -456,7 +453,7 @@ export function BookingFlow() {
           )}
           <div className="bk-panel">
             {step === 1 && (
-              <section className="bk-step">
+              <section key={step} className="bk-step">
                 <StepHead
                   step={1}
                   eyebrow="Servicio"
@@ -584,7 +581,7 @@ export function BookingFlow() {
             )}
 
             {step === 2 && (
-              <section className="bk-step">
+              <section key={step} className="bk-step">
                 <StepHead
                   step={2}
                   eyebrow="Fecha y hora"
@@ -669,7 +666,7 @@ export function BookingFlow() {
             )}
 
             {step === 3 && (
-              <form className="bk-step" onSubmit={continueFromContact} noValidate>
+              <form key={step} className="bk-step" onSubmit={continueFromContact} noValidate>
                 <StepHead
                   step={3}
                   eyebrow="Tus datos"
@@ -735,7 +732,7 @@ export function BookingFlow() {
             )}
 
             {step === 4 && (
-              <form className="bk-step" onSubmit={submit} noValidate>
+              <form key={step} className="bk-step" onSubmit={submit} noValidate>
                 <StepHead
                   step={4}
                   eyebrow="Confirmar"

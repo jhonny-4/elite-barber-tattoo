@@ -1,4 +1,5 @@
 import { Header, Footer } from "../components/shell";
+import { BrandIntro } from "../components/brand-intro";
 import { Gallery } from "../components/gallery";
 import { Reveal } from "../components/reveal";
 import { LocationMap } from "../components/location-map";
@@ -16,6 +17,7 @@ import { HoverTilt } from "../components/motion/hover-tilt";
 export default function Home() {
   return (
     <>
+      <BrandIntro />
       <Header />
       <main id="main" className="home-page">
         <HomeHero />

@@ -87,10 +87,6 @@ export function Header() {
           <span className="topbar-mark" aria-hidden="true" />
           Cartagena · Barbería &amp; tatuaje
         </p>
-        <Link href="/administracion" className="topbar-team">
-          <Icon name="lock" />
-          Iniciar sesión
-        </Link>
         <button type="button" className="topbar-install" onClick={() => window.dispatchEvent(new Event("elite:install"))}>
           <Icon name="download" /> Instalar app
         </button>
@@ -121,7 +117,6 @@ export function Header() {
           ))}
         </nav>
         <div className="header-mobile-access">
-          <Link href="/administracion" className="button button-outline button-small" onClick={close}><Icon name="lock" /> Iniciar sesión</Link>
           <button type="button" className="button button-small" onClick={() => { close(); window.dispatchEvent(new Event("elite:install")); }}><Icon name="download" /> Instalar app</button>
         </div>
         <div className="header-actions">
@@ -204,13 +199,6 @@ export function Header() {
           </div>
           <Link className="text-link" href="/tatuaje" onClick={close}>
             Solicitar un tatuaje <Icon name="arrow" />
-          </Link>
-          <Link
-            className="mobile-menu-team"
-            href="/administracion"
-            onClick={close}
-          >
-            <Icon name="lock" /> Panel administrativo
           </Link>
         </div>
       </div>
@@ -325,7 +313,6 @@ export function Footer() {
           >
             {artistInstagramHandle} ↗
           </a>
-          <Link href="/administracion">Panel administrativo</Link>
         </nav>
       </div>
 

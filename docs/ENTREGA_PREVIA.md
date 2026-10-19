@@ -51,3 +51,10 @@ El visor abre el ángulo seleccionado en la tarjeta. En escritorio la foto ocupa
 - El QR abre `/reservar`; no llama automáticamente ni incorpora voz o mensajes. El monitor comparte el estado del servidor, sin nombres ni teléfonos.
 - Inicio de sesión de presentación; sin Supabase ni autenticación de producción. Las galerías personales de cada barbero quedan para cuando se reciban sus fotos e información.
 - Validación: lint, 52 pruebas y build correctos. Incluye prueba HTTP con cliente que registra llegada y monitor independiente que consulta llamada, atención y cierre. Cabecera móvil, instalación, ausencia de desbordamiento y botón de subida revisados en navegador.
+## Acabado visual final (19 de octubre)
+
+Las 15 mejoras se concentran en `src/styles/final-effects.css`: llamados y atención en TV, scroll existente con bordes de luz progresivos, reflejo de logo, ambiente de contramarcas, transiciones entre secciones, sello de reserva Elite, visor cinematográfico, calendario, marco QR, menú por capas, colores sociales, pasos/progreso de reserva y trazo artístico. No se añadieron efectos a las tarjetas.
+
+`BrandIntro` añade una presentación con capas SVG en perspectiva de 1,5 segundos al abrir el inicio; se recuerda por pestaña con sessionStorage. La salida tiene respaldo CSS y no intercepta clics ni bloquea la carga. Movimiento reducido conserva una presentación estática con salida suave. El objetivo es fluidez, sin prometer 60 FPS en cualquier hardware.
+
+Se retiraron los enlaces al panel y a iniciar sesión de cabecera, menú, pie y confirmación de reserva. Jean Carlos puede abrir `/administracion` directamente. Esto no sustituye seguridad: el acceso sigue siendo una simulación y las API demo no están protegidas por roles reales. Autenticación en servidor, autorización y datos definitivos quedan para la fase de producción.
