@@ -21,7 +21,7 @@ export type DemoCommand =
   | {
       type: "booking.change";
       id: string;
-      action: "cancel" | "start" | "finish" | "reschedule";
+      action: "cancel" | "start" | "finish" | "reschedule" | "checkin" | "call";
       date?: string;
       time?: string;
       barberId?: string;

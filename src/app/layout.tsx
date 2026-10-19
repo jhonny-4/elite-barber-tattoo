@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { PwaManager } from "../components/pwa/manager";
+import { BackToTop } from "../components/back-to-top";
 import "@fontsource/barlow-condensed/600.css";
 import "@fontsource/barlow-condensed/700.css";
 import "@fontsource/barlow-condensed/800.css";
@@ -67,6 +68,7 @@ export default function RootLayout({
       <body>
         {children}
         <PwaManager />
+        <BackToTop />
       </body>
     </html>
   );

@@ -80,6 +80,7 @@ export function HomeServices() {
       id="servicios"
       aria-labelledby="home-services-title"
     >
+      <span className="elite-section-watermark" aria-hidden="true" />
       <header className="section-heading home-heading" data-anim="heading">
         <p className="eyebrow home-eyebrow">Servicios</p>
         <h2 id="home-services-title" data-split>

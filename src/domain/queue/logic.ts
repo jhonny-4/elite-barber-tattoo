@@ -6,6 +6,7 @@ import type {
   PublicTicket,
 } from "../../services/contracts/demo.ts";
 import type { QueueTicket } from "./model.ts";
+import { bookingTurnNumber } from "./booking-turn.ts";
 export function bogotaDate(now = Date.now()) {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Bogota",
@@ -85,13 +86,21 @@ export function publicQueue(state: SharedState, now = Date.now()): PublicQueue {
     list
       .filter((t) => t.status === status)
       .map((t) => ticketView(state, t, now, estimates));
+  const appointments = state.bookings.filter((booking) => booking.date === day && !["cancelada", "finalizada"].includes(booking.status) && (booking.arrivedAt || booking.status === "en-atencion"));
+  const appointmentViews = (status: string): PublicTicket[] => appointments.filter((b) => (b.status === "en-atencion" ? "en-atencion" : b.calledAt ? "llamado" : "esperando") === status).map((b) => ({
+    number: bookingTurnNumber(state, b), status: status as PublicTicket["status"],
+    service: services.find((s) => s.id === b.serviceId)?.name ?? "Barbería",
+    barber: barbers.find((person) => person.id === b.barberId)?.name ?? "Profesional",
+    position: null, estimatedMinutes: status === "esperando" ? Math.max(0, Math.ceil((Date.parse(`${b.date}T${b.time}:00-05:00`) - now) / 60000)) : null,
+  }));
+  const waiting = [...views("esperando"), ...appointmentViews("esperando")].map((ticket, index) => ({ ...ticket, position: index + 1 }));
   return {
     date: day,
     revision: state.revision,
-    waiting: list.filter((t) => t.status === "esperando").length,
-    called: views("llamado"),
-    serving: views("en-atencion"),
-    next: views("esperando").slice(0, 8),
+    waiting: waiting.length,
+    called: [...views("llamado"), ...appointmentViews("llamado")],
+    serving: [...views("en-atencion"), ...appointmentViews("en-atencion")],
+    next: waiting.slice(0, 8),
     connection: "demo",
   };
 }

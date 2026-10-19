@@ -5,7 +5,7 @@ import type { SharedState } from "../../services/contracts/demo";
 import { JoinForm } from "../queue/join-form";
 import { QrCard } from "../queue/qr-card";
 import { ProfessionalField, SearchField, matcher } from "./agenda";
-import { TicketItem } from "./items";
+import { TicketItem, BookingItem } from "./items";
 import type { Runner } from "./runner";
 import { Count, EmptyState } from "./ui";
 
@@ -65,6 +65,7 @@ export function QueueSection({
     .sort(byArrival)
     .reverse();
   const barberId = professional !== "todos" ? professional : undefined;
+  const appointments = state.bookings.filter((b) => b.date === today && !["cancelada", "finalizada"].includes(b.status) && (professional === "todos" || b.barberId === professional) && matches(b.name, b.phone, b.turnNumber ?? "")).sort((a,b) => a.time.localeCompare(b.time));
 
   return (
     <div className="adm-queue">
@@ -77,6 +78,7 @@ export function QueueSection({
             placeholder="Turno, nombre o teléfono"
           />
         </div>
+        {appointments.length > 0 && <section className="adm-group" aria-labelledby="fila-citas"><h2 id="fila-citas" className="adm-group-title">Citas de hoy</h2><p className="adm-hint">Registra la llegada, llama al cliente y después inicia la atención. Los códigos C corresponden a citas; los E, a turnos presenciales.</p><div className="adm-list">{appointments.map((booking) => <BookingItem key={booking.id} booking={booking} state={state} runner={runner} today={today} />)}</div></section>}
         {groups.length ? (
           groups.map((group) => (
             <section
@@ -107,13 +109,13 @@ export function QueueSection({
               </div>
             </section>
           ))
-        ) : (
+        ) : !appointments.length ? (
           <EmptyState
             icon="ticket"
             title={state.queue.length ? "Nada activo en la fila" : "La fila está vacía"}
-            text="Registra a un cliente presencial con el formulario o comparte el QR para que se anote desde su celular."
+            text="Registra un turno presencial con el formulario. El QR abre reservas: al llegar, registra la llegada de la cita para mostrarla en pantalla."
           />
-        )}
+        ) : null}
         {closed.length ? (
           <details className="adm-closed">
             <summary>

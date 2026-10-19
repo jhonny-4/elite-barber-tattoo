@@ -37,6 +37,7 @@ import {
   type SummaryData,
 } from "./booking/summary";
 import { TimeSlots } from "./booking/time-slots";
+import { BookingArrival } from "./booking/arrival";
 
 type Errors = ContactErrors & { consent?: string };
 
@@ -372,6 +373,7 @@ export function BookingFlow() {
             }}
           />
           <div className="bk-next">
+            <BookingArrival id={result.id} />
             <h3>Siguientes pasos</h3>
             <ol>
               <li>

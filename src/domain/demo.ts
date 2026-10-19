@@ -15,6 +15,9 @@ export type Booking = {
   status: "reservada-demo" | "cancelada" | "en-atencion" | "finalizada";
   source?: "online" | "presencial";
   token?: string;
+  arrivedAt?: string;
+  calledAt?: string;
+  turnNumber?: string;
 };
 export const tattooStatuses = [
   "pendiente",

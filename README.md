@@ -92,7 +92,7 @@ npm test
 npm run build
 ```
 
-La integración pasó 46 pruebas. Se revisaron portada y navegación en móvil, tableta y escritorio; reserva completa con validación y cancelación desde el panel; filtros y visor de tatuajes; monograma 3D y ausencia de desbordamiento horizontal en las vistas revisadas. Las animaciones respetan movimiento reducido y WebGL dispone de respaldo vectorial.
+La integración pasó 52 pruebas. Se revisaron portada y navegación en móvil, tableta y escritorio; reserva completa con validación y cancelación desde el panel; filtros y visor de tatuajes; monograma 3D y ausencia de desbordamiento horizontal en las vistas revisadas. Las animaciones respetan movimiento reducido y WebGL dispone de respaldo vectorial.
 
 ## Producción posterior
 

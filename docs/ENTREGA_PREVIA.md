@@ -40,3 +40,14 @@ Pendiente para producción: contenido original confirmado, autenticación/roles,
 Se recibieron 10 capturas: 9 fotografías útiles, agrupadas en 6 trabajos nuevos; la décima repite el Joker con menor resolución. Anubis agrupa 3 ángulos y Faith 2; Joker, mujer/cuervo, Zeus/águila y lettering tienen una vista. Se conservan los JPEG recibidos y se publican versiones WebP sin ampliación. Las barras de Instagram del lettering se ocultan mediante viewport, conservando íntegro el tatuaje.
 
 El visor abre el ángulo seleccionado en la tarjeta. En escritorio la foto ocupa el alto disponible, con información lateral. Los controles se colocan debajo de cada tarjeta y se revisaron en móvil (355 px CSS), tableta (769 px) y escritorio. También se comprobó visualmente la cabecera del monitor: título, reloj y fecha ya no se superponen. Se corrigió la selección de fotos de barbería para que añadir tatuajes no cambie esas imágenes por depender de índices numéricos.
+
+## Inicio compacto y citas en el monitor
+
+- Inicio con menos texto repetido, información ampliable y selección de galería: 4 tarjetas en móvil y 6 en escritorio; «Ver todos los trabajos» conserva el portafolio completo.
+- Contramarcas Elite más visibles, reflejos suaves y botón flotante JC para volver arriba. Se respeta movimiento reducido.
+- En móvil, iniciar sesión e instalar app están en la cabecera fija con controles de al menos 44 px.
+- Una reserva no equivale a una llegada. El día de la cita, el cliente puede registrar su llegada en la confirmación; el panel también ofrece «Registrar llegada». Después: «Llamar en pantalla» → «Iniciar atención» → «Finalizar». Iniciar directamente también muestra la cita en el monitor.
+- Las citas usan códigos C y los turnos presenciales E. Se evita duplicar un contacto entre ambos. Las reservas futuras no entran en la fila de hoy; llamar/iniciar respeta horario y disponibilidad. Cancelar o reprogramar retira la llegada.
+- El QR abre `/reservar`; no llama automáticamente ni incorpora voz o mensajes. El monitor comparte el estado del servidor, sin nombres ni teléfonos.
+- Inicio de sesión de presentación; sin Supabase ni autenticación de producción. Las galerías personales de cada barbero quedan para cuando se reciban sus fotos e información.
+- Validación: lint, 52 pruebas y build correctos. Incluye prueba HTTP con cliente que registra llegada y monitor independiente que consulta llamada, atención y cierre. Cabecera móvil, instalación, ausencia de desbordamiento y botón de subida revisados en navegador.

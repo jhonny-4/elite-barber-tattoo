@@ -56,6 +56,7 @@ export function Gallery({
   initialFilter = "todos",
   id = "galeria",
   eyebrow,
+  previewLimit = 0,
 }: {
   /** Solo tatuajes, sin filtros y con los textos del portafolio de Jean Carlos. */
   tattooOnly?: boolean;
@@ -65,10 +66,12 @@ export function Gallery({
   id?: string;
   /** Sustituye la etiqueta superior (p. ej. para la numeración de la portada). */
   eyebrow?: string;
+  previewLimit?: number;
 } = {}) {
   const [filter, setFilter] = useState<GalleryFilter>(
     tattooOnly ? "tattoo" : initialFilter,
   );
+  const [expanded, setExpanded] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [angles, setAngles] = useState<Record<string, number>>({});
   const [announcement, setAnnouncement] = useState("");
@@ -78,13 +81,16 @@ export function Gallery({
   const tiltEnabled = useRef(false);
   const headingId = useId();
 
-  const items = useMemo(
+  const filteredItems = useMemo(
     () =>
       portfolio.filter(
         (item) => filter === "todos" || item.category === filter,
       ),
     [filter],
   );
+
+  const selection = filter === "todos" ? [...filteredItems.filter((item) => item.category === "barberia"), ...filteredItems.filter((item) => item.category === "tattoo")] : filteredItems;
+  const items = !previewLimit || expanded ? filteredItems : selection.slice(0, previewLimit);
 
   // Inclinación y luz solo con puntero fino y sin movimiento reducido.
   useEffect(() => {
@@ -130,7 +136,7 @@ export function Gallery({
     );
     pending.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [filter]);
+  }, [filter, expanded]);
 
   // Al filtrar: las tarjetas que siguen se deslizan a su sitio (FLIP) y las nuevas aparecen.
   useLayoutEffect(() => {
@@ -181,7 +187,7 @@ export function Gallery({
         { duration: 640, easing: EASE_OUT },
       );
     });
-  }, [filter]);
+  }, [filter, expanded]);
 
   function choose(next: GalleryFilter) {
     if (next === filter) return;
@@ -197,6 +203,7 @@ export function Gallery({
     setAnnouncement(
       `Mostrando ${countOf(next)} ${next === "todos" ? "trabajos" : option?.noun}.`,
     );
+    setExpanded(false);
     setFilter(next);
   }
 
@@ -225,6 +232,7 @@ export function Gallery({
       aria-labelledby={headingId}
       data-variant={tattooOnly ? "artist" : "home"}
     >
+      <span className="elite-section-watermark" aria-hidden="true" />
       {/* En la portada anima la coreografía GSAP (data-anim); en /jean-carlos, <Reveal />. */}
       <header
         className="section-heading gallery-heading"
@@ -308,6 +316,7 @@ export function Gallery({
         className="gallery-grid"
         role="list"
         data-filter={filter}
+        data-preview={previewLimit > 0 && !expanded || undefined}
         aria-label={tattooOnly ? "Tatuajes de Jean Carlos" : "Trabajos de Elite"}
       >
         {items.map((item) => {
@@ -378,6 +387,7 @@ export function Gallery({
           );
         })}
       </ul>
+      {previewLimit > 0 && filteredItems.length > previewLimit && <div className="gallery-expand"><button type="button" className="button button-outline" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? "Mostrar selección" : `Ver todos los trabajos (${filteredItems.length})`}<Icon name={expanded ? "close" : "plus"} /></button></div>}
 
       <div
         className="gallery-foot"

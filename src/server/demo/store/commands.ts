@@ -13,6 +13,7 @@ import {
 } from "../../../domain/team/model.ts";
 import { scheduleReason } from "../../../domain/scheduling/rules.ts";
 import { activeTicket } from "../../../domain/queue/model.ts";
+import { bookingTurnNumber } from "../../../domain/queue/booking-turn.ts";
 import { MAX_STORED_REFERENCES, referenceIdFromUrl } from "./references.ts";
 import type {
   SharedState,
@@ -145,7 +146,8 @@ export function applyCommand(
       for (const id of candidates)
         try {
           const next = addBooking(state, {
-            ...input,
+            name: input.name.trim(), phone: input.phone.trim(),
+            serviceId: input.serviceId, date: input.date, time: input.time,
             barberId: id,
             source: input.source ?? "online",
             token: createDemoId(),
@@ -169,9 +171,30 @@ export function applyCommand(
       if (!b) throw new Error("La cita ya no existe.");
       if (["cancelada", "finalizada"].includes(b.status))
         throw new Error("La cita ya está cerrada.");
+      if (["checkin", "call", "start"].includes(command.action) && (
+        state.queue.some((ticket) => ticket.date === b.date && activeTicket(ticket) && ticket.phone.replace(/\D/g, "") === b.phone.replace(/\D/g, "")) ||
+        state.bookings.some((other) => other.id !== b.id && other.date === b.date && !["cancelada", "finalizada"].includes(other.status) && (other.arrivedAt || other.status === "en-atencion") && other.phone.replace(/\D/g, "") === b.phone.replace(/\D/g, ""))
+      )) throw new Error("El contacto ya tiene otro turno activo. Revisa la fila antes de continuar.");
       if (command.action === "cancel") {
         b.status = "cancelada";
         notify(state, "Cita cancelada; horario liberado");
+      } else if (command.action === "checkin") {
+        if (b.status !== "reservada-demo" || b.date !== todayBogota())
+          throw new Error("La llegada se registra el día de la cita, antes de iniciar la atención.");
+        if (state.queue.some((ticket) => ticket.date === b.date && ticket.phone.replace(/\D/g, "") === b.phone.replace(/\D/g, "") && activeTicket(ticket)))
+          throw new Error("Este contacto ya tiene un turno presencial activo. Revisa la fila antes de registrar su llegada.");
+        if (state.bookings.some((other) => other.id !== b.id && other.date === b.date && other.phone.replace(/\D/g, "") === b.phone.replace(/\D/g, "") && (other.arrivedAt || other.status === "en-atencion") && !["cancelada", "finalizada"].includes(other.status)))
+          throw new Error("Este contacto ya tiene otra cita en la fila de hoy.");
+        b.arrivedAt ??= new Date(now).toISOString();
+        b.turnNumber ??= bookingTurnNumber(state, b);
+        notify(state, `Llegada registrada: ${b.turnNumber}`);
+      } else if (command.action === "call") {
+        if (b.status !== "reservada-demo" || !b.arrivedAt || b.date !== todayBogota())
+          throw new Error("Registra primero la llegada del cliente el día de su cita.");
+        if (Math.abs(now - Date.parse(`${b.date}T${b.time}:00-05:00`)) > 15 * 60000 || !canAttend(state, b.barberId, b.serviceId, now, b.id))
+          throw new Error("Llama la cita cerca de su hora (±15 min), con el profesional disponible.");
+        b.calledAt = new Date(now).toISOString();
+        notify(state, `Cita ${bookingTurnNumber(state, b)} llamada en pantalla`);
       } else if (command.action === "reschedule") {
         if (b.status !== "reservada-demo")
           throw new Error("Solo se puede reprogramar una cita pendiente.");
@@ -206,6 +229,9 @@ export function applyCommand(
             "El contacto tiene otra cita que se cruza con el nuevo horario.",
           );
         Object.assign(b, updated, { id: b.id, token: b.token });
+        delete b.arrivedAt;
+        delete b.calledAt;
+        delete b.turnNumber;
         notify(state, "Cita reprogramada en la agenda demo");
         mail(state, "Cambio de fecha de ejemplo");
       } else if (command.action === "start") {
@@ -220,6 +246,8 @@ export function applyCommand(
             "La cita solo puede iniciarse cerca de su hora (±15 min) y con el profesional libre.",
           );
         b.status = "en-atencion";
+        b.arrivedAt ??= new Date(now).toISOString();
+        b.turnNumber ??= bookingTurnNumber(state, b);
         notify(state, "Atención de cita iniciada");
       } else if (command.action === "finish") {
         if (b.status !== "en-atencion")
@@ -343,6 +371,8 @@ export function applyCommand(
     case "queue.join": {
       const input = command.input;
       contact(input?.name, input?.phone);
+      if (state.bookings.some((b) => b.date === todayBogota() && b.phone.replace(/\D/g, "") === input.phone.replace(/\D/g, "") && (b.arrivedAt || b.status === "en-atencion") && !["cancelada", "finalizada"].includes(b.status)))
+        throw new Error("Este contacto ya tiene una cita registrada en la fila. No necesita otro turno.");
       if (
         !services.some((s) => s.id === input.serviceId) ||
         (input.barberId !== "any" &&

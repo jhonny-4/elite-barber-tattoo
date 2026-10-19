@@ -155,7 +155,7 @@ function OwnerWorkspace({ onExit }: { onExit?: () => void }) {
       label: "citas activas hoy",
     },
     fila: {
-      value: state.queue.filter((t) => t.date === today && activeTicket(t)).length,
+      value: state.queue.filter((t) => t.date === today && activeTicket(t)).length + state.bookings.filter((b) => b.date === today && !isClosedBooking(b) && (b.arrivedAt || b.status === "en-atencion")).length,
       label: "turnos activos",
     },
     solicitudes: {

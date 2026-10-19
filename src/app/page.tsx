@@ -23,7 +23,7 @@ export default function Home() {
         <HomeAbout />
         <HomeServices />
         <HomeBarbershop />
-        <Gallery />
+        <Gallery previewLimit={6} />
         <HomeArtist />
         <HomeTeam />
         <HomeBookingInvite />

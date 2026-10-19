@@ -32,6 +32,8 @@ export function BookingActions({
   if (isClosedBooking(booking)) return null;
 
   const size = large ? "" : " button-small";
+  const checkin: DemoCommand = { type: "booking.change", id: booking.id, action: "checkin" };
+  const call: DemoCommand = { type: "booking.change", id: booking.id, action: "call" };
   const start: DemoCommand = {
     type: "booking.change",
     id: booking.id,
@@ -72,6 +74,9 @@ export function BookingActions({
     <div className="adm-actions">
       {booking.status === "reservada-demo" ? (
         <>
+          {booking.date === today && !booking.arrivedAt && <button type="button" className={`button button-outline${size}`} {...runner.control(checkin)} onClick={() => void runner.run(checkin)}><Icon name="ticket" /> Registrar llegada</button>}
+          {booking.date === today && booking.arrivedAt && !booking.calledAt && <button type="button" className={`button button-accent${size}`} {...runner.control(call)} onClick={() => void runner.run(call)}><Icon name="bell" /> Llamar en pantalla</button>}
+          {booking.calledAt && <span className="adm-hint">Llamado en pantalla · {booking.turnNumber}</span>}
           {booking.date === today ? (
             <button
               type="button"

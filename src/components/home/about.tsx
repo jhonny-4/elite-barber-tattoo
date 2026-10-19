@@ -6,7 +6,7 @@ const manifesto: { text: string; tone?: "strong" | "serif" }[] = [
   { text: "Somos" },
   { text: "Elite Barber & Tattoo,", tone: "strong" },
   {
-    text: "un espacio de barbería y tatuaje en Cartagena. Reunimos dos formas de expresión: el estilo que llevas cada día y el arte que eliges llevar",
+    text: "en Los Ejecutivos, Cartagena. Estilo en tu corte y arte que eliges llevar",
   },
   { text: "en la piel.", tone: "serif" },
 ];
@@ -39,6 +39,7 @@ export function HomeAbout() {
       id="universo"
       aria-labelledby="home-about-title"
     >
+      <span className="elite-section-watermark" aria-hidden="true" />
       <span className="home-about-ghost" aria-hidden="true" data-ghost>
         Elite
       </span>
@@ -68,9 +69,10 @@ export function HomeAbout() {
         )}
       </p>
 
+      <details className="home-more"><summary>Conoce más de Elite <Icon name="plus" /></summary>
       <ul className="home-pillars" role="list">
         {pillars.map((pillar) => (
-          <li className="home-pillar" key={pillar.index} data-anim="card">
+          <li className="home-pillar" key={pillar.index}>
             <span className="home-pillar-index">{pillar.index}</span>
             <span className="home-pillar-icon" aria-hidden="true">
               <Icon name={pillar.icon} />
@@ -80,6 +82,7 @@ export function HomeAbout() {
           </li>
         ))}
       </ul>
+      </details>
 
       <div className="home-about-link" data-anim="rise">
         <a className="text-link" href="#galeria">

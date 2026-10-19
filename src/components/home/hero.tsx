@@ -17,6 +17,7 @@ export function HomeHero() {
       aria-labelledby="home-hero-title"
       data-home-hero
     >
+      <span className="elite-section-watermark" aria-hidden="true" />
       <div className="home-hero-backdrop" aria-hidden="true">
         <span className="home-hero-beam" />
         <span className="home-hero-floor" data-hero-floor>

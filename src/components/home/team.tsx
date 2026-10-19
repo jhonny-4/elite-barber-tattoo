@@ -11,6 +11,7 @@ export function HomeTeam() {
       id="equipo"
       aria-labelledby="home-team-title"
     >
+      <span className="elite-section-watermark" aria-hidden="true" />
       <header className="section-heading home-heading" data-anim="heading">
         <p className="eyebrow home-eyebrow">Equipo de barbería</p>
         <h2 id="home-team-title" data-split>

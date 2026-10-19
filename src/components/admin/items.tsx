@@ -70,6 +70,7 @@ export function BookingItem({
       </div>
       <div className="adm-item-status">
         <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
+        {booking.arrivedAt && !isClosedBooking(booking) && <small>{booking.turnNumber} · {booking.status === "en-atencion" ? "En atención" : booking.calledAt ? "Llamado" : "En espera"}</small>}
       </div>
       {!isClosedBooking(booking) ? (
         <BookingActions

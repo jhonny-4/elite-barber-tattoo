@@ -120,6 +120,10 @@ export function Header() {
             </Link>
           ))}
         </nav>
+        <div className="header-mobile-access">
+          <Link href="/administracion" className="button button-outline button-small" onClick={close}><Icon name="lock" /> Iniciar sesión</Link>
+          <button type="button" className="button button-small" onClick={() => { close(); window.dispatchEvent(new Event("elite:install")); }}><Icon name="download" /> Instalar app</button>
+        </div>
         <div className="header-actions">
           <Link
             className="button button-accent button-small header-book"

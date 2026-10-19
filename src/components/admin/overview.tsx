@@ -115,9 +115,10 @@ export function OverviewSection({
   const finishedToday = todays.filter((b) => b.status === "finalizada");
   const ticketsToday = state.queue.filter((t) => t.date === today);
   const queueActive = ticketsToday.filter(activeTicket);
-  const calling = queueActive.filter((t) => t.status === "llamado").length;
-  const serving = queueActive.filter((t) => t.status === "en-atencion").length;
-  const waiting = queueActive.filter((t) => t.status === "esperando").length;
+  const arrived = activeToday.filter((b) => b.arrivedAt || b.status === "en-atencion");
+  const calling = queueActive.filter((t) => t.status === "llamado").length + arrived.filter((b) => b.status === "reservada-demo" && b.calledAt).length;
+  const serving = queueActive.filter((t) => t.status === "en-atencion").length + arrived.filter((b) => b.status === "en-atencion").length;
+  const waiting = queueActive.filter((t) => t.status === "esperando").length + arrived.filter((b) => b.status === "reservada-demo" && !b.calledAt).length;
   const pendingTattoos = state.requests.filter((r) => r.status === "pendiente").length;
   const evaluating = state.requests.filter((r) => r.status === "en-evaluacion").length;
   const unread = state.notifications.filter((n) => !n.read).length;
@@ -153,7 +154,7 @@ export function OverviewSection({
     {
       id: "fila",
       icon: "ticket",
-      value: queueActive.length,
+      value: queueActive.length + arrived.length,
       label: "En la fila",
       detail:
         calling || serving

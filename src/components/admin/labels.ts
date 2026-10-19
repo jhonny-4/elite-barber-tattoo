@@ -182,6 +182,8 @@ export function successMessage(command: DemoCommand) {
   switch (command.type) {
     case "booking.change":
       return {
+        checkin: "Llegada registrada. La cita aparece en la fila y en pantalla.",
+        call: "Cita llamada. Ya aparece en la pantalla de turnos.",
         cancel: "Cita cancelada. Su horario quedó libre.",
         reschedule: "Cita reprogramada. El nuevo horario quedó reservado.",
         start: "Atención de la cita iniciada.",
