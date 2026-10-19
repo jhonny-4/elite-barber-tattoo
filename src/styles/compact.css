@@ -131,3 +131,4 @@
 @keyframes monitor-brand-light { 0%, 100% { background-position: 100% 0; opacity: .3; } 50% { background-position: 0 0; opacity: .8; } }
 @media (min-width: 700px) and (max-width: 1100px) { .monitor-banner-copy { display: none; } .monitor-banner { max-width: 170px; } }
 .monitor-audio { display: grid; justify-items: center; gap: 6px; max-width: 270px; } .monitor-audio .button { min-height: 44px; white-space: normal; text-align: center; font-size: .72rem; } .monitor-audio > span { font-size: .75rem; color: #efb0ba; }
+.monitor-voice { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; font-size: .8rem; cursor: pointer; } .monitor-voice input { width: 20px; height: 20px; accent-color: #c7364b; }

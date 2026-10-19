@@ -287,7 +287,7 @@ export function QueueMonitor() {
       </div>
 
       <footer className="monitor-foot">
-        <CallSound numbers={queue ? called.map(ticket => ticket.number) : null} />
+        <CallSound tickets={queue ? called.map(({ number, barber }) => ({ number, barber })) : null} />
         <MonitorJoin />
         <p className="monitor-privacy">
           <Icon name="lock" />
