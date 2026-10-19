@@ -97,7 +97,7 @@ export function CallSound({ tickets }: { tickets: { number: string; barber: stri
         delayed = null;
         speak(calls.map(ticket => `Turno ${ticket.number.replace(/-/g, " ")}, pasar con ${ticket.barber}.`).join(" "));
       }, 1000);
-    }, 15000);
+    }, 5000);
     return () => { clearInterval(repeat); if (delayed) clearTimeout(delayed); };
   }, [signature, enabled, voice]);
 
@@ -125,7 +125,7 @@ export function CallSound({ tickets }: { tickets: { number: string; barber: stri
       setError("");
       if (checked) speak("Avisos de voz activados.");
       else stopVoice();
-    }} /> Voz · repetir cada 15 segundos</label>
+    }} /> Voz · repetir cada 5 segundos</label>
     {error && <span role="status">{error}</span>}
   </div>;
 }
