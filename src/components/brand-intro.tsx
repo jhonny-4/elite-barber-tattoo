@@ -24,10 +24,10 @@ export function BrandIntro() {
   const [visible, setVisible] = useState(true);
   useLayoutEffect(() => {
     try {
-      if (sessionStorage.getItem("elite:intro:v2")) { setVisible(false); return; }
+      if (sessionStorage.getItem("elite:intro:v3")) { setVisible(false); return; }
     } catch { /* Navegación privada: funciona sin persistencia. */ }
     const timeout = setTimeout(() => {
-      try { sessionStorage.setItem("elite:intro:v2", "1"); } catch { /* Sin almacenamiento. */ }
+      try { sessionStorage.setItem("elite:intro:v3", "1"); } catch { /* Sin almacenamiento. */ }
       setVisible(false);
     }, 1500);
     return () => clearTimeout(timeout);
