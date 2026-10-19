@@ -24,10 +24,16 @@ export function CallSound({ tickets }: { tickets: { number: string; barber: stri
     if (!("speechSynthesis" in window)) return;
     const message = new SpeechSynthesisUtterance(text);
     message.lang = "es-CO";
-    message.rate = .9;
+    message.rate = .98;
+    message.pitch = 1;
     const voices = window.speechSynthesis.getVoices();
-    const spanish = voices.find(item => item.lang === "es-CO") ?? voices.find(item => item.lang.startsWith("es"));
-    if (spanish) message.voice = spanish;
+    // Prioriza voces naturales si el dispositivo las ofrece; conserva español.
+    const score = (item: SpeechSynthesisVoice) =>
+      (/natural|neural|enhanced|premium/i.test(item.name) ? 100 : 0) +
+      (/google|online/i.test(item.name) ? 30 : 0) +
+      (item.lang === "es-CO" ? 20 : /^es-(MX|US)/i.test(item.lang) ? 10 : 0);
+    const spanish = voices.filter(item => /^es(?:-|_)/i.test(item.lang)).sort((a, b) => score(b) - score(a))[0];
+    if (spanish) { message.voice = spanish; message.lang = spanish.lang; }
     message.onerror = event => {
       if (event.error !== "canceled" && event.error !== "interrupted") setError("Voz no disponible en este dispositivo. La campanilla sigue activa.");
     };
@@ -79,6 +85,22 @@ export function CallSound({ tickets }: { tickets: { number: string; barber: stri
     else { setEnabled(false); setError("Pulsa para reactivar el sonido."); }
   }, [signature, enabled]);
 
+  useEffect(() => {
+    if (!enabled || !voice || !signature) return;
+    const calls = JSON.parse(signature) as { number: string; barber: string }[];
+    if (!calls.length) { stopVoice(); return; }
+    let delayed: ReturnType<typeof setTimeout> | null = null;
+    const repeat = setInterval(() => {
+      if (!context.current || context.current.state !== "running" || window.speechSynthesis.speaking || speechTimer.current) return;
+      chime(context.current);
+      delayed = setTimeout(() => {
+        delayed = null;
+        speak(calls.map(ticket => `Turno ${ticket.number.replace(/-/g, " ")}, pasar con ${ticket.barber}.`).join(" "));
+      }, 1000);
+    }, 15000);
+    return () => { clearInterval(repeat); if (delayed) clearTimeout(delayed); };
+  }, [signature, enabled, voice]);
+
   useEffect(() => () => { stopVoice(); void context.current?.close().catch(() => {}); context.current = null; }, []);
 
   async function toggle() {
@@ -103,7 +125,7 @@ export function CallSound({ tickets }: { tickets: { number: string; barber: stri
       setError("");
       if (checked) speak("Avisos de voz activados.");
       else stopVoice();
-    }} /> Aviso hablado opcional</label>
+    }} /> Voz · repetir cada 15 segundos</label>
     {error && <span role="status">{error}</span>}
   </div>;
 }
