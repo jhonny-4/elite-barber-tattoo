@@ -3,6 +3,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Brand } from "./media";
+import { DepthMark } from "./three/sculpture-stage";
+import { ELITE_BOX, ELITE_PATHS } from "./three/presets";
 import { Icon } from "./icons";
 import { BrandGlyph, EliteLogo } from "./brand/logos";
 import {
@@ -87,9 +89,6 @@ export function Header() {
           <span className="topbar-mark" aria-hidden="true" />
           Cartagena · Barbería &amp; tatuaje
         </p>
-        <button type="button" className="topbar-install" onClick={() => window.dispatchEvent(new Event("elite:install"))}>
-          <Icon name="download" /> Instalar app
-        </button>
       </div>
       <header
         ref={header}
@@ -103,7 +102,7 @@ export function Header() {
           aria-label="Elite Barber & Tattoo, inicio"
           onClick={close}
         >
-          <Brand title="" />
+          <span className="header-logo-depth"><DepthMark box={ELITE_BOX} paths={ELITE_PATHS} layers={7} /></span>
         </Link>
         <nav className="main-nav" aria-label="Principal">
           {navLinks.map((link) => (
@@ -120,6 +119,9 @@ export function Header() {
           <button type="button" className="button button-small" onClick={() => { close(); window.dispatchEvent(new Event("elite:install")); }}><Icon name="download" /> Instalar app</button>
         </div>
         <div className="header-actions">
+          <button type="button" className="button button-outline button-small header-install" onClick={() => window.dispatchEvent(new Event("elite:install"))}>
+            <Icon name="download" /> Instalar app
+          </button>
           <Link
             className="button button-accent button-small header-book"
             href="/reservar"
