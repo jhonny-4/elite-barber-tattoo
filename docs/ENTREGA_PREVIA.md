@@ -58,3 +58,6 @@ Las 15 mejoras se concentran en `src/styles/final-effects.css`: llamados y atenc
 `BrandIntro` añade una presentación con capas SVG en perspectiva de 1,5 segundos al abrir el inicio; se recuerda por pestaña con sessionStorage. La salida tiene respaldo CSS y no intercepta clics ni bloquea la carga. Movimiento reducido conserva una presentación estática con salida suave. El objetivo es fluidez, sin prometer 60 FPS en cualquier hardware.
 
 Se retiraron los enlaces al panel y a iniciar sesión de cabecera, menú, pie y confirmación de reserva. Jean Carlos puede abrir `/administracion` directamente. Esto no sustituye seguridad: el acceso sigue siendo una simulación y las API demo no están protegidas por roles reales. Autenticación en servidor, autorización y datos definitivos quedan para la fase de producción.
+
+### Entrada premium y acceso del equipo
+La presentación reutiliza el motor Three.js con extrusión y biseles del logo Elite, barrido rápido de luz y respaldo vectorial DepthMark. Mantiene 1,5 s por pestaña (intro v2), sin prometer resolución 4K fija ni FPS en todos los dispositivos. El enlace discreto «Acceso del equipo» se añade al final del menú móvil y del pie; abre /administracion dentro de la misma PWA. La seguridad sigue siendo de presentación, pendiente de autenticación real.

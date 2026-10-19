@@ -200,6 +200,9 @@ export function Header() {
           <Link className="text-link" href="/tatuaje" onClick={close}>
             Solicitar un tatuaje <Icon name="arrow" />
           </Link>
+          <Link className="mobile-menu-team" href="/administracion" onClick={close}>
+            <Icon name="lock" /> Acceso del equipo
+          </Link>
         </div>
       </div>
     </>
@@ -313,6 +316,7 @@ export function Footer() {
           >
             {artistInstagramHandle} ↗
           </a>
+          <Link className="team-entry" href="/administracion">Acceso del equipo</Link>
         </nav>
       </div>
 

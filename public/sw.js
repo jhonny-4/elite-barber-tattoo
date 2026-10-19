@@ -1,5 +1,5 @@
 /* Service worker for a local demonstration: never cache API responses or queue writes. */
-const CACHE = "elite-premium-presentation-v8";
+const CACHE = "elite-premium-presentation-v9";
 const OFFLINE = "/offline.html";
 self.addEventListener("install", (event) => {
   event.waitUntil(

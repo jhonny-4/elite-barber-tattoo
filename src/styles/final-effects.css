@@ -77,3 +77,27 @@
   .elite-intro-logo, .elite-intro-glint, .elite-intro-progress { animation: none; }
   .elite-intro { animation: elite-intro-exit 1.5s both; }
 }.bk-seal .bk-seal-logo { width: 72%; height: auto; filter: drop-shadow(0 2px 0 #aaa); }
+
+/* Entrada premium: geometría extruida real y respaldo SVG nítido a cualquier tamaño. */
+.elite-intro-premium { gap: 10px; overflow: hidden; background: radial-gradient(ellipse at 50% 45%, #302c2d 0%, #170a0e 35%, #050505 72%); }
+.elite-intro-stage { position: relative; width: min(88vw, 760px); aspect-ratio: 1.8; isolation: isolate; }
+.elite-intro-sculpture { height: 100%; aspect-ratio: auto; }
+.elite-intro-sculpture .sculpture__fallback { transition: opacity .2s; }
+.elite-intro-sculpture .sculpture__mark { filter: drop-shadow(0 2px 0 #fff6) drop-shadow(0 18px 12px #000b); transform: perspective(1000px) rotateX(8deg) rotateY(-9deg); }
+.elite-intro-premium .elite-intro-glint { inset: 12% 4%; mask-size: 86% auto; opacity: .7; background-size: 150% 100%; pointer-events: none; }
+.elite-intro-premium .elite-intro-orbit { width: min(88vw, 780px); top: 55%; opacity: .65; border-color: #d1485c55; box-shadow: 0 0 40px #c9324222, inset 0 0 30px #ffffff10; }
+.elite-intro-floor { position: absolute; z-index: -1; bottom: 8%; left: 15%; width: 70%; height: 18%; border-radius: 50%; background: radial-gradient(ellipse, #ffffff18, #c9344515 40%, transparent 70%); transform: rotateX(55deg); }
+.elite-intro-spot { position: absolute; width: 55vw; height: 70vh; top: -30vh; border-radius: 50%; pointer-events: none; opacity: .3; background: radial-gradient(ellipse, #ffffff30, transparent 65%); }
+.elite-intro-spot-left { left: -10vw; transform: rotate(-35deg); }
+.elite-intro-spot-right { right: -10vw; transform: rotate(35deg); background: radial-gradient(ellipse, #d2344940, transparent 65%); }
+.elite-intro-premium .elite-intro-caption { position: relative; margin-top: 12px; font-size: clamp(.55rem, 1.1vw, .75rem); color: #e6e1e2; text-shadow: 0 0 15px #ffffff45; }
+.elite-intro-premium .elite-intro-progress { height: 2px; margin-top: 12px; box-shadow: 0 0 12px #e65a6a75; }
+.team-entry { margin-top: 12px; font-size: .75rem; opacity: .75; }
+@media (prefers-reduced-motion: no-preference) {
+  .elite-intro-spot-left { animation: elite-intro-light-left 1.5s ease-out both; }
+  .elite-intro-spot-right { animation: elite-intro-light-right 1.5s ease-out both; }
+  .elite-intro-stage { animation: elite-intro-focus 1.5s cubic-bezier(.2,.7,.2,1) both; }
+}
+@keyframes elite-intro-light-left { from { opacity: 0; transform: translateX(-15vw) rotate(-45deg); } 45%, 100% { opacity: .5; transform: translateX(0) rotate(-25deg); } }
+@keyframes elite-intro-light-right { from { opacity: 0; transform: translateX(15vw) rotate(45deg); } 55%, 100% { opacity: .6; transform: translateX(0) rotate(25deg); } }
+@keyframes elite-intro-focus { from { opacity: 0; transform: scale(.93) translateY(10px); } 22%, 100% { opacity: 1; transform: none; } }
