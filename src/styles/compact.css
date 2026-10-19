@@ -115,3 +115,18 @@
   .home-artist-copy { gap: 12px; }
   .elite-section-watermark { opacity: .13; }
 }
+
+/* Banner de TV: relieve y movimiento automático, sin WebGL ni eventos extra. */
+.monitor-banner { perspective: 850px; width: min(100%, 340px); padding: 7px; }
+.monitor-banner-face { position: relative; isolation: isolate; display: flex; align-items: center; justify-content: center; gap: clamp(14px, 1.5vw, 26px); width: 100%; padding: 16px 20px; border: 1px solid #ffffff55; border-radius: 16px; background: linear-gradient(135deg, #3a3a3a, #111 48%, #260c12); box-shadow: inset 0 2px 1px #ffffff35, inset 0 -2px 1px #000, 0 5px 0 #050505, 0 12px 22px #0009, 0 0 26px #c6293e25; transform-style: preserve-3d; }
+.monitor-banner-face::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(115deg, transparent 30%, #ffffff22 48%, transparent 65%); background-size: 250% 100%; }
+.monitor-banner .monitor-logo { height: clamp(40px, 3.4vw, 68px); flex-shrink: 0; filter: drop-shadow(2px 3px 0 #666) drop-shadow(3px 5px 0 #000); transform: translateZ(18px); }
+.monitor-banner-copy { display: grid; gap: 5px; color: #fff; font-family: var(--font-display, sans-serif); font-weight: 800; font-size: clamp(.8rem, 1.05vw, 1.2rem); letter-spacing: .08em; white-space: nowrap; text-align: left; transform: translateZ(24px); text-shadow: 0 2px 2px #000; }
+.monitor-banner-copy small { font: inherit; color: #ef9ba7; }
+@media (prefers-reduced-motion: no-preference) {
+  .monitor-banner-face { animation: monitor-brand-float 9s ease-in-out infinite; }
+  .monitor-banner-face::after { animation: monitor-brand-light 9s ease-in-out infinite; }
+}
+@keyframes monitor-brand-float { 0%, 100% { transform: rotateX(4deg) rotateY(-7deg) translateY(0); } 50% { transform: rotateX(-3deg) rotateY(7deg) translateY(-5px); } }
+@keyframes monitor-brand-light { 0%, 100% { background-position: 100% 0; opacity: .3; } 50% { background-position: 0 0; opacity: .8; } }
+@media (min-width: 700px) and (max-width: 1100px) { .monitor-banner-copy { display: none; } .monitor-banner { max-width: 170px; } }

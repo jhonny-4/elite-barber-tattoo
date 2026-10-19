@@ -165,8 +165,11 @@ export function QueueMonitor() {
       data-state={queue ? "ready" : "loading"}
     >
       <header className="monitor-head">
-        <div className="monitor-brand">
-          <Brand className="monitor-logo" />
+        <div className="monitor-brand monitor-banner">
+          <div className="monitor-banner-face">
+            <Brand className="monitor-logo" />
+            <span className="monitor-banner-copy">TU ESTILO.<small>TU FIRMA.</small></span>
+          </div>
         </div>
         <div className="monitor-title">
           <p className="eyebrow">Barbería &amp; tatuaje · Cartagena</p>
