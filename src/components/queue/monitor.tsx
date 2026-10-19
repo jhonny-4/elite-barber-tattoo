@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePublicQueue } from "../../lib/use-public-queue";
 import { Brand } from "../media";
 import { Icon } from "../icons";
+import { CallSound } from "./call-sound";
 import { defaultQueueUrl, readQueueUrl, useQrImage, validQueueUrl } from "./qr";
 
 const ZONE = "America/Bogota";
@@ -286,6 +287,7 @@ export function QueueMonitor() {
       </div>
 
       <footer className="monitor-foot">
+        <CallSound numbers={queue ? called.map(ticket => ticket.number) : null} />
         <MonitorJoin />
         <p className="monitor-privacy">
           <Icon name="lock" />

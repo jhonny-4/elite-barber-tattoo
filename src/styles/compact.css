@@ -130,3 +130,4 @@
 @keyframes monitor-brand-float { 0%, 100% { transform: rotateX(4deg) rotateY(-7deg) translateY(0); } 50% { transform: rotateX(-3deg) rotateY(7deg) translateY(-5px); } }
 @keyframes monitor-brand-light { 0%, 100% { background-position: 100% 0; opacity: .3; } 50% { background-position: 0 0; opacity: .8; } }
 @media (min-width: 700px) and (max-width: 1100px) { .monitor-banner-copy { display: none; } .monitor-banner { max-width: 170px; } }
+.monitor-audio { display: grid; justify-items: center; gap: 6px; max-width: 270px; } .monitor-audio .button { min-height: 44px; white-space: normal; text-align: center; font-size: .72rem; } .monitor-audio > span { font-size: .75rem; color: #efb0ba; }
