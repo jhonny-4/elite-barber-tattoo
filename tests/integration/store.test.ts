@@ -27,6 +27,7 @@ test("HTTP: acepta origen LAN igual a Host y rechaza origen ajeno", async () => 
         Origin: origin,
         "Content-Type": "application/json",
         "Idempotency-Key": "origin-test-0001",
+        "x-elite-role": "dueno",
       },
       body: JSON.stringify({ type: "notifications.read" }),
     });

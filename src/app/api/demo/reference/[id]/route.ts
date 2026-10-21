@@ -1,7 +1,7 @@
 import { readReference } from "../../../../../server/demo/store/repository.ts";
 import { isReferenceId } from "../../../../../server/demo/store/references.ts";
 import { isStoreServiceError } from "../../../../../server/demo/store/state.ts";
-import { noStore } from "../../../../../server/demo/http.ts";
+import { accessFrom, noStore } from "../../../../../server/demo/http.ts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,9 +20,11 @@ const notFound = () =>
 
 /** Imagen de referencia de una solicitud de tatuaje (datos de demostración, sin autenticación). */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  // Las referencias de tatuaje solo las ve el dueño.
+  if (accessFrom(request) !== "dueno") return notFound();
   const { id } = await params;
   if (!isReferenceId(id)) return notFound();
   try {

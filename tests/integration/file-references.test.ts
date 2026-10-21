@@ -43,7 +43,7 @@ test("archivo: la imagen va a references/<id>.bin, nunca al estado, y reset la b
   assert.match(url, /^\/api\/demo\/reference\/[0-9a-f-]{36}$/);
   assert.deepEqual(await files(), [`${id}.bin`]);
 
-  const image = await getReference(new Request(`http://localhost${url}`), {
+  const image = await getReference(new Request(`http://localhost${url}`, { headers: { "x-elite-role": "dueno" } }), {
     params: Promise.resolve({ id }),
   });
   assert.equal(image.status, 200);
@@ -54,7 +54,7 @@ test("archivo: la imagen va a references/<id>.bin, nunca al estado, y reset la b
     Buffer.from(PNG_BASE64, "base64"),
   );
 
-  const demo = await getDemo();
+  const demo = await getDemo(new Request("http://localhost:3000/api/demo"));
   assert.equal(demo.headers.get("x-elite-store"), "file");
   assert.ok(!(await demo.text()).includes("data:image"));
 

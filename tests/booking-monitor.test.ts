@@ -68,7 +68,7 @@ test("HTTP: un cliente registra llegada y otro lee llamada y atención en el mon
   };
   setDemoBackendForTesting(backend);
   const post = async (action: string) => {
-    const response = await commandResponse(new Request("http://elite.test/api/demo/bookings", { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": crypto.randomUUID() }, body: JSON.stringify({ type: "booking.change", id: "appointment", action }) }));
+    const response = await commandResponse(new Request("http://elite.test/api/demo/bookings", { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": crypto.randomUUID(), "x-elite-role": "dueno" }, body: JSON.stringify({ type: "booking.change", id: "appointment", action }) }));
     assert.equal(response.status, 200, await response.text());
   };
   const monitor = async () => (await monitorResponse(new Request("http://elite.test/api/demo/queue"))).json();

@@ -33,6 +33,8 @@ const request = (
       Host: "localhost:3000",
       "Content-Type": "application/json",
       "Idempotency-Key": createDemoId(),
+      // Por defecto actúa el dueño; las pruebas de acceso pasan "public" explícitamente.
+      "x-elite-role": "dueno",
       ...headers,
     },
     body,
@@ -101,7 +103,7 @@ test("archivo: las lecturas concurrentes con escrituras nunca ven un estado parc
 test("archivo: un state.json truncado responde 503 con mensaje claro y reset lo recupera", async () => {
   await writeFile(join(folder, "state.json"), '{"version":1,"schema":4,"rev');
   for (const response of [
-    await getDemo(),
+    await getDemo(new Request("http://localhost:3000/api/demo")),
     await getQueue(new Request("http://localhost:3000/api/demo/queue")),
     await commandResponse(
       request(JSON.stringify({ type: "notifications.read" })),
@@ -126,7 +128,24 @@ test("archivo: un state.json truncado responde 503 con mensaje claro y reset lo 
     assert.equal(response.status, 503);
     assert.match(await errorOf(response), /Datos incompatibles/);
   }
-  const reset = await commandResponse(request(JSON.stringify({ type: "reset" })));
+  const denied = await commandResponse(request(JSON.stringify({ type: "reset" }), { "x-elite-role": "public" }));
+  assert.equal(denied.status, 403, "un visitante no puede reiniciar los datos");
+  const reset = await commandResponse(request(JSON.stringify({ type: "reset" }), { "x-elite-role": "dueno" }));
   assert.equal(reset.status, 200);
-  assert.equal((await getDemo()).status, 200);
+  assert.equal((await getDemo(new Request("http://localhost:3000/api/demo"))).status, 200);
+});
+
+test("la API no entrega datos personales a visitantes ni acepta comandos del equipo", async () => {
+  const created = await commandResponse(
+    request(JSON.stringify({ type: "queue.join", input: { name: "Visitante Prueba", phone: "3000000009", serviceId: "corte", barberId: "any", source: "qr" } }), { "Idempotency-Key": createDemoId(), "x-elite-role": "public" }),
+  );
+  assert.equal(created.status, 200);
+  const publicState = await (await getDemo(new Request("http://localhost:3000/api/demo"))).json();
+  assert.ok(publicState.queue.every((t: { name: string; phone: string }) => t.name === "" && t.phone === ""));
+  const staffState = await (await getDemo(new Request("http://localhost:3000/api/demo", { headers: { "x-elite-role": "dueno" } }))).json();
+  assert.ok(staffState.queue.some((t: { name: string }) => t.name === "Visitante Prueba"));
+  const change = await commandResponse(
+    request(JSON.stringify({ type: "queue.change", id: staffState.queue[0].id, action: "call" }), { "Idempotency-Key": createDemoId(), "x-elite-role": "public" }),
+  );
+  assert.equal(change.status, 403);
 });

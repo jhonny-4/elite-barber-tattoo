@@ -77,7 +77,7 @@ const post = (body: unknown, key = createDemoId()) =>
     }),
   );
 const referenceRequest = (id: string) =>
-  getReference(new Request(`https://elite.example/api/demo/reference/${id}`), {
+  getReference(new Request(`https://elite.example/api/demo/reference/${id}`, { headers: { "x-elite-role": "dueno" } }), {
     params: Promise.resolve({ id }),
   });
 

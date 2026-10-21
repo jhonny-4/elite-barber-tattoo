@@ -1,6 +1,39 @@
 import { execute } from "./store/repository.ts";
 import { isStoreServiceError } from "./store/state.ts";
-import type { DemoCommand } from "../../services/contracts/demo.ts";
+import type { DemoCommand, SharedState } from "../../services/contracts/demo.ts";
+
+/** Rol que fija proxy.ts tras verificar la sesión; sin cabecera válida es público. */
+export type Access = "public" | "barbero" | "dueno";
+export function accessFrom(request: Request): Access {
+  const role = request.headers.get("x-elite-role");
+  return role === "dueno" || role === "barbero" ? role : "public";
+}
+
+const publicCommands = new Set(["booking.create", "tattoo.create", "queue.join"]);
+const ownerCommands = new Set(["team.save", "tattoo.change", "notifications.read", "reset"]);
+function permitted(type: string, access: Access) {
+  if (publicCommands.has(type)) return true;
+  if (ownerCommands.has(type)) return access === "dueno";
+  return access !== "public";
+}
+
+/**
+ * Estado sin datos personales para visitantes: conserva horarios para calcular
+ * disponibilidad y solo el elemento que acaba de crear quien hace la petición.
+ */
+export function stateFor(state: SharedState, access: Access, ownId?: string): SharedState {
+  if (access !== "public") return state;
+  const hide = <T extends { id: string; name: string; phone: string }>(item: T): T =>
+    item.id === ownId ? item : { ...item, name: "", phone: "", ...("token" in item ? { token: "" } : {}) };
+  return {
+    ...state,
+    bookings: state.bookings.map(hide),
+    requests: state.requests.filter((r) => r.id === ownId),
+    queue: state.queue.map(hide),
+    notifications: [],
+    receipts: [],
+  };
+}
 class RequestError extends Error {
   status: number;
   constructor(message: string, status = 400) {
@@ -83,8 +116,14 @@ export async function commandResponse(request: Request, allowed?: string[]) {
       throw new RequestError("Operación inválida.");
     if (allowed && !allowed.includes(command?.type))
       throw new RequestError("Operación no permitida en este endpoint.");
+    const access = accessFrom(request);
+    if (!permitted(command.type, access))
+      throw new RequestError("Inicia sesión con una cuenta autorizada.", 403);
     const result = await execute(command, key);
-    return Response.json(result, { headers: noStore });
+    return Response.json(
+      { ...result, state: stateFor(result.state, access, result.resultId) },
+      { headers: noStore },
+    );
   } catch (error) {
     // 503: el almacenamiento falló y el resultado puede ser incierto; el cliente
     // conserva su Idempotency-Key para reintentar sin duplicar.

@@ -26,6 +26,23 @@ export async function proxy(request: NextRequest) {
   );
   const { data } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
+  if (path.startsWith("/api/demo")) {
+    // Rol verificado para la API: siempre se sobrescribe, nunca se acepta del cliente.
+    let role = "public";
+    if (data.user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      if (profile?.role === "dueno" || profile?.role === "barbero") role = profile.role;
+    }
+    const headers = new Headers(request.headers);
+    headers.set("x-elite-role", role);
+    const forwarded = NextResponse.next({ request: { headers } });
+    for (const cookie of response.cookies.getAll()) forwarded.cookies.set(cookie);
+    return forwarded;
+  }
   if (!data.user && protectedPaths.some((p) => path === p || path.startsWith(`${p}/`))) {
     const url = request.nextUrl.clone();
     url.pathname = "/ingresar";
@@ -36,5 +53,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/administracion/:path*", "/gestion/:path*", "/barbero/:path*", "/cuenta/:path*", "/ingresar"],
+  matcher: ["/administracion/:path*", "/gestion/:path*", "/barbero/:path*", "/cuenta/:path*", "/ingresar", "/api/demo/:path*"],
 };

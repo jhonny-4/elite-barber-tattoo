@@ -2,14 +2,14 @@ import {
   readShared,
   storeInfo,
 } from "../../../server/demo/store/repository.ts";
-import { commandResponse, noStore } from "../../../server/demo/http.ts";
+import { accessFrom, commandResponse, noStore, stateFor } from "../../../server/demo/http.ts";
 import { isStoreServiceError } from "../../../server/demo/store/state.ts";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const state = await readShared();
-    return Response.json(state, {
+    return Response.json(stateFor(state, accessFrom(request)), {
       headers: { ...noStore, "X-Elite-Store": storeInfo().kind },
     });
   } catch (error) {
