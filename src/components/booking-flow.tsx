@@ -176,7 +176,7 @@ export function BookingFlow() {
     setDate(
       dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) && dateParam >= now && dateParam <= shiftDate(now, 60)
         ? dateParam
-        : shiftDate(now, 1),
+        : now,
     );
     setClock(Date.now());
     const tick = setInterval(() => {
