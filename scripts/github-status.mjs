@@ -64,6 +64,33 @@ console.log(
     : [],
 );
 const checks = await get("/commits/main/check-runs");
+const workflows = await get("/actions/workflows");
+console.log(
+  "Workflows:",
+  workflows.status,
+  workflows.data.workflows?.map((w) => ({
+    name: w.name,
+    state: w.state,
+    path: w.path,
+  })),
+);
+const runs = await get("/actions/runs?per_page=3");
+console.log(
+  "Ejecuciones:",
+  runs.status,
+  runs.data.workflow_runs?.map((r) => ({
+    id: r.id,
+    status: r.status,
+    conclusion: r.conclusion,
+    sha: r.head_sha?.slice(0, 7),
+  })),
+);
+const permissions = await get("/actions/permissions");
+console.log(
+  "Actions habilitado:",
+  permissions.status,
+  permissions.data.enabled,
+);
 console.log(
   "Comprobaciones main:",
   checks.status,

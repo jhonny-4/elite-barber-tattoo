@@ -31,6 +31,8 @@ Migraciones `20261020000001` a `20261021000009` aplicadas al Supabase conectado,
 - Ambas pruebas SQL se ejecutaron contra Supabase dentro de transacciones con ROLLBACK; sin conservar usuarios, reservas, turnos ni correos de prueba.
 - `node scripts/qa/production-smoke.mjs <URL>` comprueba despliegue, APIs privadas, monitor sin contactos y protección de origen sin crear datos.
 - Build final aprobado; 8 comprobaciones HTTP aprobadas contra el build local de producción. GitHub Actions ejecuta también la prueba del handler compilado. Identificador de entrega para comprobar Hostinger: `elite-supabase-20261021-1`, disponible en `/release.json`.
+- Publicación comprobada: commit funcional `db2d110` subido a `main` y `feat/produccion`; Hostinger desplegó automáticamente. Las 8 comprobaciones HTTP también pasaron en `https://elite-barber-tatto.com`, y una foto nueva del ZIP devolvió 200. No se crearon datos ni se enviaron correos reales para estas comprobaciones.
+- GitHub tiene Actions habilitado y el workflow activo. Su API no mostraba ejecuciones al verificar el primer push; no confundir esto con el autodespliegue de Hostinger, que sí quedó comprobado. Los checks de código se ejecutaron localmente. `scripts/github-status.mjs` permite consultar ambos estados sin mostrar credenciales.
 - El runtime de navegador integrado falló al inicializar en esta sesión. No afirmar revisión visual del panel nuevo ni pruebas físicas de PWA/cámara.
 
 ## Continuar sin reconstruir
