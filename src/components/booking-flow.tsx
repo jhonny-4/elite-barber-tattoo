@@ -152,8 +152,10 @@ export function BookingFlow() {
           barbers: BarberSummary[];
           services: ServiceSummary[];
           barberServices: BarberServiceLink[];
+          paymentsEnabled?: boolean;
         }) => {
           setCatalog(d);
+          setPaymentsEnabled(Boolean(d.paymentsEnabled));
           const selected =
             d.services.find((s) => s.slug === serviceParam) ?? d.services[0];
           setServiceId(selected?.slug ?? "");
