@@ -23,8 +23,12 @@ export async function GET(request: Request) {
       .order("created_at", { ascending: false })
       .limit(slug ? 60 : 80);
     if (error) throw new Error("No se pudo leer la galería.");
+    const { data: barbers, error: barberError } = await db.from("barbers").select("id,display_name");
+    if (barberError) throw new Error("No se pudo leer el nombre del profesional.");
+    const names = new Map(barbers.map((b) => [b.id, b.display_name]));
     const items = (await toViews(data)).map((v) => ({
       id: v.id, kind: v.kind, title: v.title, alt: v.alt, width: v.width, height: v.height, url: v.url, posterUrl: v.posterUrl,
+      barberName: names.get(v.barberId) ?? "Elite",
     }));
     return Response.json({ items }, { headers: { "Cache-Control": "public, max-age=30, s-maxage=60, stale-while-revalidate=300" } });
   } catch (e) {

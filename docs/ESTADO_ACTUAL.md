@@ -1,5 +1,14 @@
 # Estado vigente — 21 de octubre de 2026
 
+## 2026-10-21 · Portafolio de Nelson e Ivan
+
+- Importado `Portafolio_Barberia_Elite_Nelson_Ivan.zip` a la galería real: Nelson, 7 fotos y 9 videos; Ivan, 3 fotos y 5 videos. Omitida una foto idéntica repetida de Nelson; las variantes distintas se conservan. Identidad comprobada con los slugs y nombres de producción.
+- 24 registros publicados, con título, descripción, autor y dimensiones. Fotos WebP en el bucket público `galeria`; videos MP4 H.264/AAC en R2 con miniaturas WebP. Originales y manifiesto de importación quedan en `var/`, ignorados por Git. No se modificaron reservas ni cuentas.
+- La galería de portada carga las publicaciones del panel y mantiene el catálogo previo de tatuajes. La API pública incluye `barberName`; el autor permanece visible en tarjetas pequeñas. Los trabajos también están disponibles en “Ver trabajos” de cada barbero y en el monitor.
+- Importador repetible: `node scripts/import-barber-portfolio.mjs prepare|publish|verify`. `prepare` solo procesa archivos locales; `publish` y `verify` usan explícitamente `.env.hostinger`, sin imprimir secretos. `publish` requiere autorización de producción; no sobrescribe publicaciones existentes.
+- TypeScript, ESLint, 86 pruebas Node y build aprobados. Pruebas SQL locales: 5 archivos aprobados; `01_seguridad` y `07_pausas` bloqueados por un perfil existente que viola `profiles_barber_id_key` al preparar sus fixtures. No se reinició ni limpió la base local; no hay cambios de esquema en esta entrega.
+- Identificador de despliegue: `elite-portafolio-barberos-20261021-1`. QA de publicación y navegador: `node scripts/qa/barber-gallery.mjs https://elite-barber-tatto.com` (solo lectura; comprueba los 24 archivos y reproducción en escritorio/móvil).
+
 Fuente de continuidad para Codex y Claude. Leer antes que documentos históricos.
 Actualizar este archivo con cada entrega, incluyendo verificaciones y pendientes reales.
 

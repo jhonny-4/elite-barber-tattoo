@@ -1145,3 +1145,4 @@
   text-align: center;
 }
 .gallery-description{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:8px;font-size:12px;line-height:1.5;color:var(--muted,#aaa)}
+.gallery-item[data-barber-work] .gallery-kind-author { display: inline; }
