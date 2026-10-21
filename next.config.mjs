@@ -36,6 +36,8 @@ const securityHeaders = [
 export default function nextConfig(phase) {
   return {
     poweredByHeader: false,
+    // Hostinger despliega el servidor autónomo que genera Next (.next/standalone).
+    output: "standalone",
     serverExternalPackages: ["@netlify/blobs"],
     // allowedDevOrigins solo lo usa `next dev`; el build y Netlify no lo necesitan.
     ...(phase === PHASE_DEVELOPMENT_SERVER
