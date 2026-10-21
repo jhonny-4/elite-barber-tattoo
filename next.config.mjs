@@ -1,9 +1,9 @@
-import type { NextConfig } from "next";
-import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
+// JavaScript (no TypeScript): Hostinger no puede cargar el SWC nativo para transpilar la configuración.
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
 import { networkInterfaces } from "node:os";
 
 /** IPv4 de la red local: solo para abrir `next dev` desde un celular del mismo Wi-Fi. */
-function localAddresses(): string[] {
+function localAddresses() {
   try {
     return Object.values(networkInterfaces()).flatMap((entries) =>
       (entries ?? [])
@@ -32,7 +32,8 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
 ];
 
-export default function nextConfig(phase: string): NextConfig {
+/** @param {string} phase @returns {import('next').NextConfig} */
+export default function nextConfig(phase) {
   return {
     poweredByHeader: false,
     serverExternalPackages: ["@netlify/blobs"],
