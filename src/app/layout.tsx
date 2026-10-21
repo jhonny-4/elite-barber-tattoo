@@ -15,12 +15,12 @@ import "../styles/index.css";
 
 // URL pública para metadatos absolutos (vista previa al compartir). Netlify define
 // URL (producción) y DEPLOY_PRIME_URL (despliegues de vista previa) durante el build.
+// Dominio público: WhatsApp, Instagram y Facebook necesitan URLs absolutas para la vista previa.
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.CONTEXT && process.env.CONTEXT !== "production"
-    ? process.env.DEPLOY_PRIME_URL
-    : process.env.URL) ??
-  "http://localhost:3000";
+  (process.env.NODE_ENV === "production"
+    ? "https://elite-barber-tatto.com"
+    : "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
