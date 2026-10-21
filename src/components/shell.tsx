@@ -304,7 +304,6 @@ export function Footer() {
           <Link href="/reservar">Reservar barbería</Link>
           <Link href="/tatuaje">Solicitar un tatuaje</Link>
           <Link href="/turnos">Tomar turno</Link>
-          <Link href="/pantalla-turnos">Pantalla de turnos</Link>
         </nav>
         <nav className="footer-col" aria-label="Redes y equipo">
           <h3>Síguenos</h3>

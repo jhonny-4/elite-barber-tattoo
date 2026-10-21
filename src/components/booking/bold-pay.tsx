@@ -50,3 +50,23 @@ export function BoldPay({ checkout, email, name }: { checkout: BoldCheckout; ema
     </section>
   );
 }
+
+/**
+ * Vista del pago en línea mientras Bold no está activo: mismo marco 3D, botón deshabilitado.
+ * Se reemplaza solo por <BoldPay/> cuando el servidor entrega un checkout firmado.
+ */
+export function BoldPayPreview({ amount }: { amount: number }) {
+  return (
+    <section className="bold-pay" aria-labelledby="bold-preview-title">
+      <p className="eyebrow"><Icon name="lock" /> Pago en línea</p>
+      <h3 id="bold-preview-title">Paga con Bold</h3>
+      <p className="bold-pay-amount">{currency(amount)} <small>COP</small></p>
+      <p className="bold-pay-note">Muy pronto podrás pagar tu cita aquí con tarjeta, PSE o Nequi. Por ahora pagas en el local.</p>
+      <div className="bold-pay-frame">
+        <button type="button" className="bold-pay-button" disabled aria-describedby="bold-preview-title">
+          Pagar con <strong>Bold</strong> · Próximamente
+        </button>
+      </div>
+    </section>
+  );
+}

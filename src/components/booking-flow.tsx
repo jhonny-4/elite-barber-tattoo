@@ -30,7 +30,7 @@ import {
   type SummaryData,
 } from "./booking/summary";
 import { TimeSlots } from "./booking/time-slots";
-import { BoldPay } from "./booking/bold-pay";
+import { BoldPay, BoldPayPreview } from "./booking/bold-pay";
 import type { BoldCheckout } from "../server/payments/bold";
 
 type Errors = ContactErrors;
@@ -483,6 +483,7 @@ export function BookingFlow() {
               </span>
             </p>
           )}
+          {!result.payment && <BoldPayPreview amount={result.price_cop} />}
           <div className="button-row bk-success-actions">
             <Link
               className="button button-outline"
