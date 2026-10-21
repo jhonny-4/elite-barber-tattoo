@@ -39,6 +39,8 @@ export type TattooRequest = {
   /** Ruta servida por la API para ver la referencia guardada (`/api/demo/reference/{id}`). */
   referenceUrl?: string;
   status: (typeof tattooStatuses)[number];
+  /** Cotización manual (COP enteros); solo la llena el panel real. */
+  quote?: { amount: number; deposit: number; notes: string };
 };
 export type DemoState = {
   version: 1;

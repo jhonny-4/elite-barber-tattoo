@@ -1,0 +1,673 @@
+/* ------------------------------------------------------------------ */
+/* Panel: bloqueos, ficha de cliente, caja y cotización de tatuajes    */
+/* Amplía el diseño de admin.css (negro/blanco/gris + acento rojo).     */
+/* Animaciones solo con transform/opacity y apagadas con reduced-motion. */
+/* ------------------------------------------------------------------ */
+
+.pnl-member {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.pnl-card {
+  container-type: inline-size;
+  min-width: 0;
+  padding: clamp(16px, 2.2vw, 24px);
+  overflow: hidden;
+}
+
+/* Brillo sutil que cruza la tarjeta al pasar el cursor (decorativo). */
+.pnl-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.05) 50%, transparent 65%);
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 700ms var(--ease-out),
+    opacity 300ms;
+}
+
+@media (hover: hover) {
+  .pnl-card:hover::after {
+    transform: translateX(120%);
+    opacity: 1;
+  }
+}
+
+.pnl-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 14px;
+  margin-bottom: 14px;
+}
+
+.pnl-head h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pnl-head h3 svg {
+  width: 20px;
+  height: 20px;
+  color: #e11d2e;
+}
+
+.pnl-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pnl-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.025);
+  animation: pnl-rise 220ms var(--ease-out);
+}
+
+.pnl-form label,
+.pnl-quote-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pnl-form input,
+.pnl-quote-form :is(input, textarea) {
+  min-height: 46px;
+  padding-block: 10px;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.pnl-form .button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.pnl-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.03);
+  color: var(--text-soft);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.pnl-note svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+
+.pnl-note[data-tone="alert"] {
+  border-color: rgb(225 29 46 / 0.55);
+  background: rgb(225 29 46 / 0.09);
+  color: #ffd9dd;
+}
+
+.pnl-note[data-tone="ok"] svg {
+  color: #9be7a8;
+}
+
+.pnl-list {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pnl-list > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.02);
+  transition:
+    transform 160ms var(--ease-out),
+    border-color 160ms;
+}
+
+@media (hover: hover) {
+  .pnl-list > li:hover {
+    transform: translateY(-1px);
+    border-color: var(--line-strong);
+  }
+}
+
+.pnl-list strong,
+.pnl-history strong {
+  display: block;
+  font-weight: 700;
+}
+
+.pnl-list small,
+.pnl-history small {
+  display: block;
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+}
+
+/* ------------------------------------------------------------------ */
+/* Ficha de cliente                                                    */
+/* ------------------------------------------------------------------ */
+
+.pnl-person {
+  padding: 4px 8px 4px 4px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 160ms var(--ease-out),
+    background 160ms;
+}
+
+.pnl-person:hover {
+  background: rgb(255 255 255 / 0.07);
+  transform: translateX(2px);
+}
+
+.pnl-person:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+.pnl-sheet {
+  width: min(100% - 24px, 640px);
+  max-width: none;
+  max-height: calc(100dvh - 24px);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgb(225 29 46 / 0.1), transparent 70%),
+    linear-gradient(180deg, #191919 0%, #0d0d0d 100%);
+  color: var(--text);
+  box-shadow:
+    var(--shadow-lift),
+    0 0 0 1px rgb(0 0 0 / 0.6);
+}
+
+.pnl-sheet[open] {
+  animation: pnl-rise 240ms var(--ease-out);
+}
+
+.pnl-sheet::backdrop {
+  background: rgb(0 0 0 / 0.74);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.pnl-sheet-body {
+  display: grid;
+  gap: 18px;
+  padding: clamp(18px, 4vw, 30px);
+}
+
+.pnl-sheet-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.pnl-sheet-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 1.3rem + 1.4vw, 2.3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.pnl-sheet-head .eyebrow {
+  margin: 0 0 4px;
+}
+
+.pnl-sheet-avatar {
+  width: 52px;
+  height: 52px;
+  font-size: 1.2rem;
+}
+
+.pnl-kpis3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+}
+
+.pnl-kpis3 dd.pnl-money {
+  font-size: clamp(1.1rem, 0.9rem + 1vw, 1.5rem);
+}
+
+.pnl-money {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.pnl-notebox {
+  display: grid;
+  gap: 8px;
+}
+
+.pnl-notebox textarea {
+  min-height: 92px;
+}
+
+.pnl-notebar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pnl-sub {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pnl-history {
+  display: grid;
+  gap: 8px;
+  max-height: 280px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.pnl-history > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.02);
+}
+
+.pnl-history-end {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Caja                                                                */
+/* ------------------------------------------------------------------ */
+
+.pnl-caja-bar {
+  align-items: end;
+}
+
+.pnl-caja-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pnl-kpis5 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pnl-kpis5 > div:first-child {
+  grid-column: 1 / -1;
+}
+
+.pnl-kpis5 dd.pnl-money {
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+}
+
+.pnl-kpis5 > div[data-tone="alert"] {
+  border-color: rgb(225 29 46 / 0.55);
+  background: rgb(225 29 46 / 0.08);
+}
+
+.pnl-caja-groups {
+  display: grid;
+  gap: 16px;
+}
+
+.pnl-sub-total {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+}
+
+.pnl-split {
+  margin: -6px 0 0;
+}
+
+.pnl-caja-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.caja-print {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cotización de tatuajes                                              */
+/* ------------------------------------------------------------------ */
+
+.pnl-quote {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.pnl-quote-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.025);
+  animation: pnl-rise 220ms var(--ease-out);
+}
+
+.pnl-quote-form small {
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.pnl-quote-wide {
+  grid-column: 1 / -1;
+}
+
+.pnl-quote-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.pnl-quote-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 0;
+}
+
+.pnl-quote-summary > div {
+  min-width: 140px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-left: 3px solid #e11d2e;
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.03);
+}
+
+.pnl-quote-summary dt {
+  color: var(--text-muted);
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pnl-quote-summary dd {
+  margin: 2px 0 0;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.pnl-quote-summary .pnl-quote-notes {
+  flex: 1 1 100%;
+}
+
+.pnl-quote-summary .pnl-quote-notes dd {
+  font-weight: 500;
+  white-space: pre-wrap;
+}
+
+/* ------------------------------------------------------------------ */
+/* Página pública /cotizacion/[token]                                  */
+/* ------------------------------------------------------------------ */
+
+.quote-page {
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+}
+
+.quote-lead {
+  max-width: 46ch;
+  color: var(--text-soft);
+}
+
+.quote-figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+}
+
+.quote-figures > div {
+  padding: 18px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgb(255 255 255 / 0.05), transparent 60%),
+    linear-gradient(180deg, #151515 0%, #0e0e0e 100%);
+  box-shadow: var(--shadow-float);
+}
+
+.quote-figures > div:first-child {
+  border-top: 3px solid #e11d2e;
+}
+
+.quote-figures dt {
+  color: var(--text-muted);
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.quote-figures dd {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.1rem + 2vw, 2.2rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.quote-figures small {
+  font-size: 0.55em;
+  color: var(--text-muted);
+}
+
+.quote-notes {
+  white-space: pre-wrap;
+}
+
+.quote-fine {
+  max-width: 50ch;
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+}
+
+@keyframes pnl-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (min-width: 760px) {
+  .pnl-kpis5 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .pnl-form {
+    grid-template-columns: 1fr 1fr auto;
+  }
+
+  .pnl-form .button {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .pnl-form,
+  .pnl-quote-form {
+    grid-template-columns: 1fr;
+  }
+
+  .pnl-sheet-head {
+    grid-template-columns: auto 1fr;
+  }
+
+  .pnl-sheet-head > .icon-button {
+    grid-column: 2;
+    justify-self: end;
+    grid-row: 1;
+  }
+
+  .quote-figures {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pnl-form,
+  .pnl-quote-form,
+  .pnl-sheet[open] {
+    animation: none;
+  }
+
+  .pnl-card::after,
+  .pnl-list > li,
+  .pnl-person {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Cierre del día: al imprimir solo sale la hoja de caja, en blanco y negro. */
+/* ------------------------------------------------------------------ */
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .caja-print,
+  .caja-print * {
+    visibility: visible;
+  }
+
+  .caja-print {
+    position: absolute;
+    inset: 0 auto auto 0;
+    display: block;
+    width: 100%;
+    padding: 0;
+    background: #fff;
+    color: #000;
+    font-family: var(--font-sans);
+    font-size: 11pt;
+  }
+
+  .caja-print h1 {
+    margin: 0 0 4pt;
+    font-size: 18pt;
+  }
+
+  .caja-print h2 {
+    display: flex;
+    justify-content: space-between;
+    margin: 16pt 0 6pt;
+    padding-bottom: 3pt;
+    border-bottom: 1.5pt solid #000;
+    font-size: 13pt;
+  }
+
+  .caja-print table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .caja-print th,
+  .caja-print td {
+    padding: 4pt 6pt;
+    border-bottom: 0.5pt solid #999;
+    text-align: left;
+  }
+
+  .caja-print td:last-child,
+  .caja-print th:last-child {
+    text-align: right;
+  }
+
+  .caja-print ul {
+    margin: 0;
+    padding-left: 16pt;
+  }
+
+  .caja-sign {
+    margin-top: 36pt;
+  }
+}

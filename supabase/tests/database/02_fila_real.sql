@@ -1,4 +1,5 @@
 begin;
+select plan(1);
 do $$
 declare b uuid:=gen_random_uuid(); s uuid:=gen_random_uuid(); ticket uuid:=gen_random_uuid(); r public.queue_tickets; r2 public.queue_tickets;
 begin
@@ -20,4 +21,6 @@ begin
   if r2.number<=r.number then raise exception 'Se reutilizó número de turno'; end if;
   if (select public from storage.buckets where id='referencias') then raise exception 'Referencias públicas'; end if;
 end $$;
+select pass('02_fila_real');
+select * from finish();
 rollback;

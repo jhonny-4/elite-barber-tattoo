@@ -82,6 +82,7 @@ function toState(api: Api, revision: number): SharedState {
     size: str(r.size),
     referenceName: r.reference_path ? "Referencia" : null,
     status: fromSnake(str(r.status)) as TattooRequest["status"],
+    quote: typeof r.quote_cop === "number" ? { amount: r.quote_cop, deposit: Number(r.deposit_cop ?? 0), notes: str(r.quote_notes) } : undefined,
   }));
   const team: TeamMember[] = api.barbers.map((b) => {
     const rows = api.hours.filter((h) => h.barber_id === b.id);

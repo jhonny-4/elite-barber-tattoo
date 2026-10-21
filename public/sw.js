@@ -1,5 +1,5 @@
 /* Service worker: never cache API responses or queue writes. */
-const CACHE = "elite-premium-presentation-v10";
+const CACHE = "elite-premium-presentation-v11";
 const OFFLINE = "/offline.html";
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -48,4 +48,50 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.match(request).then((hit) => hit || fetch(request)),
     );
+});
+/* Avisos push del equipo (panel cerrado). Solo se abren rutas internas. */
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { body: event.data ? event.data.text() : "" };
+  }
+  const url =
+    typeof data.url === "string" && /^\/(?!\/)/.test(data.url)
+      ? data.url
+      : "/administracion";
+  event.waitUntil(
+    self.registration.showNotification(
+      typeof data.title === "string" ? data.title : "Novedad en Elite",
+      {
+        body: typeof data.body === "string" ? data.body : "",
+        icon: "/pwa/icons/elite-192.png",
+        badge: "/pwa/icons/elite-192.png",
+        vibrate: [200, 100, 200],
+        tag: `elite-${Date.now()}`,
+        data: { url },
+      },
+    ),
+  );
+});
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target = new URL(
+    event.notification.data?.url || "/administracion",
+    self.location.origin,
+  ).href;
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((list) => {
+        const open = list.find((c) => c.url.startsWith(self.location.origin));
+        if (!open) return self.clients.openWindow(target);
+        // navigate() solo funciona en pestañas controladas; si falla, se abre una nueva.
+        return open
+          .focus()
+          .then(() => open.navigate(target))
+          .catch(() => self.clients.openWindow(target));
+      }),
+  );
 });

@@ -2730,3 +2730,6 @@
 .panel-alerts { display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem; max-width: 72rem; margin: 0 auto 0.75rem; padding: 0 1rem; }
 .panel-alerts .adm-hint { max-width: 26rem; text-align: right; }
 @media (max-width: 640px) { .panel-alerts { align-items: stretch; } .panel-alerts .button { width: 100%; justify-content: center; } }
+.panel-alert-row { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; max-width: 72rem; margin: 0 auto 0.75rem; padding: 0 1rem; }
+.panel-alert-row .panel-alerts { margin: 0; padding: 0; }
+@media (max-width: 640px) { .panel-alert-row { flex-direction: column; } }

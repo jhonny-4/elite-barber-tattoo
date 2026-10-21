@@ -31,6 +31,7 @@ export function Icon({
     | "alert"
     | "mail"
     | "offline"
+    | "cash"
     | "expand"
     | "collapse"
     | "download"
@@ -181,6 +182,13 @@ export function Icon({
         <path d="M2.5 9a14 14 0 0 1 5-2.9M21.5 9a14 14 0 0 0-9.3-3.5" />
         <path d="M5.5 12.5a9 9 0 0 1 3.8-2.2M18.5 12.5a9 9 0 0 0-2.6-1.8" />
         <path d="M9 16a4.5 4.5 0 0 1 6 0M12 19.5h.01M3.5 3.5l17 17" />
+      </>
+    ),
+    cash: (
+      <>
+        <rect x="2.5" y="6" width="19" height="12" rx="2.5" />
+        <circle cx="12" cy="12" r="2.8" />
+        <path d="M6 9.5v.01M18 14.5v.01" />
       </>
     ),
     expand: <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />,

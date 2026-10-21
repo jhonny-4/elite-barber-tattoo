@@ -11,6 +11,8 @@ import { ConfirmAction } from "../confirm-action";
 import { Icon } from "../icons";
 import { AgendaSection } from "./agenda";
 import { BarberView } from "./barber-view";
+import { BlockPanel } from "./block-panel";
+import { CajaSection } from "./caja-section";
 import { ClientsSection, groupClients } from "./clients";
 import { isClosedBooking } from "./labels";
 import { NotificationsSection } from "./notifications";
@@ -19,6 +21,7 @@ import { QueueSection } from "./queue-section";
 import { useCommandRunner, useNow, type Runner } from "./runner";
 import { TattooSection } from "./tattoo-section";
 import { TeamEditor } from "./team-editor";
+import { barbers } from "../../domain/catalog";
 import { PanelHead, SessionBar, Toasts, type IconName } from "./ui";
 
 const sections: {
@@ -76,6 +79,14 @@ const sections: {
     title: "Equipo",
     serif: "y jornadas.",
     lead: "Profesionales, horarios, descansos y ausencias de ejemplo. Cada cambio se valida contra la agenda.",
+  },
+  {
+    id: "caja",
+    label: "Caja",
+    icon: "cash",
+    title: "Caja",
+    serif: "del día.",
+    lead: "Servicios finalizados por profesional, lo pagado en línea frente a lo que se cobra en el local, y el cierre del día para imprimir.",
   },
   {
     id: "avisos",
@@ -254,12 +265,13 @@ function OwnerWorkspace({ onExit }: { onExit?: () => void }) {
                 <QueueSection state={state} runner={runner} today={today} />
               ) : null}
               {tab === "solicitudes" ? (
-                <TattooSection state={state} runner={runner} />
+                <TattooSection state={state} runner={runner} refresh={demo.refresh} />
               ) : null}
               {tab === "clientes" ? (
                 <ClientsSection clients={clients} today={today} />
               ) : null}
               {tab === "equipo" ? <TeamSection state={state} runner={runner} /> : null}
+              {tab === "caja" ? <CajaSection /> : null}
               {tab === "avisos" ? (
                 <NotificationsSection state={state} runner={runner} today={today} />
               ) : null}
@@ -299,14 +311,18 @@ function TeamSection({ state, runner }: { state: SharedState; runner: Runner }) 
       </p>
       {state.team.map((member) => {
         const save: DemoCommand = { type: "team.save", member };
+        const profile = barbers.find((b) => b.id === member.id);
         return (
-          <TeamEditor
-            key={`${member.id}-${JSON.stringify(member)}`}
-            member={member}
-            busy={runner.busy || !runner.online}
-            saving={runner.control(save)["aria-busy"] === true}
-            onSave={(draft) => runner.run({ type: "team.save", member: draft })}
-          />
+          <div className="pnl-member" key={member.id}>
+            <TeamEditor
+              key={JSON.stringify(member)}
+              member={member}
+              busy={runner.busy || !runner.online}
+              saving={runner.control(save)["aria-busy"] === true}
+              onSave={(draft) => runner.run({ type: "team.save", member: draft })}
+            />
+            {profile ? <BlockPanel slug={profile.slug} name={profile.name} /> : null}
+          </div>
         );
       })}
     </div>

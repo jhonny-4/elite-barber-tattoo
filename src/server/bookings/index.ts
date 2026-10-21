@@ -2,7 +2,9 @@ import "server-only";
 import { createHash, createHmac } from "node:crypto";
 import { adminClient } from "../supabase/clients";
 import { boldEnabled, checkoutFor, orderRefFor, type BoldCheckout } from "../payments/bold";
-import { businessAddress, directionsUrl, instagramHandle, instagramUrl, whatsappDisplay, whatsappUrl } from "../../domain/business";
+import { directionsUrl, whatsappUrl } from "../../domain/business";
+import { announceBooking } from "../notify/push";
+import { actions, detailRow, detailTable, emailLayout, escapeHtml, ghostButton, primaryButton, sendEmail, siteUrl, whenCard } from "../notify/email";
 import { localBogota, slotsForDay } from "../../domain/booking/slots";
 
 const tz = "America/Bogota";
@@ -135,9 +137,8 @@ export async function createBooking(input: BookingInput, idempotencyKey: string)
   return summary;
 }
 
-const siteUrl = () => process.env.SITE_URL ?? (process.env.NODE_ENV === "production" ? "https://elite-barber-tatto.com" : "http://localhost:3000");
 /** Token del enlace privado: derivado de la clave de idempotencia, nunca guardado en claro. */
-const tokenFor = (idempotencyKey: string) => createHmac("sha256", process.env.SUPABASE_SECRET_KEY!).update(`booking:${idempotencyKey}`).digest("base64url");
+export const tokenFor = (idempotencyKey: string) => createHmac("sha256", process.env.SUPABASE_SECRET_KEY!).update(`booking:${idempotencyKey}`).digest("base64url");
 
 /** Confirma una cita pagada (webhook de Bold) y envía el correo. Idempotente. */
 export async function confirmPaidBooking(bookingId: string) {
@@ -145,15 +146,16 @@ export async function confirmPaidBooking(bookingId: string) {
   const { data: b } = await db.from("bookings").update({ status: "confirmada", hold_expires_at: null, updated_at: new Date().toISOString() }).eq("id", bookingId).eq("status", "pendiente_pago").select("*, services(name), barbers(display_name)").maybeSingle();
   if (!b || !b.idempotency_key) return false;
   await sendConfirmation(b, b.services?.name ?? "Servicio", b.barbers?.display_name ?? "Elite", tokenFor(b.idempotency_key));
+  // Pago aprobado: ahora sí es una reserva firme para el equipo. Un fallo de push no afecta al webhook.
+  await announceBooking(b.id).catch(e => console.error("Push: aviso de reserva pagada fallido.", e instanceof Error ? e.message : e));
   return true;
 }
 
-const escapeHtml = (s: string) => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 export async function retryConfirmation(id:string) {
   const db=adminClient();
   const {data:b,error}=await db.from("bookings").select("*").eq("id",id).maybeSingle();
   if(error || !b || b.status!=="confirmada" || !b.idempotency_key) throw new BookingError("No hay una confirmación pendiente para esta cita.",409);
-  const token=createHmac("sha256",process.env.SUPABASE_SECRET_KEY!).update(`booking:${b.idempotency_key}`).digest("base64url");
+  const token=tokenFor(b.idempotency_key);
   if(createHash("sha256").update(token).digest("hex")!==b.access_token_hash) throw new BookingError("Esta cita fue creada con el sistema anterior. Conserva el enlace original.",409);
   const [{data:s},{data:barber}]=await Promise.all([db.from("services").select("name").eq("id",b.service_id).single(),db.from("barbers").select("display_name").eq("id",b.barber_id).single()]);
   if(!s || !barber) throw new Error("No se pudo leer la cita.");
@@ -162,9 +164,7 @@ export async function retryConfirmation(id:string) {
 async function sendConfirmation(booking: { id: string; customer_email: string; customer_name?: string; starts_at: string; price_cop: number }, service: string, barber: string, token: string) {
   const { data: delivered } = await adminClient().from("notifications").select("sent_at").eq("booking_id",booking.id).eq("channel","email").eq("template","confirmacion").maybeSingle();
   if(delivered?.sent_at) return;
-  const site = siteUrl();
-  const url = `${site}/mi-reserva/${token}`;
-  const date = new Intl.DateTimeFormat("es-CO", { timeZone: tz, dateStyle: "full", timeStyle: "short" }).format(new Date(booking.starts_at));
+  const url = `${siteUrl()}/mi-reserva/${token}`;
   const when = new Date(booking.starts_at);
   const fmt = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("es-CO", { timeZone: tz, ...o }).format(when);
   const day = fmt({ weekday: "long", day: "numeric", month: "long" });
@@ -172,50 +172,19 @@ async function sendConfirmation(booking: { id: string; customer_email: string; c
   const first = escapeHtml((booking.customer_name ?? "").trim().split(/\s+/)[0] || "");
   const price = `$${booking.price_cop.toLocaleString("es-CO")}`;
   const reschedule = `${whatsappUrl}?text=${encodeURIComponent(`Hola Elite, quiero reprogramar mi cita del ${day} a las ${hour}.`)}`;
-  const font = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif";
-  const row = (label: string, value: string, last = false) => `<tr><td style="padding:16px 0;${last ? "" : "border-bottom:1px solid #222;"}color:#7d7d7d;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;${font}">${label}</td><td align="right" style="padding:16px 0;${last ? "" : "border-bottom:1px solid #222;"}color:#f5f5f5;font-size:15px;font-weight:600;${font}">${value}</td></tr>`;
-  const ghost = (href: string, label: string) => `<a href="${href}" style="display:inline-block;margin:6px 4px;padding:12px 18px;border:1px solid #3a3a3a;border-radius:999px;color:#e8e8e8;text-decoration:none;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;${font}">${label}</a>`;
-  // Correo de marca Elite: tablas y estilos en línea (Gmail, Outlook, Apple Mail), logo PNG 2x y texto de vista previa.
-  const html = `<!doctype html><html lang="es"><head><meta name="color-scheme" content="dark light"><meta name="supported-color-schemes" content="dark light"></head><body style="margin:0;padding:0;background:#050505">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0">Tu cita en Elite está confirmada: ${escapeHtml(day)}, ${escapeHtml(hour)}.</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#050505;padding:36px 12px"><tr><td align="center">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
-<tr><td align="center" style="padding:8px 0 28px"><img src="${site}/email/elite-logo.png" width="190" alt="Elite Barber &amp; Tattoo" style="display:block;width:190px;max-width:60%;height:auto;border:0"></td></tr>
-<tr><td style="background:#101010;background-image:linear-gradient(160deg,#1a1a1a,#0b0b0b);border:1px solid #262626;border-radius:22px;padding:0;overflow:hidden">
-<div style="height:3px;background:#e11d2e;background-image:linear-gradient(90deg,#e11d2e,#ff5a66,#e11d2e)"></div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:38px 32px 34px">
-<tr><td align="center">
-<p style="margin:0 0 14px;color:#e11d2e;font-size:11px;letter-spacing:4px;text-transform:uppercase;font-weight:800;${font}">&#9670; Reserva confirmada</p>
-<h1 style="margin:0;color:#ffffff;font-size:34px;line-height:1.1;letter-spacing:1px;text-transform:uppercase;font-weight:900;${font}">${first ? `${first}, te` : "Te"} esperamos</h1>
-<p style="margin:12px 0 30px;color:#a8a8a8;font-size:15px;line-height:1.6;${font}">Tu silla en Elite está apartada. Llega 5 minutos antes y nosotros nos encargamos del resto.</p>
-</td></tr>
-<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;border:1px solid #232323;border-radius:16px"><tr>
-<td align="center" width="50%" style="padding:22px 10px;border-right:1px solid #232323"><p style="margin:0;color:#7d7d7d;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;${font}">Fecha</p><p style="margin:8px 0 0;color:#fff;font-size:18px;font-weight:800;text-transform:capitalize;${font}">${escapeHtml(day)}</p></td>
-<td align="center" width="50%" style="padding:22px 10px"><p style="margin:0;color:#7d7d7d;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;${font}">Hora</p><p style="margin:8px 0 0;color:#fff;font-size:26px;font-weight:900;${font}">${escapeHtml(hour)}</p></td>
-</tr></table></td></tr>
-<tr><td style="padding-top:10px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${row("Servicio", escapeHtml(service))}${row("Barbero", escapeHtml(barber))}${row("Total", `${price} <span style="color:#7d7d7d;font-size:11px">COP</span>`, true)}</table></td></tr>
-<tr><td align="center" style="padding-top:26px">
-<a href="${url}" style="display:inline-block;background:#ffffff;background-image:linear-gradient(180deg,#ffffff,#d9d9d9);color:#0a0a0a;text-decoration:none;font-weight:900;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;padding:18px 34px;border-radius:14px;border-bottom:4px solid #8f8f8f;${font}">Ver o reprogramar mi cita &#8599;</a>
-<p style="margin:16px 0 0">${ghost(directionsUrl, "Cómo llegar")}${ghost(reschedule, "WhatsApp")}</p>
-</td></tr>
-</table></td></tr>
-<tr><td align="center" style="padding:28px 16px 0;color:#6f6f6f;font-size:12px;line-height:1.8;${font}">
-${escapeHtml(businessAddress)}<br>WhatsApp ${escapeHtml(whatsappDisplay)} &nbsp;·&nbsp; <a href="${instagramUrl}" style="color:#bdbdbd;text-decoration:none">${escapeHtml(instagramHandle)}</a><br>
-<span style="color:#4a4a4a">Puedes cancelar desde el enlace hasta 2 horas antes. Si no hiciste esta reserva, ignora este correo.</span>
-</td></tr></table></td></tr></table></body></html>`;
-  let sent = false, failure = "RESEND_API_KEY no configurada";
-  try {
-    if (process.env.RESEND_API_KEY) {
-      const response = await fetch("https://api.resend.com/emails", { method: "POST", signal: AbortSignal.timeout(10000), headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json", "Idempotency-Key": `booking-confirmation-${booking.id}` }, body: JSON.stringify({ from: process.env.RESEND_FROM ?? "Elite Barber & Tattoo <reservas@elite-barber-tatto.com>", to: [booking.customer_email], subject: `Cita confirmada · ${day}, ${hour} · Elite Barber & Tattoo`, html }) });
-      sent = response.ok; if (!sent) failure = `Resend respondió ${response.status}`;
-    }
-  } catch (e) { failure = e instanceof Error ? e.message : "Error al enviar correo"; }
-  const db = adminClient();
-  const { data: existing } = await db.from("notifications").select("id,attempts").eq("booking_id", booking.id).eq("channel", "email").eq("template", "confirmacion").maybeSingle();
-  const attempts=(existing?.attempts??0)+1;
-  const values = { channel: "email", template: "confirmacion", sent_at: sent ? new Date().toISOString() : null, last_error: sent ? null : failure, attempts, scheduled_for:new Date(Date.now()+Math.min(15,2**(attempts-1))*60000).toISOString() };
-  if (existing) await db.from("notifications").update(values).eq("id", existing.id);
-  else await db.from("notifications").insert({ ...values, booking_id: booking.id });
+  const html = emailLayout({
+    preheader: `Tu cita en Elite está confirmada: ${escapeHtml(day)}, ${escapeHtml(hour)}.`,
+    eyebrow: "&#9670; Reserva confirmada",
+    title: `${first ? `${first}, te` : "Te"} esperamos`,
+    intro: "Tu silla en Elite está apartada. Llega 5 minutos antes y nosotros nos encargamos del resto.",
+    content: [
+      whenCard(escapeHtml(day), escapeHtml(hour)),
+      detailTable(`${detailRow("Servicio", escapeHtml(service))}${detailRow("Barbero", escapeHtml(barber))}${detailRow("Total", `${price} <span style="color:#7d7d7d;font-size:11px">COP</span>`, true)}`),
+      actions(primaryButton(url, "Ver o reprogramar mi cita &#8599;"), `${ghostButton(directionsUrl, "Cómo llegar")}${ghostButton(reschedule, "WhatsApp")}`),
+    ].join("\n"),
+    footerNote: "Puedes cancelar desde el enlace hasta 2 horas antes. Si no hiciste esta reserva, ignora este correo.",
+  });
+  await sendEmail(booking.customer_email, `Cita confirmada · ${day}, ${hour} · Elite Barber & Tattoo`, html, { idempotencyKey: `booking-confirmation-${booking.id}`, record: { bookingId: booking.id, template: "confirmacion" } });
 }
 
 export async function retryPendingConfirmations() {

@@ -1,4 +1,6 @@
 import { randomUUID } from "node:crypto";
+import { after } from "next/server";
+import { notifyStaff } from "../../../server/notify/push";
 import { adminClient } from "../../../server/supabase/clients";
 import { BookingError } from "../../../server/bookings";
 import { contact } from "../../../server/public-forms";
@@ -71,6 +73,13 @@ export async function POST(request: Request) {
         await db.storage.from("referencias").remove([referencePath]);
       if (error.code !== "23505")
         throw new Error("No se pudo guardar la solicitud.");
+    } else {
+      // Solo la primera inserción avisa (un 23505 es un reintento). Tras responder, sin bloquear.
+      after(() =>
+        notifyStaff("Nueva solicitud de tatuaje", `${name.split(/\s+/)[0]} · ${idea.slice(0, 80)}`, "/administracion").catch((e) =>
+          console.error("Push: aviso de tatuaje fallido.", e instanceof Error ? e.message : e),
+        ),
+      );
     }
     return Response.json({ id: key }, { status: 201, headers: noStore });
   } catch (e) {

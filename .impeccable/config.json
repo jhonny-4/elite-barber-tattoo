@@ -1,0 +1,44 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "helvetica",
+        "files": [
+          "src/server/notify/email.ts"
+        ],
+        "createdAt": "2026-10-21T09:40:55.216Z",
+        "reason": "Claude: plantilla de correo; Gmail/Outlook no cargan web fonts de forma fiable, Helvetica/Arial es la pila segura"
+      },
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "src/server/notify/email.ts"
+        ],
+        "createdAt": "2026-10-21T09:41:03.472Z",
+        "reason": "Claude: border-bottom del botón primario es el relieve 3D (tecla) del sistema de botones de Elite"
+      },
+      {
+        "rule": "overused-font",
+        "value": "helvetica",
+        "files": [
+          "src/server/tattoo-quote.ts"
+        ],
+        "createdAt": "2026-10-21T09:51:54.927Z",
+        "reason": "Claude: plantilla de correo; Helvetica/Arial es la pila segura en Gmail/Outlook"
+      },
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "src/server/tattoo-quote.ts"
+        ],
+        "createdAt": "2026-10-21T09:51:57.377Z",
+        "reason": "Claude: relieve 3D del botón de correo, sistema de botones Elite"
+      }
+    ]
+  }
+}

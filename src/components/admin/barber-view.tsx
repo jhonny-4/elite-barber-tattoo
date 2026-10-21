@@ -8,6 +8,7 @@ import type { DemoCommand } from "../../services/contracts/demo";
 import { usePanel as useDemo } from "../../lib/use-panel";
 import { ConfirmAction } from "../confirm-action";
 import { Icon } from "../icons";
+import { BlockPanel } from "./block-panel";
 import { BookingItem, TicketItem } from "./items";
 import {
   byDateTime,
@@ -349,6 +350,7 @@ export function BarberView({ onExit, lockedSlug }: { onExit?: () => void; locked
                   <p className="adm-quiet">Sin citas reservadas para los próximos días.</p>
                 )}
               </section>
+              <BlockPanel key={barber.slug} slug={barber.slug} name={barber.name} />
             </>
           )}
 

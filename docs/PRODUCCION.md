@@ -31,3 +31,28 @@ Elegir proveedor según titular del comercio, requisitos y costos, por ejemplo W
 ## Fase 5: lanzamiento autorizado
 
 Dominio y cuentas bajo titularidad acordada con el cliente, acceso delegado a ZENKO, contratos de servicios revisados por sus responsables. Completar pruebas funcionales, permisos, rendimiento, accesibilidad, respaldo y recuperación. Activar indexación y metadata pública con el dominio definitivo. Desplegar únicamente con autorización explícita.
+
+## Cron de avisos y Web Push del equipo
+
+`POST /api/cron/tick` (cada 5 min) envía recordatorios de cita (24 h y 2 h), la invitación a reseña (1–3 h después de una cita finalizada, solo si existe `GOOGLE_REVIEW_URL`), el resumen diario al dueño (8:00–8:14 Bogotá, con citas por barbero e ingresos estimados) y expira reservas sin pago. Exige `Authorization: Bearer <CRON_SECRET>`; sin `CRON_SECRET` responde 401. Es idempotente: `notifications` (y `daily_digest` para el resumen) impide duplicados y Resend recibe una clave de idempotencia por aviso.
+
+### Variables en Hostinger
+
+- `CRON_SECRET`: mínimo 32 caracteres. `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`.
+- `GOOGLE_REVIEW_URL`: enlace https de reseñas del perfil de Google. Vacío: no se envía el correo de reseña.
+- `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (`mailto:` del negocio): `npx web-push generate-vapid-keys`. Generar claves propias de producción; si se cambian, cada dispositivo debe volver a activar los avisos.
+
+### Programación en Supabase (pg_cron + pg_net + Vault)
+
+La migración `20261021000013_cron_avisos.sql` crea la tarea `elite-cron-tick`. Mientras no existan los secretos, no hace nada. Para activarla, en el SQL Editor del proyecto de producción (con autorización):
+
+```sql
+select vault.create_secret('https://elite-barber-tatto.com', 'cron_url', 'URL base del sitio para el cron');
+select vault.create_secret('<mismo valor que CRON_SECRET en Hostinger>', 'cron_secret', 'Secreto del cron de avisos');
+```
+
+`cron_url` es la URL base, sin `/api/cron/tick`. Para cambiar un valor: `select vault.update_secret((select id from vault.secrets where name = 'cron_secret'), '<nuevo>');`. Comprobar: `select * from cron.job_run_details order by start_time desc limit 5;` y `select status_code, content from net._http_response order by created desc limit 5;`.
+
+### Web Push del equipo
+
+Cada miembro abre el panel en su dispositivo y pulsa «Recibir avisos en este dispositivo». Avisa al dueño y al barbero afectado al confirmarse una reserva, al entrar un turno a la fila y al llegar una solicitud de tatuaje (solo dueño). En iPhone solo funciona con la app instalada en la pantalla de inicio (iOS 16.4+). Las suscripciones caducadas se borran solas.

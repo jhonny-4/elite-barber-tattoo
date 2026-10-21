@@ -67,7 +67,7 @@ export async function GET(request: Request) {
       db
         .from("tattoo_requests")
         .select(
-          "id,customer_name,customer_phone,customer_email,idea,placement,size,status,reference_path,created_at",
+          "id,customer_name,customer_phone,customer_email,idea,placement,size,status,reference_path,created_at,quote_cop,deposit_cop,quote_notes",
         )
         .order("created_at", { ascending: false })
         .limit(100),
@@ -311,6 +311,9 @@ export async function POST(request: Request) {
           "El estado cambió o la transición no está permitida.",
           409,
         );
+      // La cotización se hace en /api/panel/cotizacion (monto, abono y correo): aquí no se salta.
+      if (table === "tattoo_requests" && next === "cotizada")
+        throw new BookingError("Escribe la cotización para pasar la solicitud a cotizada.", 409);
       if (
         next === "en_atencion" &&
         table === "bookings" &&

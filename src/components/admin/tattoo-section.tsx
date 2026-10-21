@@ -12,6 +12,7 @@ import {
   tattooFlow,
   tattooStatus,
 } from "./labels";
+import { QuoteForm } from "./quote-form";
 import type { Runner } from "./runner";
 import { EmptyState, StatusBadge } from "./ui";
 
@@ -21,9 +22,12 @@ type Filter = "todos" | TattooRequest["status"];
 export function TattooSection({
   state,
   runner,
+  refresh,
 }: {
   state: SharedState;
   runner: Runner;
+  /** Recarga el panel tras cotizar (la cotización se envía por /api/panel/cotizacion). */
+  refresh?: () => Promise<unknown>;
 }) {
   const [status, setStatus] = useState<Filter>("todos");
   const [query, setQuery] = useState("");
@@ -75,7 +79,7 @@ export function TattooSection({
       {list.length ? (
         <div className="adm-requests">
           {list.map((r) => (
-            <TattooCard key={r.id} request={r} runner={runner} />
+            <TattooCard key={r.id} request={r} runner={runner} refresh={refresh} />
           ))}
         </div>
       ) : state.requests.length ? (
@@ -114,15 +118,18 @@ export function TattooSection({
 function TattooCard({
   request: r,
   runner,
+  refresh,
 }: {
   request: TattooRequest;
   runner: Runner;
+  refresh?: () => Promise<unknown>;
 }) {
   const info = tattooStatus[r.status];
   const next = nextTattooStatus(r.status);
   const reference = r.referenceUrl ?? r.referenceDataUrl;
   const index = tattooFlow.indexOf(r.status);
-  const advance: DemoCommand | null = next
+  // De «en evaluación» se pasa a «cotizada» solo con la cotización escrita (QuoteForm).
+  const advance: DemoCommand | null = next && r.status !== "en-evaluacion"
     ? { type: "tattoo.change", id: r.id, status: next }
     : null;
   const close: DemoCommand = { type: "tattoo.change", id: r.id, status: "cerrada" };
@@ -187,6 +194,27 @@ function TattooCard({
           </figure>
         ) : null}
       </div>
+      {r.quote ? (
+        <dl className="pnl-quote-summary" aria-label="Cotización enviada">
+          <div>
+            <dt>Cotización</dt>
+            <dd>${r.quote.amount.toLocaleString("es-CO")} COP</dd>
+          </div>
+          <div>
+            <dt>Abono</dt>
+            <dd>${r.quote.deposit.toLocaleString("es-CO")} COP</dd>
+          </div>
+          {r.quote.notes ? (
+            <div className="pnl-quote-notes">
+              <dt>Notas</dt>
+              <dd>{r.quote.notes}</dd>
+            </div>
+          ) : null}
+        </dl>
+      ) : null}
+      {r.status === "en-evaluacion" || r.status === "cotizada" ? (
+        <QuoteForm request={r} refresh={refresh} />
+      ) : null}
       {r.status !== "cerrada" ? (
         <div className="adm-actions">
           {advance && next ? (
@@ -214,8 +242,8 @@ function TattooCard({
         </div>
       ) : null}
       <p className="adm-hint">
-        Seguimiento manual: los estados no calculan precios, no cobran y no
-        agendan sesiones.
+        Seguimiento manual: la cotización la escribe Jean Carlos; los estados no
+        calculan precios, no cobran y no agendan sesiones.
       </p>
     </article>
   );

@@ -2707,3 +2707,118 @@
   cursor: not-allowed;
   opacity: 0.85;
 }
+
+/* ------------------------------------------------------------------ */
+/* Mi reserva: reprogramar y lista de espera                           */
+/* ------------------------------------------------------------------ */
+
+.bk-reschedule {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.bk-reschedule-panel {
+  display: grid;
+  gap: 20px;
+  width: min(100%, 980px);
+  padding: clamp(16px, 4vw, 32px);
+  text-align: left;
+}
+
+.bk-reschedule-panel header {
+  display: grid;
+  gap: 6px;
+}
+
+.bk-reschedule-panel h2 {
+  margin: 0;
+  outline: 0;
+}
+
+.bk-reschedule-panel header p:not(.eyebrow) {
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+}
+
+.bk-reschedule-grid {
+  display: grid;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .bk-reschedule-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.bk-reschedule-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px 12px;
+}
+
+@media (max-width: 520px) {
+  .bk-reschedule-actions .button {
+    flex: 1 1 100%;
+  }
+}
+
+.bk-reschedule-done,
+.bk-reschedule-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 52ch;
+  padding: 12px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: rgb(255 255 255 / 0.04);
+  color: var(--white);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  text-align: left;
+}
+
+.bk-reschedule-done svg {
+  flex: none;
+  color: var(--red-400);
+}
+
+.bk-reschedule-note {
+  color: var(--text-muted);
+}
+
+.bk-waitlist {
+  display: grid;
+  gap: 14px;
+  width: min(100%, 420px);
+  padding: 18px;
+  text-align: left;
+}
+
+.bk-waitlist-lead {
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+}
+
+.bk-waitlist .bk-empty-actions {
+  justify-content: flex-end;
+}
+
+.bk-reschedule-panel :focus-visible,
+.bk-waitlist :focus-visible {
+  outline: 2px solid var(--red-400);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bk-reschedule-panel,
+  .bk-waitlist {
+    animation: none;
+    transition: none;
+  }
+}

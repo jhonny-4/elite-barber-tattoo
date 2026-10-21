@@ -30,6 +30,7 @@ import {
   type SummaryData,
 } from "./booking/summary";
 import { TimeSlots } from "./booking/time-slots";
+import { WaitlistForm } from "./booking/waitlist-form";
 import { BoldPay, BoldPayPreview } from "./booking/bold-pay";
 import type { BoldCheckout } from "../server/payments/bold";
 
@@ -169,7 +170,13 @@ export function BookingFlow() {
       .catch((e: Error) => setAvailabilityError(e.message));
     const now = todayBogota();
     setToday(now);
-    setDate(shiftDate(now, 1));
+    // Enlace de «se liberó un cupo»: abre directamente ese día si sigue dentro del periodo.
+    const dateParam = params.get("fecha");
+    setDate(
+      dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) && dateParam >= now && dateParam <= shiftDate(now, 60)
+        ? dateParam
+        : shiftDate(now, 1),
+    );
     setClock(Date.now());
     const tick = setInterval(() => {
       setToday(todayBogota());
@@ -729,6 +736,14 @@ export function BookingFlow() {
                             >
                               Probar «Primer disponible»
                             </button>
+                          )}
+                          {!availabilityLoading && !availabilityError && date && serviceId && (
+                            <WaitlistForm
+                              serviceSlug={serviceId}
+                              barberSlug={barberId}
+                              date={date}
+                              dateLabel={prettyDate(date)}
+                            />
                           )}
                         </div>
                       </div>

@@ -4,6 +4,7 @@ import type { Booking } from "../../domain/demo";
 import type { SharedState } from "../../services/contracts/demo";
 import { SearchField, matcher } from "./agenda";
 import { byDateTime, dayLabel, initials, isClosedBooking } from "./labels";
+import { ClientSheet } from "./client-sheet";
 import { EmptyState } from "./ui";
 
 export type ClientRow = {
@@ -56,6 +57,7 @@ export function ClientsSection({
   today: string;
 }) {
   const [query, setQuery] = useState("");
+  const [open, setOpen] = useState<ClientRow | null>(null);
   const matches = matcher(query);
   const list = clients.filter((c) => matches(c.name, c.phone));
   if (!clients.length)
@@ -71,6 +73,7 @@ export function ClientsSection({
       <div className="adm-toolbar adm-toolbar-narrow" role="group" aria-label="Buscar clientes">
         <SearchField value={query} onChange={setQuery} placeholder="Nombre o teléfono" />
       </div>
+      {open ? <ClientSheet name={open.name} phone={open.phone} onClose={() => setOpen(null)} /> : null}
       <p className="adm-result" aria-live="polite">
         {list.length} {list.length === 1 ? "cliente" : "clientes"}
         {query.trim() ? " con esta búsqueda" : " agrupados por teléfono"}
@@ -106,12 +109,18 @@ export function ClientsSection({
               {list.map((c) => (
                 <tr key={c.key}>
                   <th scope="row">
-                    <span className="adm-person">
+                    <button
+                      type="button"
+                      className="adm-person pnl-person"
+                      aria-haspopup="dialog"
+                      onClick={() => setOpen(c)}
+                    >
                       <span className="adm-avatar" aria-hidden="true">
                         {initials(c.name)}
                       </span>
                       {c.name}
-                    </span>
+                      <span className="visually-hidden"> (abrir ficha)</span>
+                    </button>
                   </th>
                   <td className="adm-nowrap">{c.phone}</td>
                   <td className="adm-num">{c.bookings}</td>

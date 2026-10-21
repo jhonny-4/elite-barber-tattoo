@@ -1,4 +1,5 @@
 begin;
+select plan(1);
 do $$
 declare b1 uuid:=gen_random_uuid(); b2 uuid:=gen_random_uuid(); s uuid:=gen_random_uuid(); u uuid:=gen_random_uuid(); owner_id uuid:=gen_random_uuid(); t1 uuid:=gen_random_uuid(); t2 uuid:=gen_random_uuid(); tomorrow date:=(now() at time zone 'America/Bogota')::date+1;
 begin
@@ -56,4 +57,6 @@ begin
     raise exception 'Reserva cruzó atención presencial' using errcode='XX000';
   exception when raise_exception then null; end;
 end $$;
+select pass('03_agenda_real');
+select * from finish();
 rollback;

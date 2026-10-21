@@ -1,4 +1,6 @@
 import { createHmac } from "node:crypto";
+import { after } from "next/server";
+import { announceTicket } from "../../../server/notify/push";
 import { adminClient } from "../../../server/supabase/clients";
 import { BookingError } from "../../../server/bookings";
 import { contact, queueCatalog, tokenHash } from "../../../server/public-forms";
@@ -124,6 +126,12 @@ export async function POST(request: Request) {
       item = data.find((t) => t.id === key);
     if (!item || item.access_token_hash !== tokenHash(token))
       throw new BookingError("No se pudo recuperar el turno.", 409);
+    // Aviso al equipo después de responder; notifyStaffOnce evita repetirlo en reintentos.
+    after(() =>
+      announceTicket(item.id).catch((e) =>
+        console.error("Push: aviso de turno fallido.", e instanceof Error ? e.message : e),
+      ),
+    );
     return Response.json(
       { token, ticket: format(item) },
       { status: 201, headers: noStore },
