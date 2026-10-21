@@ -269,11 +269,12 @@ export async function POST(request: Request) {
         body.name.length > 60
       )
         throw new BookingError("Datos o permisos inválidos.", 403);
-      const { error } = await db
+      const { data: changed, error } = await db
         .from("barbers")
         .update({ display_name: body.name.trim(), active: body.active })
-        .eq("id", id);
-      if (error) throw new Error("No se pudo guardar el profesional.");
+        .eq("id", id)
+        .select("id");
+      if (error || !changed?.length) throw new Error("No se pudo guardar el profesional.");
     } else {
       const table =
         body.kind === "booking"

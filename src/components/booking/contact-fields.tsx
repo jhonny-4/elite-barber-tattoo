@@ -52,7 +52,7 @@ export function ContactInputs({
             id={id}
             name={key}
             required
-            autoComplete="off"
+            autoComplete={key === "name" ? "name" : key === "phone" ? "tel" : "email"}
             value={value[key] ?? ""}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? `${id}-error` : undefined}

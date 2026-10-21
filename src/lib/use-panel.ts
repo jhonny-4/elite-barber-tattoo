@@ -36,7 +36,6 @@ const timeOf = (iso: string) =>
 const today = () => dateOf(new Date().toISOString());
 
 const bookingStatus: Record<string, Booking["status"]> = {
-  pendiente_pago: "reservada-demo",
   confirmada: "reservada-demo",
   en_atencion: "en-atencion",
   finalizada: "finalizada",
@@ -48,7 +47,8 @@ function toState(api: Api, revision: number): SharedState {
   const localId = new Map(api.barbers.map((b) => [b.id, catalogBarbers.find((c) => c.slug === b.slug)?.id ?? b.slug]));
   const service = new Map(api.services.map((s) => [s.id, s.slug]));
   const str = (v: unknown) => (typeof v === "string" ? v : "");
-  const bookings: Booking[] = api.bookings.map((b) => ({
+  // Las citas pendientes de pago no se operan en el panel hasta que Bold las confirme.
+  const bookings: Booking[] = api.bookings.filter((b) => b.status !== "pendiente_pago").map((b) => ({
     id: b.id,
     barberId: localId.get(str(b.barber_id)) ?? "",
     serviceId: service.get(str(b.service_id)) ?? "",
@@ -116,6 +116,23 @@ function toState(api: Api, revision: number): SharedState {
   };
 }
 
+/**
+ * Avisa de citas, turnos y solicitudes nuevas desde la última lectura (evento `elite-panel-new`,
+ * que escucha <PanelAlerts/> para sonar y notificar). La primera carga solo memoriza.
+ */
+function announce(state: SharedState, seen: { current: Set<string> | null }) {
+  const items = [
+    ...state.bookings.filter((b) => b.status !== "cancelada").map((b) => ({ id: `b:${b.id}`, title: "Nueva cita", body: `${b.name} · ${b.date} ${b.time}` })),
+    ...state.queue.map((t) => ({ id: `q:${t.id}`, title: "Nuevo turno en la fila", body: `${t.number} · ${t.name}` })),
+    ...state.requests.map((r) => ({ id: `r:${r.id}`, title: "Nueva solicitud de tatuaje", body: r.name })),
+  ];
+  const first = seen.current === null;
+  const known = seen.current ?? new Set<string>();
+  const fresh = items.filter((i) => !known.has(i.id));
+  seen.current = new Set(items.map((i) => i.id));
+  if (!first && fresh.length) window.dispatchEvent(new CustomEvent("elite-panel-new", { detail: fresh }));
+}
+
 const empty = toState({ bookings: [], queue: [], barbers: [], services: [], tattoos: [], notifications: [], hours: [] }, 0);
 
 export function usePanel() {
@@ -123,6 +140,7 @@ export function usePanel() {
   const [status, setStatus] = useState({ online: true, ready: false, error: "" });
   const api = useRef<Api | null>(null);
   const revision = useRef(0);
+  const seen = useRef<Set<string> | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -132,6 +150,7 @@ export function usePanel() {
       api.current = body as Api;
       revision.current += 1;
       const next = toState(body as Api, revision.current);
+      announce(next, seen);
       setState(next);
       setStatus({ online: true, ready: true, error: "" });
       return next;

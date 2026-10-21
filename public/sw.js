@@ -1,4 +1,4 @@
-/* Service worker for a local demonstration: never cache API responses or queue writes. */
+/* Service worker: never cache API responses or queue writes. */
 const CACHE = "elite-premium-presentation-v10";
 const OFFLINE = "/offline.html";
 self.addEventListener("install", (event) => {
@@ -21,7 +21,7 @@ self.addEventListener("activate", (event) => {
       .then((keys) =>
         Promise.all(
           keys
-            .filter((key) => key.startsWith("elite-offline-") && key !== CACHE)
+            .filter((key) => key.startsWith("elite-") && key !== CACHE)
             .map((key) => caches.delete(key)),
         ),
       )

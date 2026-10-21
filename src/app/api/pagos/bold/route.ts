@@ -50,7 +50,12 @@ export async function POST(request: Request) {
     event_type: type,
     payload: event as never,
   });
-  if (dup) return dup.code === "23505" ? ok() : Response.json({ error: "No se pudo registrar." }, { status: 500 });
+  if (dup) {
+    if (dup.code !== "23505") return Response.json({ error: "No se pudo registrar." }, { status: 500 });
+    // Reintento de Bold: solo se ignora si el evento ya se procesó completo.
+    const { data: seen } = await db.from("payment_events").select("processed_at").eq("provider_event_id", eventId).maybeSingle();
+    if (seen?.processed_at) return ok();
+  }
   if (!payment) return ok();
 
   const total = Number(event.data?.amount?.total);
@@ -58,21 +63,30 @@ export async function POST(request: Request) {
   const txId = typeof event.data?.payment_id === "string" ? event.data.payment_id : typeof event.subject === "string" ? event.subject : null;
   const now = new Date().toISOString();
 
-  if (type === "SALE_APPROVED") {
-    if (total !== payment.amount_cop || currency !== "COP") {
-      await db.from("audit_log").insert({ action: "pago_monto_no_coincide", entity: "payment", entity_id: payment.id, data: { total, currency: String(currency) } });
-      return ok();
+  const fail = () => Response.json({ error: "No se pudo procesar; Bold reintentará." }, { status: 500 });
+  try {
+    if (type === "SALE_APPROVED") {
+      if (total !== payment.amount_cop || currency !== "COP") {
+        await db.from("audit_log").insert({ action: "pago_monto_no_coincide", entity: "payment", entity_id: payment.id, data: { total, currency: String(currency) } });
+      } else {
+        const { error } = await db.from("payments").update({ status: "aprobado", provider_tx_id: txId, updated_at: now }).eq("id", payment.id);
+        if (error) return fail();
+        const confirmed = await confirmPaidBooking(payment.booking_id);
+        // Pago aprobado sobre una cita ya vencida: queda en auditoría para devolución o reubicación manual.
+        if (!confirmed) await db.from("audit_log").insert({ action: "pago_sobre_cita_no_pendiente", entity: "payment", entity_id: payment.id });
+      }
+    } else if (type === "SALE_REJECTED") {
+      const a = await db.from("payments").update({ status: "rechazado", provider_tx_id: txId, updated_at: now }).eq("id", payment.id);
+      const b = await db.from("bookings").update({ status: "expirada", updated_at: now }).eq("id", payment.booking_id).eq("status", "pendiente_pago");
+      if (a.error || b.error) return fail();
+    } else if (type === "VOID_APPROVED") {
+      const { error } = await db.from("payments").update({ status: "anulado", updated_at: now }).eq("id", payment.id);
+      if (error) return fail();
     }
-    await db.from("payments").update({ status: "aprobado", provider_tx_id: txId, updated_at: now }).eq("id", payment.id);
-    const confirmed = await confirmPaidBooking(payment.booking_id);
-    // Pago aprobado sobre una cita ya vencida: queda en auditoría para devolución o reubicación manual.
-    if (!confirmed) await db.from("audit_log").insert({ action: "pago_sobre_cita_no_pendiente", entity: "payment", entity_id: payment.id });
-  } else if (type === "SALE_REJECTED") {
-    await db.from("payments").update({ status: "rechazado", provider_tx_id: txId, updated_at: now }).eq("id", payment.id);
-    await db.from("bookings").update({ status: "expirada", updated_at: now }).eq("id", payment.booking_id).eq("status", "pendiente_pago");
-  } else if (type === "VOID_APPROVED") {
-    await db.from("payments").update({ status: "anulado", updated_at: now }).eq("id", payment.id);
+  } catch {
+    return fail();
   }
+  // Solo al terminar bien: así un reintento tras un fallo vuelve a procesarse.
   await db.from("payment_events").update({ processed_at: now }).eq("provider_event_id", eventId);
   return ok();
 }

@@ -2725,3 +2725,8 @@
     animation: none;
   }
 }
+
+/* Botón de alertas del panel: fijo arriba a la derecha, sin tapar contenido en móvil. */
+.panel-alerts { display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem; max-width: 72rem; margin: 0 auto 0.75rem; padding: 0 1rem; }
+.panel-alerts .adm-hint { max-width: 26rem; text-align: right; }
+@media (max-width: 640px) { .panel-alerts { align-items: stretch; } .panel-alerts .button { width: 100%; justify-content: center; } }

@@ -2,7 +2,7 @@ import "server-only";
 import { createHash, createHmac } from "node:crypto";
 import { adminClient } from "../supabase/clients";
 import { boldEnabled, checkoutFor, orderRefFor, type BoldCheckout } from "../payments/bold";
-import { businessAddress, whatsappDisplay } from "../../domain/business";
+import { businessAddress, directionsUrl, instagramHandle, instagramUrl, whatsappDisplay, whatsappUrl } from "../../domain/business";
 import { localBogota, slotsForDay } from "../../domain/booking/slots";
 
 const tz = "America/Bogota";
@@ -38,7 +38,7 @@ async function barbersFor(serviceSlug: string, barberSlug: string) {
     db.from("work_hours").select("barber_id,weekday,opens,closes"),
     db.from("breaks").select("barber_id,weekday,starts,ends"),
   ]);
-  if (!service) throw new Error("Servicio no disponible.");
+  if (!service) throw new BookingError("Servicio no disponible.", 400);
   const { data: candidates, error } = await q;
   if (error) throw error;
   const eligible = (candidates ?? []).filter(b => bs?.some(x => x.barber_id === b.id && x.service_id === service.id));
@@ -46,7 +46,7 @@ async function barbersFor(serviceSlug: string, barberSlug: string) {
 }
 
 export async function availability(barberSlug: string, serviceSlug: string, date: string) {
-  if (!validDate(date) || date < todayBogota() || date > shiftDate(todayBogota(), 60)) throw new Error("Fecha fuera del periodo disponible.");
+  if (!validDate(date) || date < todayBogota() || date > shiftDate(todayBogota(), 60)) throw new BookingError("Fecha fuera del periodo disponible.", 400);
   const { service, eligible, hours, breaks } = await barbersFor(serviceSlug, barberSlug);
   const from = dayStart(date), to = dayStart(shiftDate(date, 1));
   const results = await Promise.all(eligible.map(async barber => {
@@ -89,7 +89,9 @@ export async function createBooking(input: BookingInput, idempotencyKey: string)
     if (previous.access_token_hash !== hash || previous.customer_email !== email || previous.customer_phone !== phone || previous.customer_name !== name || Date.parse(previous.starts_at) !== localBogota(input.date,input.time)) throw new BookingError("Usa una referencia nueva para cambiar los datos de la reserva.",409);
     const [{data:s},{data:b}] = await Promise.all([db.from("services").select("slug,name").eq("id",previous.service_id).single(),db.from("barbers").select("slug,display_name").eq("id",previous.barber_id).single()]);
     if(!s || !b || s.slug!==input.serviceSlug || (input.barberSlug!=="any" && b.slug!==input.barberSlug)) throw new BookingError("La referencia pertenece a otra reserva.",409);
-    return { id:previous.id,token,service:s.slug,barber:b.slug,date:input.date,time:input.time,price_cop:previous.price_cop,status:previous.status };
+    const again = { id:previous.id,token,service:s.slug,barber:b.slug,date:input.date,time:input.time,price_cop:previous.price_cop,status:previous.status };
+    // Reintento tras un corte de red: el cliente recupera su botón de pago.
+    return previous.status === "pendiente_pago" && boldEnabled() ? { ...again, payment: checkoutFor(orderRefFor(previous.id), previous.price_cop, `${s.name} · Elite Barber & Tattoo`, `${siteUrl()}/mi-reserva/${token}`) } : again;
   }
   if (!validDate(input.date) || !/^\d{2}:\d{2}$/.test(input.time) || toMin(input.time) % 15 !== 0) throw new BookingError("Fecha u hora inválida.");
   if (toMin(input.time) >= 24 * 60) throw new BookingError("Hora inválida.");
@@ -157,19 +159,54 @@ export async function retryConfirmation(id:string) {
   if(!s || !barber) throw new Error("No se pudo leer la cita.");
   await sendConfirmation(b,s.name,barber.display_name,token);
 }
-async function sendConfirmation(booking: { id: string; customer_email: string; starts_at: string; price_cop: number }, service: string, barber: string, token: string) {
+async function sendConfirmation(booking: { id: string; customer_email: string; customer_name?: string; starts_at: string; price_cop: number }, service: string, barber: string, token: string) {
   const { data: delivered } = await adminClient().from("notifications").select("sent_at").eq("booking_id",booking.id).eq("channel","email").eq("template","confirmacion").maybeSingle();
   if(delivered?.sent_at) return;
   const site = siteUrl();
   const url = `${site}/mi-reserva/${token}`;
   const date = new Intl.DateTimeFormat("es-CO", { timeZone: tz, dateStyle: "full", timeStyle: "short" }).format(new Date(booking.starts_at));
-  const row = (label: string, value: string) => `<tr><td style="padding:12px 0;border-bottom:1px solid #262626;color:#8a8a8a;font-size:11px;letter-spacing:2px;text-transform:uppercase">${label}</td><td style="padding:12px 0;border-bottom:1px solid #262626;color:#fff;font-size:15px;font-weight:600;text-align:right">${value}</td></tr>`;
-  // Diseño de marca Elite: tablas y estilos en línea para Gmail, Outlook y móviles.
-  const html = `<!doctype html><html lang="es"><body style="margin:0;background:#0a0a0a;font-family:Helvetica,Arial,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:32px 12px"><tr><td align="center"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#141414;border:1px solid #2a2a2a;border-radius:18px;padding:36px 28px"><tr><td align="center"><img src="${site}/pwa/icons/elite-192.png" width="88" height="88" alt="Elite Barber &amp; Tattoo" style="display:block;border-radius:16px"><p style="margin:22px 0 6px;color:#e11d2e;font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700">Reserva confirmada</p><h1 style="margin:0;color:#fff;font-size:28px;letter-spacing:1px;text-transform:uppercase">Te esperamos</h1><p style="margin:10px 0 24px;color:#bdbdbd;font-size:15px">Tu cita en Elite Barber &amp; Tattoo quedó agendada.</p></td></tr><tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${row("Servicio", escapeHtml(service))}${row("Barbero", escapeHtml(barber))}${row("Fecha y hora", escapeHtml(date))}${row("Precio", `$${booking.price_cop.toLocaleString("es-CO")} COP`)}</table></td></tr><tr><td align="center" style="padding-top:28px"><a href="${url}" style="display:inline-block;background:#fff;color:#0a0a0a;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:16px 28px;border-radius:12px">Ver o cancelar mi cita</a><p style="margin:26px 0 0;color:#8a8a8a;font-size:13px;line-height:1.6">${escapeHtml(businessAddress)}<br>WhatsApp ${escapeHtml(whatsappDisplay)}</p></td></tr></table><p style="margin:18px 0 0;color:#5c5c5c;font-size:11px">Si no hiciste esta reserva, ignora este correo.</p></td></tr></table></body></html>`;
+  const when = new Date(booking.starts_at);
+  const fmt = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("es-CO", { timeZone: tz, ...o }).format(when);
+  const day = fmt({ weekday: "long", day: "numeric", month: "long" });
+  const hour = fmt({ hour: "numeric", minute: "2-digit", hour12: true });
+  const first = escapeHtml((booking.customer_name ?? "").trim().split(/\s+/)[0] || "");
+  const price = `$${booking.price_cop.toLocaleString("es-CO")}`;
+  const reschedule = `${whatsappUrl}?text=${encodeURIComponent(`Hola Elite, quiero reprogramar mi cita del ${day} a las ${hour}.`)}`;
+  const font = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif";
+  const row = (label: string, value: string, last = false) => `<tr><td style="padding:16px 0;${last ? "" : "border-bottom:1px solid #222;"}color:#7d7d7d;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;${font}">${label}</td><td align="right" style="padding:16px 0;${last ? "" : "border-bottom:1px solid #222;"}color:#f5f5f5;font-size:15px;font-weight:600;${font}">${value}</td></tr>`;
+  const ghost = (href: string, label: string) => `<a href="${href}" style="display:inline-block;margin:6px 4px;padding:12px 18px;border:1px solid #3a3a3a;border-radius:999px;color:#e8e8e8;text-decoration:none;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;${font}">${label}</a>`;
+  // Correo de marca Elite: tablas y estilos en línea (Gmail, Outlook, Apple Mail), logo PNG 2x y texto de vista previa.
+  const html = `<!doctype html><html lang="es"><head><meta name="color-scheme" content="dark light"><meta name="supported-color-schemes" content="dark light"></head><body style="margin:0;padding:0;background:#050505">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">Tu cita en Elite está confirmada: ${escapeHtml(day)}, ${escapeHtml(hour)}.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#050505;padding:36px 12px"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
+<tr><td align="center" style="padding:8px 0 28px"><img src="${site}/email/elite-logo.png" width="190" alt="Elite Barber &amp; Tattoo" style="display:block;width:190px;max-width:60%;height:auto;border:0"></td></tr>
+<tr><td style="background:#101010;background-image:linear-gradient(160deg,#1a1a1a,#0b0b0b);border:1px solid #262626;border-radius:22px;padding:0;overflow:hidden">
+<div style="height:3px;background:#e11d2e;background-image:linear-gradient(90deg,#e11d2e,#ff5a66,#e11d2e)"></div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:38px 32px 34px">
+<tr><td align="center">
+<p style="margin:0 0 14px;color:#e11d2e;font-size:11px;letter-spacing:4px;text-transform:uppercase;font-weight:800;${font}">&#9670; Reserva confirmada</p>
+<h1 style="margin:0;color:#ffffff;font-size:34px;line-height:1.1;letter-spacing:1px;text-transform:uppercase;font-weight:900;${font}">${first ? `${first}, te` : "Te"} esperamos</h1>
+<p style="margin:12px 0 30px;color:#a8a8a8;font-size:15px;line-height:1.6;${font}">Tu silla en Elite está apartada. Llega 5 minutos antes y nosotros nos encargamos del resto.</p>
+</td></tr>
+<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;border:1px solid #232323;border-radius:16px"><tr>
+<td align="center" width="50%" style="padding:22px 10px;border-right:1px solid #232323"><p style="margin:0;color:#7d7d7d;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;${font}">Fecha</p><p style="margin:8px 0 0;color:#fff;font-size:18px;font-weight:800;text-transform:capitalize;${font}">${escapeHtml(day)}</p></td>
+<td align="center" width="50%" style="padding:22px 10px"><p style="margin:0;color:#7d7d7d;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;${font}">Hora</p><p style="margin:8px 0 0;color:#fff;font-size:26px;font-weight:900;${font}">${escapeHtml(hour)}</p></td>
+</tr></table></td></tr>
+<tr><td style="padding-top:10px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${row("Servicio", escapeHtml(service))}${row("Barbero", escapeHtml(barber))}${row("Total", `${price} <span style="color:#7d7d7d;font-size:11px">COP</span>`, true)}</table></td></tr>
+<tr><td align="center" style="padding-top:26px">
+<a href="${url}" style="display:inline-block;background:#ffffff;background-image:linear-gradient(180deg,#ffffff,#d9d9d9);color:#0a0a0a;text-decoration:none;font-weight:900;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;padding:18px 34px;border-radius:14px;border-bottom:4px solid #8f8f8f;${font}">Ver o reprogramar mi cita &#8599;</a>
+<p style="margin:16px 0 0">${ghost(directionsUrl, "Cómo llegar")}${ghost(reschedule, "WhatsApp")}</p>
+</td></tr>
+</table></td></tr>
+<tr><td align="center" style="padding:28px 16px 0;color:#6f6f6f;font-size:12px;line-height:1.8;${font}">
+${escapeHtml(businessAddress)}<br>WhatsApp ${escapeHtml(whatsappDisplay)} &nbsp;·&nbsp; <a href="${instagramUrl}" style="color:#bdbdbd;text-decoration:none">${escapeHtml(instagramHandle)}</a><br>
+<span style="color:#4a4a4a">Puedes cancelar desde el enlace hasta 2 horas antes. Si no hiciste esta reserva, ignora este correo.</span>
+</td></tr></table></td></tr></table></body></html>`;
   let sent = false, failure = "RESEND_API_KEY no configurada";
   try {
     if (process.env.RESEND_API_KEY) {
-      const response = await fetch("https://api.resend.com/emails", { method: "POST", signal: AbortSignal.timeout(10000), headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json", "Idempotency-Key": `booking-confirmation-${booking.id}` }, body: JSON.stringify({ from: process.env.RESEND_FROM ?? "Elite Barber & Tattoo <reservas@elite-barber-tatto.com>", to: [booking.customer_email], subject: "Tu reserva en Elite Barber & Tattoo", html }) });
+      const response = await fetch("https://api.resend.com/emails", { method: "POST", signal: AbortSignal.timeout(10000), headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json", "Idempotency-Key": `booking-confirmation-${booking.id}` }, body: JSON.stringify({ from: process.env.RESEND_FROM ?? "Elite Barber & Tattoo <reservas@elite-barber-tatto.com>", to: [booking.customer_email], subject: `Cita confirmada · ${day}, ${hour} · Elite Barber & Tattoo`, html }) });
       sent = response.ok; if (!sent) failure = `Resend respondió ${response.status}`;
     }
   } catch (e) { failure = e instanceof Error ? e.message : "Error al enviar correo"; }

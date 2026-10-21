@@ -30,7 +30,8 @@ export function PwaManager() {
     let registration: ServiceWorkerRegistration | undefined,
       alive = true;
     const watch = () => {
-      if (registration?.waiting) setWaiting(registration.waiting);
+      // En la primera instalación no hay versión anterior: no es una actualización.
+      if (registration?.waiting && navigator.serviceWorker.controller) setWaiting(registration.waiting);
     };
     if (
       "serviceWorker" in navigator &&
