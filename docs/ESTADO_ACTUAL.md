@@ -61,3 +61,5 @@ Nunca versionar `.env*`, claves, tokens ni datos personales. `.env.example` solo
 - Pruebas automáticas: `npm run qa:prod` (solo lectura en producción) y `npm run qa:local` (flujo reservar → reprogramar a la hora siguiente → enlace privado, solo contra Supabase local).
 - `instrumentation.ts` carga `instrumentation-node.ts` solo en Node (evita empaquetar web-push en edge en desarrollo); `web-push` en `serverExternalPackages`.
 - `CLAUDE.md` reescrito con el estado real de producción.
+- Galería por barbero: fotos (Supabase Storage, WebP) y videos (Cloudflare R2, bucket `elite-videos`, subida firmada directa y proxy con Range en `/api/media/video/...`). Aprobación del dueño en la pestaña Galería; el barbero sube desde "Mi galería"; botón "Ver trabajos" en /reservar. Variables `R2_*` en Hostinger. En desarrollo las claves usan prefijo `dev/`.
+- Videos de tatuajes existentes (4, 23,7 MB) quedan en `public/`; los nuevos van a R2.

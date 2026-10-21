@@ -27,6 +27,7 @@ export type SectionId =
   | "clientes"
   | "equipo"
   | "caja"
+  | "galeria"
   | "avisos";
 
 /** Estado actual de cada profesional, derivado de la fila, las citas y su jornada. */

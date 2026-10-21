@@ -9,6 +9,7 @@ import { usePanel as useDemo } from "../../lib/use-panel";
 import { ConfirmAction } from "../confirm-action";
 import { Icon } from "../icons";
 import { BlockPanel } from "./block-panel";
+import { GalleryManager } from "./gallery-section";
 import { BookingItem, TicketItem } from "./items";
 import {
   byDateTime,
@@ -351,6 +352,17 @@ export function BarberView({ onExit, lockedSlug }: { onExit?: () => void; locked
                 )}
               </section>
               <BlockPanel key={barber.slug} slug={barber.slug} name={barber.name} />
+              {locked ? (
+                <section aria-labelledby="mi-galeria">
+                  <div className="adm-block-head">
+                    <h2 id="mi-galeria">
+                      <Icon name="image" />
+                      Mi galería
+                    </h2>
+                  </div>
+                  <GalleryManager owner={false} />
+                </section>
+              ) : null}
             </>
           )}
 

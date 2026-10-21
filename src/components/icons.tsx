@@ -36,9 +36,19 @@ export function Icon({
     | "collapse"
     | "download"
     | "qr"
-    | "screen";
+    | "screen"
+    | "image"
+    | "play";
 }) {
   const paths = {
+    image: (
+      <>
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <circle cx="9" cy="10" r="1.6" />
+        <path d="m4 18 5-5 4 4 3-3 4 4" />
+      </>
+    ),
+    play: <path d="M8 5.5v13l11-6.5Z" fill="currentColor" />,
     razor: (
       <>
         <path d="M5 3.5v5.3c0 4.6 2.2 8.2 7 10.7 4.8-2.5 7-6.1 7-10.7V3.5M5.5 8.5l3 2 3.5-1 3.5 1 3-2" />

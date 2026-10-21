@@ -8,6 +8,7 @@ import { parseDate, prettyDate, shiftDate } from "../domain/availability";
 import { whatsappUrl } from "../domain/business";
 import { Calendar, type CalendarDayStatus } from "./calendar";
 import { Icon } from "./icons";
+import { BarberWorks } from "./gallery/barber-works";
 import { BrandGlyph, EliteLogo } from "./brand/logos";
 import { ANY_BARBER, type SlotView } from "./booking/availability-view";
 import type {
@@ -611,8 +612,8 @@ export function BookingFlow() {
                       const next = nextByProfessional[p.id];
                       const noteId = `bk-pro-${p.id}`;
                       return (
+                        <div key={p.id} className="bk-pro-cell">
                         <label
-                          key={p.id}
                           className={[
                             "bk-card bk-pro",
                             p.id === barberId && "is-selected",
@@ -659,6 +660,8 @@ export function BookingFlow() {
                             <Icon name="check" />
                           </span>
                         </label>
+                        {index >= 0 && !unavailable ? <BarberWorks slug={p.id} name={p.name} /> : null}
+                        </div>
                       );
                     })}
                   </div>

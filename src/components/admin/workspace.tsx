@@ -12,6 +12,7 @@ import { AgendaSection } from "./agenda";
 import { BarberView } from "./barber-view";
 import { BlockPanel } from "./block-panel";
 import { CajaSection } from "./caja-section";
+import { GalleryManager } from "./gallery-section";
 import { ClientsSection, groupClients } from "./clients";
 import { isClosedBooking } from "./labels";
 import { NotificationsSection } from "./notifications";
@@ -86,6 +87,14 @@ const sections: {
     title: "Caja",
     serif: "del día.",
     lead: "Servicios finalizados por profesional, lo pagado en línea frente a lo que se cobra en el local, y el cierre del día para imprimir.",
+  },
+  {
+    id: "galeria",
+    label: "Galería",
+    icon: "image",
+    title: "Galería",
+    serif: "de trabajos.",
+    lead: "Fotos y videos que sube cada barbero. Apruébalos para que los clientes los vean al elegir profesional.",
   },
   {
     id: "avisos",
@@ -271,6 +280,7 @@ function OwnerWorkspace({ onExit }: { onExit?: () => void }) {
               ) : null}
               {tab === "equipo" ? <TeamSection state={state} runner={runner} /> : null}
               {tab === "caja" ? <CajaSection /> : null}
+              {tab === "galeria" ? <GalleryManager owner /> : null}
               {tab === "avisos" ? (
                 <NotificationsSection state={state} runner={runner} today={today} />
               ) : null}
