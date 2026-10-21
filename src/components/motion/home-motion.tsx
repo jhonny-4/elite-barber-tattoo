@@ -48,7 +48,7 @@ export function HomeMotion() {
             if (!motion) return;
             heroExit(gsap, wide);
             marquee(gsap, ScrollTrigger);
-            headings(gsap, SplitText, wide);
+            headings(gsap, SplitText);
             reveals(gsap, ScrollTrigger);
             if (wide) veils(gsap, ScrollTrigger);
             manifesto(gsap);
@@ -153,16 +153,8 @@ function marquee(gsap: Gsap, ScrollTrigger: ScrollTriggerStatic) {
   if (!trigger.isActive) loops.forEach((loop) => loop.pause());
 }
 
-/** Máscara diagonal: cerrada (todo a la izquierda) y abierta (cubre la línea con holgura). */
-const DIAGONAL_CLOSED = "polygon(0% -30%, 0% -30%, -30% 130%, -30% 130%)";
-const DIAGONAL_OPEN = "polygon(0% -30%, 130% -30%, 100% 130%, -30% 130%)";
-
-/**
- * Títulos: en escritorio cada línea se descubre con una máscara diagonal mientras sube;
- * en móvil, la versión ligera (líneas que se levantan en 3D). El resto del bloque sube
- * en cascada.
- */
-function headings(gsap: Gsap, SplitText: SplitTextStatic, wide: boolean) {
+/** Títulos: líneas que se levantan en 3D; el resto del bloque sube en cascada. */
+function headings(gsap: Gsap, SplitText: SplitTextStatic) {
   all("[data-anim='heading']").forEach((block) => {
     if (!pending(block)) return;
     const parts = Array.from(block.children).filter(
@@ -184,25 +176,7 @@ function headings(gsap: Gsap, SplitText: SplitTextStatic, wide: boolean) {
       linesClass: "home-split-line",
       autoSplit: true,
       onSplit: (split) =>
-        wide
-          ? gsap.fromTo(
-              split.lines,
-              { clipPath: DIAGONAL_CLOSED, yPercent: 38, opacity: 0.001 },
-              {
-                clipPath: DIAGONAL_OPEN,
-                yPercent: 0,
-                opacity: 1,
-                duration: 1.1,
-                ease: "expo.out",
-                stagger: 0.13,
-                scrollTrigger: { trigger: title, start: "clamp(top 88%)", once: true },
-                onComplete: () => {
-                  split.kill();
-                  split.revert();
-                },
-              },
-            )
-          : // rotateX positivo: la línea se aleja (nunca se amplía ni desborda en móvil).
+        // rotateX positivo: la línea se aleja (nunca se amplía ni desborda en móvil).
         gsap.from(split.lines, {
           opacity: 0,
           yPercent: 65,
