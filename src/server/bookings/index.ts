@@ -104,8 +104,11 @@ export async function createBooking(input: BookingInput, idempotencyKey: string)
   }
   if (boldEnabled()) {
     // Una sola cita pendiente de pago por contacto: evita apartar horarios sin pagar.
-    const { count } = await db.from("bookings").select("id", { count: "exact", head: true }).eq("status", "pendiente_pago").gt("hold_expires_at", new Date().toISOString()).or(`customer_email.eq.${email},customer_phone.eq.${phone}`);
-    if ((count ?? 0) > 0) throw new BookingError("Ya tienes una reserva pendiente de pago. Complétala o espera unos minutos.", 409);
+    // Dos consultas parametrizadas: el correo nunca se interpola en un filtro de texto.
+    const pending = (column: "customer_email" | "customer_phone", value: string) =>
+      db.from("bookings").select("id", { count: "exact", head: true }).eq("status", "pendiente_pago").gt("hold_expires_at", new Date().toISOString()).eq(column, value);
+    const [byEmail, byPhone] = await Promise.all([pending("customer_email", email), pending("customer_phone", phone)]);
+    if ((byEmail.count ?? 0) + (byPhone.count ?? 0) > 0) throw new BookingError("Ya tienes una reserva pendiente de pago. Complétala o espera unos minutos.", 409);
   }
   const barber = info.eligible.find(b => b.slug === (input.barberSlug === "any" ? slot.barberSlug : input.barberSlug));
   if (!barber) throw new BookingError("Profesional no disponible.", 409);
