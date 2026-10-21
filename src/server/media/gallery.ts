@@ -51,7 +51,7 @@ export async function countPending(barberId: string) {
 /** URLs de lectura: públicas si está publicado; firmadas (1 h) para el equipo si sigue pendiente. */
 export async function toViews(rows: MediaRow[]): Promise<MediaView[]> {
   const pendingPaths = rows.flatMap((r) =>
-    r.published ? [] : [r.kind === "foto" ? r.storage_path : null, r.poster_path].filter((p): p is string => Boolean(p)),
+    r.published ? [] : [isVideoPath(r.storage_path) ? null : r.storage_path, r.poster_path].filter((p): p is string => Boolean(p)),
   );
   const signed = new Map<string, string>();
   if (pendingPaths.length) {
@@ -71,7 +71,7 @@ export async function toViews(rows: MediaRow[]): Promise<MediaView[]> {
     published: r.published,
     sortOrder: r.sort_order,
     createdAt: r.created_at,
-    url: r.kind === "video" ? `/api/media/video/${publicVideoPath(r.storage_path.slice(3), R2_PREFIX)}` : (read(r.storage_path, r.published) ?? ""),
+    url: isVideoPath(r.storage_path) ? `/api/media/video/${publicVideoPath(r.storage_path.slice(3), R2_PREFIX)}` : (read(r.storage_path, r.published) ?? ""),
     posterUrl: read(r.poster_path, r.published),
   }));
 }

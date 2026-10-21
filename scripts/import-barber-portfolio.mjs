@@ -75,7 +75,7 @@ if (mode === "prepare") {
   const columns = 6;
   await sharp({ create: { width: columns * 180, height: Math.ceil(thumbs.length / columns) * 220, channels: 3, background: "#151515" } }).composite(thumbs.map((t, i) => ({ ...t, left: (i % columns) * 180, top: Math.floor(i / columns) * 220 }))).jpeg().toFile(path.join(output, "contact-sheet.jpg"));
   console.log(JSON.stringify({ assets: plan.assets.length, duplicates: plan.duplicates }));
-} else if (mode === "publish" || mode === "verify") {
+} else if (mode === "publish" || mode === "verify" || mode === "storage-videos") {
   loadEnvFile(".env.hostinger");
   const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
   const { data: barbers, error } = await db.from("barbers").select("id,slug,display_name");
@@ -83,20 +83,33 @@ if (mode === "prepare") {
   const plan = JSON.parse(await readFile(manifestFile, "utf8"));
   const aws = new AwsClient({ accessKeyId: process.env.R2_ACCESS_KEY_ID, secretAccessKey: process.env.R2_SECRET_ACCESS_KEY, service: "s3", region: "auto" });
   const objectUrl = (key) => `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${process.env.R2_BUCKET}/${key}`;
-  async function storePhoto(file, key) {
-    const { error: uploadError } = await db.storage.from("galeria").upload(key, await readFile(path.join(output, file)), { contentType: "image/webp", upsert: false, cacheControl: "31536000" });
+  async function storeFile(file, key) {
+    const { error: uploadError } = await db.storage.from("galeria").upload(key, await readFile(path.join(output, file)), { contentType: file.endsWith(".mp4") ? "video/mp4" : "image/webp", upsert: false, cacheControl: "31536000" });
     if (uploadError && !/already exists|duplicate/i.test(uploadError.message)) throw new Error("No se pudo subir la imagen: " + uploadError.message);
   }
   for (const asset of plan.assets) {
     const barber = barbers.find((b) => b.slug === asset.slug);
     if (!barber || barber.display_name !== asset.name) throw new Error("No coincide la identidad del barbero.");
-    const storagePath = asset.kind === "foto" ? `barberos/${barber.id}/portfolio-${asset.id}.webp` : `r2:videos/${barber.id}/${asset.id}.mp4`;
+    const r2Path = `r2:videos/${barber.id}/${asset.id}.mp4`;
+    let storagePath = asset.kind === "foto" ? `barberos/${barber.id}/portfolio-${asset.id}.webp` : r2Path;
     const posterPath = asset.poster ? `barberos/${barber.id}/portfolio-${asset.id}-poster.webp` : null;
     const { data: existing, error: lookupError } = await db.from("media").select("id,published,barber_id,storage_path").eq("id", asset.id).maybeSingle();
     if (lookupError) throw new Error("No se pudo comprobar la publicación.");
+    const videoStoragePath = `barberos/${barber.id}/portfolio-${asset.id}.mp4`;
+    if (existing?.storage_path === videoStoragePath && asset.kind === "video") storagePath = videoStoragePath;
     if (existing && (existing.barber_id !== barber.id || existing.storage_path !== storagePath || !existing.published)) throw new Error("Publicación existente incompatible; no se sobrescribe.");
+    if (mode === "storage-videos" && asset.kind === "video" && storagePath === r2Path) {
+      if (!existing) throw new Error("No existe el video que se quiere trasladar.");
+      await storeFile(asset.filename, videoStoragePath);
+      const publicUrl = db.storage.from("galeria").getPublicUrl(videoStoragePath).data.publicUrl;
+      const probe = await fetch(publicUrl, { headers: { Range: "bytes=0-31" }, signal: AbortSignal.timeout(30_000) });
+      if (probe.status !== 206 || (await probe.arrayBuffer()).byteLength !== 32) throw new Error("La copia pública no admite reproducción por rangos.");
+      const { data: moved, error: moveError } = await db.from("media").update({ storage_path: videoStoragePath }).eq("id", asset.id).eq("barber_id", barber.id).eq("published", true).eq("storage_path", r2Path).select("id").single();
+      if (moveError || !moved) throw new Error("No se pudo actualizar la ruta del video importado.");
+      storagePath = videoStoragePath;
+    }
     if (mode === "publish" && !existing) {
-      if (asset.kind === "foto") await storePhoto(asset.filename, storagePath);
+      if (asset.kind === "foto") await storeFile(asset.filename, storagePath);
       else {
         const key = storagePath.slice(3);
         const head = await aws.fetch(objectUrl(key), { method: "HEAD", signal: AbortSignal.timeout(30_000) });
@@ -105,7 +118,7 @@ if (mode === "prepare") {
           const uploaded = await aws.fetch(objectUrl(key), { method: "PUT", headers: { "Content-Type": "video/mp4", "If-None-Match": "*" }, body: bytes, signal: AbortSignal.timeout(120_000) });
           if (!uploaded.ok) throw new Error(`R2 no aceptó el video (${uploaded.status}).`);
         } else if (!head.ok || Number(head.headers.get("content-length")) !== bytes.length) throw new Error("Objeto R2 existente incompatible.");
-        await storePhoto(asset.poster, posterPath);
+        await storeFile(asset.poster, posterPath);
       }
       const { error: insertError } = await db.from("media").insert({ id: asset.id, section: "barbero", barber_id: barber.id, kind: asset.kind, storage_path: storagePath, poster_path: posterPath, title: asset.title, alt: asset.alt, width: asset.width, height: asset.height, published: true, sort_order: asset.order });
       if (insertError) throw new Error("No se pudo registrar la publicación: " + insertError.message);
@@ -115,11 +128,15 @@ if (mode === "prepare") {
     const publicPhoto = db.storage.from("galeria").getPublicUrl(asset.kind === "foto" ? storagePath : posterPath).data.publicUrl;
     const imageCheck = await fetch(publicPhoto, { method: "HEAD", signal: AbortSignal.timeout(20_000) });
     if (!imageCheck.ok) throw new Error(`Imagen pública no disponible (${imageCheck.status}).`);
-    if (asset.kind === "video") {
+    if (asset.kind === "video" && storagePath.startsWith("r2:")) {
       const videoCheck = await aws.fetch(objectUrl(storagePath.slice(3)), { method: "HEAD", signal: AbortSignal.timeout(20_000) });
       if (!videoCheck.ok || Number(videoCheck.headers.get("content-length")) !== (await stat(path.join(output, asset.filename))).size) throw new Error("Video no disponible o tamaño incorrecto.");
+    } else if (asset.kind === "video") {
+      const publicUrl = db.storage.from("galeria").getPublicUrl(storagePath).data.publicUrl;
+      const videoCheck = await fetch(publicUrl, { method: "HEAD", signal: AbortSignal.timeout(20_000) });
+      if (!videoCheck.ok || Number(videoCheck.headers.get("content-length")) !== (await stat(path.join(output, asset.filename))).size) throw new Error("Video público no disponible o tamaño incorrecto.");
     }
     console.log(`Verificado: ${asset.name} · ${asset.kind} · ${asset.title}`);
   }
   console.log(`Publicaciones verificadas: ${plan.assets.length}`);
-} else throw new Error("Usa prepare, publish o verify.");
+} else throw new Error("Usa prepare, publish, verify o storage-videos.");
