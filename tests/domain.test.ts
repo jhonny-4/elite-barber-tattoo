@@ -61,7 +61,7 @@ test("la última hora depende de la duración y los cruces se deshabilitan", () 
   assert.equal(slots.find((s) => s.time === "10:45")?.available, true);
   assert.equal(
     getSlots(state, input.barberId, "corte", input.date).at(-1)?.time,
-    "17:30",
+    "17:15",
   );
 });
 test("pausar un profesional bloquea horarios y reservas nuevas", () => {

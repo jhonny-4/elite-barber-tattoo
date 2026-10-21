@@ -11,7 +11,7 @@ export const business = {
 } as const;
 
 export const services = [
-  { id: "corte", name: "Corte", priceCOP: 25000, demoDurationMinutes: 30 },
+  { id: "corte", name: "Corte", priceCOP: 25000, demoDurationMinutes: 45 },
   {
     id: "corte-barba",
     name: "Corte con barba",
