@@ -26,6 +26,7 @@ type Api = {
   tattoos: Row[];
   notifications: Row[];
   hours: { barber_id: string; weekday: number; opens: string; closes: string }[];
+  breaks?: { barber_id: string; weekday: number; starts: string; ends: string; label: string }[];
 };
 
 const tz = "America/Bogota";
@@ -92,7 +93,8 @@ function toState(api: Api, revision: number): SharedState {
       open: rows[0]?.opens.slice(0, 5) ?? "10:00",
       close: rows[0]?.closes.slice(0, 5) ?? "18:00",
       days: rows.map((h) => h.weekday),
-      pauses: [],
+      // Las pausas se guardan por día; el panel las muestra una vez (iguales para todos los días).
+      pauses: [...new Map((api.breaks ?? []).filter((p) => p.barber_id === b.id).map((p) => [`${p.starts}-${p.ends}`, { start: p.starts.slice(0, 5), end: p.ends.slice(0, 5), label: p.label }])).values()],
       absences: [],
     };
   });
@@ -215,6 +217,7 @@ export function usePanel() {
             kind: "hours",
             id,
             hours: member.days.map((weekday) => ({ weekday, opens: member.open, closes: member.close })),
+            breaks: member.pauses.map((p) => ({ starts: p.start, ends: p.end, label: p.label })),
           });
           break;
         }

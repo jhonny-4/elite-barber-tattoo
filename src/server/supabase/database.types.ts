@@ -99,14 +99,14 @@ isOneToOne: false
                   ]
                 },"bookings": {
                   Row: {
-                    "paid_in_store_at": string | null,                    "reschedule_count": number,"access_token_hash": string,"barber_id": string,"created_at": string,"customer_email": string,"customer_name": string,"customer_phone": string,"ends_at": string,"hold_expires_at": string | null,"id": string,"idempotency_key": string | null,"price_cop": number,"service_id": string,"source": string,"starts_at": string,"status": Database["public"]['Enums']["booking_status"],"updated_at": string
+                    "access_token_hash": string,"barber_id": string,"created_at": string,"customer_email": string,"customer_name": string,"customer_phone": string,"ends_at": string,"hold_expires_at": string | null,"id": string,"idempotency_key": string | null,"paid_in_store_at": string | null,"price_cop": number,"reschedule_count": number,"service_id": string,"source": string,"starts_at": string,"status": Database["public"]['Enums']["booking_status"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "paid_in_store_at"?: string | null,                    "reschedule_count"?: number,"access_token_hash": string,"barber_id": string,"created_at"?: string,"customer_email": string,"customer_name": string,"customer_phone": string,"ends_at": string,"hold_expires_at"?: string | null,"id"?: string,"idempotency_key"?: string | null,"price_cop": number,"service_id": string,"source"?: string,"starts_at": string,"status"?: Database["public"]['Enums']["booking_status"],"updated_at"?: string
+                    "access_token_hash": string,"barber_id": string,"created_at"?: string,"customer_email": string,"customer_name": string,"customer_phone": string,"ends_at": string,"hold_expires_at"?: string | null,"id"?: string,"idempotency_key"?: string | null,"paid_in_store_at"?: string | null,"price_cop": number,"reschedule_count"?: number,"service_id": string,"source"?: string,"starts_at": string,"status"?: Database["public"]['Enums']["booking_status"],"updated_at"?: string
                   }
                   Update: {
-                    "paid_in_store_at"?: string | null,                    "reschedule_count"?: number,"access_token_hash"?: string,"barber_id"?: string,"created_at"?: string,"customer_email"?: string,"customer_name"?: string,"customer_phone"?: string,"ends_at"?: string,"hold_expires_at"?: string | null,"id"?: string,"idempotency_key"?: string | null,"price_cop"?: number,"service_id"?: string,"source"?: string,"starts_at"?: string,"status"?: Database["public"]['Enums']["booking_status"],"updated_at"?: string
+                    "access_token_hash"?: string,"barber_id"?: string,"created_at"?: string,"customer_email"?: string,"customer_name"?: string,"customer_phone"?: string,"ends_at"?: string,"hold_expires_at"?: string | null,"id"?: string,"idempotency_key"?: string | null,"paid_in_store_at"?: string | null,"price_cop"?: number,"reschedule_count"?: number,"service_id"?: string,"source"?: string,"starts_at"?: string,"status"?: Database["public"]['Enums']["booking_status"],"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -154,7 +154,23 @@ isOneToOne: false
                   Update: {
                     "note"?: string,"phone"?: string,"updated_at"?: string,"updated_by"?: string | null
                   }
-                  Relationships: []
+                  Relationships: [
+                    
+                  ]
+                },"daily_digest": {
+                  Row: {
+                    "attempts": number,"claimed_at": string,"day": string,"last_error": string | null,"sent_at": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "attempts"?: number,"claimed_at"?: string,"day": string,"last_error"?: string | null,"sent_at"?: string | null
+                  }
+                  Update: {
+                    "attempts"?: number,"claimed_at"?: string,"day"?: string,"last_error"?: string | null,"sent_at"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"media": {
                   Row: {
                     "alt": string,"barber_id": string | null,"created_at": string,"created_by": string | null,"height": number | null,"id": string,"kind": Database["public"]['Enums']["media_kind"],"poster_path": string | null,"published": boolean,"section": Database["public"]['Enums']["media_section"],"sort_order": number,"storage_path": string,"title": string | null,"width": number | null
@@ -241,34 +257,6 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"daily_digest": {
-                  Row: {
-                    "attempts": number,"claimed_at": string,"day": string,"last_error": string | null,"sent_at": string | null
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "attempts"?: number,"claimed_at"?: string,"day": string,"last_error"?: string | null,"sent_at"?: string | null
-                  }
-                  Update: {
-                    "attempts"?: number,"claimed_at"?: string,"day"?: string,"last_error"?: string | null,"sent_at"?: string | null
-                  }
-                  Relationships: [
-                    
-                  ]
-                },"staff_push_subscriptions": {
-                  Row: {
-                    "created_at": string,"endpoint": string,"id": string,"keys": Json,"user_id": string
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "created_at"?: string,"endpoint": string,"id"?: string,"keys": Json,"user_id": string
-                  }
-                  Update: {
-                    "created_at"?: string,"endpoint"?: string,"id"?: string,"keys"?: Json,"user_id"?: string
-                  }
-                  Relationships: [
-                    
-                  ]
                 },"profiles": {
                   Row: {
                     "barber_id": string | null,"created_at": string,"full_name": string | null,"id": string,"role": Database["public"]['Enums']["app_role"]
@@ -317,14 +305,14 @@ isOneToOne: false
                   ]
                 },"queue_tickets": {
                   Row: {
-                    "paid_in_store_at": string | null,                    "access_token_hash": string,"barber_id": string | null,"booking_id": string | null,"called_at": string | null,"created_at": string,"customer_name": string,"customer_phone": string | null,"day": string,"finished_at": string | null,"id": string,"number": number,"service_id": string,"source": string,"started_at": string | null,"status": Database["public"]['Enums']["ticket_status"]
+                    "access_token_hash": string,"barber_id": string | null,"booking_id": string | null,"called_at": string | null,"created_at": string,"customer_name": string,"customer_phone": string | null,"day": string,"finished_at": string | null,"id": string,"number": number,"paid_in_store_at": string | null,"service_id": string,"source": string,"started_at": string | null,"status": Database["public"]['Enums']["ticket_status"]
                   }
                   ComputedFields: never
                   Insert: {
-                    "paid_in_store_at"?: string | null,                    "access_token_hash": string,"barber_id"?: string | null,"booking_id"?: string | null,"called_at"?: string | null,"created_at"?: string,"customer_name": string,"customer_phone"?: string | null,"day"?: string,"finished_at"?: string | null,"id"?: string,"number": number,"service_id": string,"source": string,"started_at"?: string | null,"status"?: Database["public"]['Enums']["ticket_status"]
+                    "access_token_hash": string,"barber_id"?: string | null,"booking_id"?: string | null,"called_at"?: string | null,"created_at"?: string,"customer_name": string,"customer_phone"?: string | null,"day"?: string,"finished_at"?: string | null,"id"?: string,"number": number,"paid_in_store_at"?: string | null,"service_id": string,"source": string,"started_at"?: string | null,"status"?: Database["public"]['Enums']["ticket_status"]
                   }
                   Update: {
-                    "paid_in_store_at"?: string | null,                    "access_token_hash"?: string,"barber_id"?: string | null,"booking_id"?: string | null,"called_at"?: string | null,"created_at"?: string,"customer_name"?: string,"customer_phone"?: string | null,"day"?: string,"finished_at"?: string | null,"id"?: string,"number"?: number,"service_id"?: string,"source"?: string,"started_at"?: string | null,"status"?: Database["public"]['Enums']["ticket_status"]
+                    "access_token_hash"?: string,"barber_id"?: string | null,"booking_id"?: string | null,"called_at"?: string | null,"created_at"?: string,"customer_name"?: string,"customer_phone"?: string | null,"day"?: string,"finished_at"?: string | null,"id"?: string,"number"?: number,"paid_in_store_at"?: string | null,"service_id"?: string,"source"?: string,"started_at"?: string | null,"status"?: Database["public"]['Enums']["ticket_status"]
                   }
                   Relationships: [
                     {
@@ -361,16 +349,30 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
-                },"tattoo_requests": {
+                },"staff_push_subscriptions": {
                   Row: {
-                    "quote_cop": number | null,"deposit_cop": number | null,"quote_notes": string | null,"quote_token_hash": string | null,"quoted_at": string | null,"created_at": string,"customer_email": string,"customer_name": string,"customer_phone": string,"id": string,"idea": string,"placement": string | null,"reference_path": string | null,"size": string | null,"status": Database["public"]['Enums']["tattoo_status"]
+                    "created_at": string,"endpoint": string,"id": string,"keys": NonNullable<Json>,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "quote_cop"?: number | null,"deposit_cop"?: number | null,"quote_notes"?: string | null,"quote_token_hash"?: string | null,"quoted_at"?: string | null,"created_at"?: string,"customer_email": string,"customer_name": string,"customer_phone": string,"id"?: string,"idea": string,"placement"?: string | null,"reference_path"?: string | null,"size"?: string | null,"status"?: Database["public"]['Enums']["tattoo_status"]
+                    "created_at"?: string,"endpoint": string,"id"?: string,"keys": NonNullable<Json>,"user_id": string
                   }
                   Update: {
-                    "quote_cop"?: number | null,"deposit_cop"?: number | null,"quote_notes"?: string | null,"quote_token_hash"?: string | null,"quoted_at"?: string | null,"created_at"?: string,"customer_email"?: string,"customer_name"?: string,"customer_phone"?: string,"id"?: string,"idea"?: string,"placement"?: string | null,"reference_path"?: string | null,"size"?: string | null,"status"?: Database["public"]['Enums']["tattoo_status"]
+                    "created_at"?: string,"endpoint"?: string,"id"?: string,"keys"?: NonNullable<Json>,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"tattoo_requests": {
+                  Row: {
+                    "created_at": string,"customer_email": string,"customer_name": string,"customer_phone": string,"deposit_cop": number | null,"id": string,"idea": string,"placement": string | null,"quote_cop": number | null,"quote_notes": string | null,"quote_token_hash": string | null,"quoted_at": string | null,"reference_path": string | null,"size": string | null,"status": Database["public"]['Enums']["tattoo_status"]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"customer_email": string,"customer_name": string,"customer_phone": string,"deposit_cop"?: number | null,"id"?: string,"idea": string,"placement"?: string | null,"quote_cop"?: number | null,"quote_notes"?: string | null,"quote_token_hash"?: string | null,"quoted_at"?: string | null,"reference_path"?: string | null,"size"?: string | null,"status"?: Database["public"]['Enums']["tattoo_status"]
+                  }
+                  Update: {
+                    "created_at"?: string,"customer_email"?: string,"customer_name"?: string,"customer_phone"?: string,"deposit_cop"?: number | null,"id"?: string,"idea"?: string,"placement"?: string | null,"quote_cop"?: number | null,"quote_notes"?: string | null,"quote_token_hash"?: string | null,"quoted_at"?: string | null,"reference_path"?: string | null,"size"?: string | null,"status"?: Database["public"]['Enums']["tattoo_status"]
                   }
                   Relationships: [
                     
@@ -427,15 +429,36 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "join_queue": { Args: { p_id: string; p_barber: string; p_service: string; p_name: string; p_phone: string; p_token_hash: string }; Returns: Database["public"]["Tables"]["queue_tickets"]["Row"] },
-            "checkin_booking": { Args: { p_booking: string }; Returns: Database["public"]["Tables"]["queue_tickets"]["Row"] },
-            "save_work_hours": { Args: { p_barber: string; p_hours: Json }; Returns: undefined },
-            "reschedule_booking_by_token": { Args: { p_token_hash: string; p_starts: string }; Returns: Database["public"]["Tables"]["bookings"]["Row"] },
             "busy_ranges":
 { Args: { "p_barber": string,"p_from": string,"p_to": string }; Returns: {
               "ends_at": string,"starts_at": string
             }[]
                            },
+"checkin_booking":
+{ Args: { "p_booking": string }; Returns: {
+              "access_token_hash": string,
+"barber_id": string | null,
+"booking_id": string | null,
+"called_at": string | null,
+"created_at": string,
+"customer_name": string,
+"customer_phone": string | null,
+"day": string,
+"finished_at": string | null,
+"id": string,
+"number": number,
+"paid_in_store_at": string | null,
+"service_id": string,
+"source": string,
+"started_at": string | null,
+"status": Database["public"]['Enums']["ticket_status"]
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "queue_tickets"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
 "create_booking":
 { Args: { "p_barber": string,"p_email": string,"p_hold_minutes"?: number,"p_idempotency": string,"p_name": string,"p_phone": string,"p_requires_payment"?: boolean,"p_service": string,"p_starts": string,"p_token_hash": string }; Returns: {
               "access_token_hash": string,
@@ -448,7 +471,9 @@ isOneToOne: false
 "hold_expires_at": string | null,
 "id": string,
 "idempotency_key": string | null,
+"paid_in_store_at": string | null,
 "price_cop": number,
+"reschedule_count": number,
 "service_id": string,
 "source": string,
 "starts_at": string,
@@ -463,6 +488,64 @@ isOneToOne: false
       } },
 "expire_holds":
 { Args: Record<PropertyKey, never>; Returns: number
+                           },
+"join_queue":
+{ Args: { "p_barber": string,"p_id": string,"p_name": string,"p_phone": string,"p_service": string,"p_token_hash": string }; Returns: {
+              "access_token_hash": string,
+"barber_id": string | null,
+"booking_id": string | null,
+"called_at": string | null,
+"created_at": string,
+"customer_name": string,
+"customer_phone": string | null,
+"day": string,
+"finished_at": string | null,
+"id": string,
+"number": number,
+"paid_in_store_at": string | null,
+"service_id": string,
+"source": string,
+"started_at": string | null,
+"status": Database["public"]['Enums']["ticket_status"]
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "queue_tickets"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"reschedule_booking_by_token":
+{ Args: { "p_starts": string,"p_token_hash": string }; Returns: {
+              "access_token_hash": string,
+"barber_id": string,
+"created_at": string,
+"customer_email": string,
+"customer_name": string,
+"customer_phone": string,
+"ends_at": string,
+"hold_expires_at": string | null,
+"id": string,
+"idempotency_key": string | null,
+"paid_in_store_at": string | null,
+"price_cop": number,
+"reschedule_count": number,
+"service_id": string,
+"source": string,
+"starts_at": string,
+"status": Database["public"]['Enums']["booking_status"],
+"updated_at": string
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "bookings"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"save_breaks":
+{ Args: { "p_barber": string,"p_breaks": Json }; Returns: undefined
+                           },
+"save_work_hours":
+{ Args: { "p_barber": string,"p_hours": Json }; Returns: undefined
                            }
           }
           Enums: {

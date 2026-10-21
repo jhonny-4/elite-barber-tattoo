@@ -80,10 +80,11 @@ export async function GET(request: Request) {
         .from("work_hours")
         .select("barber_id,weekday,opens,closes")
         .order("weekday"),
+      db.from("breaks").select("barber_id,weekday,starts,ends,label"),
     ]);
     if (results.some((r) => r.error))
       throw new Error("No se pudo cargar el panel.");
-    const [bookings, queue, barbers, services, tattoos, notifications, hours] =
+    const [bookings, queue, barbers, services, tattoos, notifications, hours, breaks] =
       results.map((r) => r.data);
     return Response.json(
       {
@@ -95,6 +96,7 @@ export async function GET(request: Request) {
         tattoos,
         notifications,
         hours,
+        breaks,
       },
       { headers: noStore },
     );
@@ -155,6 +157,19 @@ export async function POST(request: Request) {
             : "No se pudo guardar la jornada.",
           409,
         );
+      // Pausas opcionales en la misma operación del panel; se validan contra la jornada guardada.
+      if (Array.isArray(body.breaks)) {
+        const { error: breakError } = await db.rpc("save_breaks", { p_barber: id, p_breaks: body.breaks });
+        if (breakError)
+          throw new BookingError(
+            breakError.message.includes("fuera_de_jornada")
+              ? "Las pausas deben estar dentro de la jornada."
+              : breakError.code === "P0001"
+                ? "Revisa el inicio y el final de cada pausa."
+                : "No se pudieron guardar las pausas.",
+            409,
+          );
+      }
       return Response.json({ ok: true }, { headers: noStore });
     }
     if (body.kind === "reschedule") {
