@@ -1,158 +1,356 @@
 [
   {
-    "id": "tattoo-anubis-0",
+    "id": "portfolio-virgen-maria-0",
     "category": "tattoo",
-    "title": "Egipto en la piel",
+    "title": "Virgen Maria",
     "subtitle": "Jean Carlos · Tatuaje",
-    "source": "/media/tattoos/portfolio/anubis-01.webp",
-    "original": "/media/tattoos/portfolio/anubis-01.webp",
-    "capture": true,
-    "sourceWidth": 1210,
-    "sourceHeight": 1600,
-    "crop": [
-      0,
-      0,
-      1210,
-      1600
-    ],
-    "views": [
-      {
-        "id": "tattoo-anubis-1",
-        "category": "tattoo",
-        "title": "Egipto en la piel",
-        "subtitle": "Jean Carlos · Tatuaje",
-        "source": "/media/tattoos/portfolio/anubis-02.webp",
-        "original": "/media/tattoos/portfolio/anubis-02.webp",
-        "capture": true,
-        "sourceWidth": 1188,
-        "sourceHeight": 1600,
-        "crop": [
-          0,
-          0,
-          1188,
-          1600
-        ]
-      },
-      {
-        "id": "tattoo-anubis-2",
-        "category": "tattoo",
-        "title": "Egipto en la piel",
-        "subtitle": "Jean Carlos · Tatuaje",
-        "source": "/media/tattoos/portfolio/anubis-03.webp",
-        "original": "/media/tattoos/portfolio/anubis-03.webp",
-        "capture": true,
-        "sourceWidth": 1227,
-        "sourceHeight": 1600,
-        "crop": [
-          0,
-          0,
-          1227,
-          1600
-        ]
-      }
-    ]
-  },
-  {
-    "id": "tattoo-faith-3",
-    "category": "tattoo",
-    "title": "Retrato & carácter",
-    "subtitle": "Jean Carlos · Tatuaje",
-    "source": "/media/tattoos/portfolio/faith-01.webp",
-    "original": "/media/tattoos/portfolio/faith-01.webp",
-    "capture": true,
-    "sourceWidth": 1290,
-    "sourceHeight": 1585,
-    "crop": [
-      0,
-      0,
-      1290,
-      1585
-    ],
-    "views": [
-      {
-        "id": "tattoo-faith-4",
-        "category": "tattoo",
-        "title": "Retrato & carácter",
-        "subtitle": "Jean Carlos · Tatuaje",
-        "source": "/media/tattoos/portfolio/faith-02.webp",
-        "original": "/media/tattoos/portfolio/faith-02.webp",
-        "capture": true,
-        "sourceWidth": 1215,
-        "sourceHeight": 1600,
-        "crop": [
-          0,
-          0,
-          1215,
-          1600
-        ]
-      }
-    ]
-  },
-  {
-    "id": "tattoo-joker-5",
-    "category": "tattoo",
-    "title": "Joker · Realismo",
-    "subtitle": "Jean Carlos · Tatuaje",
-    "source": "/media/tattoos/portfolio/joker-01.webp",
-    "original": "/media/tattoos/portfolio/joker-01.webp",
-    "capture": true,
-    "sourceWidth": 1290,
-    "sourceHeight": 1465,
-    "crop": [
-      0,
-      0,
-      1290,
-      1465
-    ]
-  },
-  {
-    "id": "tattoo-lettering-estrellas-6",
-    "category": "tattoo",
-    "title": "Lettering & estrellas",
-    "subtitle": "Jean Carlos · Tatuaje",
-    "source": "/media/tattoos/portfolio/lettering-estrellas-01.webp",
-    "capture": true,
-    "sourceWidth": 709,
+    "source": "/media/tattoos/organizado/virgen-maria-img_3697.webp",
+    "original": "/media/tattoos/organizado/virgen-maria-img_3697.webp",
+    "sourceWidth": 1152,
     "sourceHeight": 1536,
     "crop": [
       0,
-      190,
-      709,
-      1167
-    ]
+      0,
+      1152,
+      1536
+    ],
+    "capture": true
   },
   {
-    "id": "tattoo-mujer-cuervo-7",
+    "id": "portfolio-joker-0",
     "category": "tattoo",
-    "title": "Mirada & cuervo",
+    "title": "Joker",
     "subtitle": "Jean Carlos · Tatuaje",
-    "source": "/media/tattoos/portfolio/mujer-cuervo-01.webp",
-    "original": "/media/tattoos/portfolio/mujer-cuervo-01.webp",
-    "capture": true,
-    "sourceWidth": 1091,
-    "sourceHeight": 1600,
+    "source": "/media/tattoos/organizado/joker-img_3699.webp",
+    "original": "/media/tattoos/organizado/joker-img_3699.webp",
+    "sourceWidth": 1440,
+    "sourceHeight": 1920,
     "crop": [
       0,
       0,
-      1091,
-      1600
-    ]
+      1440,
+      1920
+    ],
+    "capture": true
   },
   {
-    "id": "tattoo-zeus-aguila-8",
+    "id": "portfolio-justicia-y-espada-0",
     "category": "tattoo",
-    "title": "Zeus & águila",
+    "title": "Justicia y Espada",
     "subtitle": "Jean Carlos · Tatuaje",
-    "source": "/media/tattoos/portfolio/zeus-aguila-01.webp",
-    "original": "/media/tattoos/portfolio/zeus-aguila-01.webp",
-    "capture": true,
-    "sourceWidth": 1115,
-    "sourceHeight": 1600,
+    "source": "/media/tattoos/organizado/justicia-y-espada-img_3700.webp",
+    "original": "/media/tattoos/organizado/justicia-y-espada-img_3700.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
     "crop": [
       0,
       0,
-      1115,
-      1600
+      1152,
+      1536
+    ],
+    "capture": true,
+    "views": [
+      {
+        "id": "portfolio-justicia-y-espada-1",
+        "category": "tattoo",
+        "title": "Justicia y Espada",
+        "subtitle": "Jean Carlos · Tatuaje",
+        "source": "/media/tattoos/organizado/justicia-y-espada-img_3704.webp",
+        "original": "/media/tattoos/organizado/justicia-y-espada-img_3704.webp",
+        "sourceWidth": 1170,
+        "sourceHeight": 2532,
+        "crop": [
+          0,
+          0,
+          1170,
+          2532
+        ],
+        "capture": true
+      }
     ]
+  },
+  {
+    "id": "portfolio-angel-infantil-cuello-0",
+    "category": "tattoo",
+    "title": "Angel Infantil Cuello",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/angel-infantil-cuello-img_3705.webp",
+    "original": "/media/tattoos/organizado/angel-infantil-cuello-img_3705.webp",
+    "sourceWidth": 1440,
+    "sourceHeight": 1920,
+    "crop": [
+      0,
+      0,
+      1440,
+      1920
+    ],
+    "capture": true,
+    "videos": [
+      "/media/tattoos/organizado/angel-infantil-cuello-img_4775.mp4"
+    ]
+  },
+  {
+    "id": "portfolio-retrato-scarface-0",
+    "category": "tattoo",
+    "title": "Retrato Scarface",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/retrato-scarface-img_3709.webp",
+    "original": "/media/tattoos/organizado/retrato-scarface-img_3709.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      0,
+      1152,
+      1536
+    ],
+    "capture": true
+  },
+  {
+    "id": "portfolio-guerrero-angelical-0",
+    "category": "tattoo",
+    "title": "Guerrero Angelical",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/guerrero-angelical-img_3703.webp",
+    "original": "/media/tattoos/organizado/guerrero-angelical-img_3703.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      0,
+      1152,
+      1536
+    ],
+    "capture": true
+  },
+  {
+    "id": "portfolio-manga-egipcia-anubis-y-ojo-0",
+    "category": "tattoo",
+    "title": "Manga Egipcia Anubis y Ojo",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3716.webp",
+    "original": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3716.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      0,
+      1152,
+      1536
+    ],
+    "capture": true,
+    "views": [
+      {
+        "id": "portfolio-manga-egipcia-anubis-y-ojo-1",
+        "category": "tattoo",
+        "title": "Manga Egipcia Anubis y Ojo",
+        "subtitle": "Jean Carlos · Tatuaje",
+        "source": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3717.webp",
+        "original": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3717.webp",
+        "sourceWidth": 1440,
+        "sourceHeight": 1920,
+        "crop": [
+          0,
+          0,
+          1440,
+          1920
+        ],
+        "capture": true
+      },
+      {
+        "id": "portfolio-manga-egipcia-anubis-y-ojo-2",
+        "category": "tattoo",
+        "title": "Manga Egipcia Anubis y Ojo",
+        "subtitle": "Jean Carlos · Tatuaje",
+        "source": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3718.webp",
+        "original": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3718.webp",
+        "sourceWidth": 1152,
+        "sourceHeight": 1536,
+        "crop": [
+          0,
+          0,
+          1152,
+          1536
+        ],
+        "capture": true
+      },
+      {
+        "id": "portfolio-manga-egipcia-anubis-y-ojo-3",
+        "category": "tattoo",
+        "title": "Manga Egipcia Anubis y Ojo",
+        "subtitle": "Jean Carlos · Tatuaje",
+        "source": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3719.webp",
+        "original": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3719.webp",
+        "sourceWidth": 1440,
+        "sourceHeight": 1920,
+        "crop": [
+          0,
+          0,
+          1440,
+          1920
+        ],
+        "capture": true
+      }
+    ]
+  },
+  {
+    "id": "portfolio-retrato-femenino-solo-video",
+    "category": "tattoo",
+    "title": "Retrato Femenino",
+    "subtitle": "Jean Carlos · Video",
+    "source": "/pwa/icons/elite-512.png",
+    "sourceWidth": 512,
+    "sourceHeight": 512,
+    "crop": [
+      0,
+      0,
+      512,
+      512
+    ],
+    "videos": [
+      "/media/tattoos/organizado/retrato-femenino-solo-video-img_4441.mp4"
+    ]
+  },
+  {
+    "id": "portfolio-lettering-ornamental-0",
+    "category": "tattoo",
+    "title": "Lettering Ornamental",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/lettering-ornamental-img_3701.webp",
+    "original": "/media/tattoos/organizado/lettering-ornamental-img_3701.webp",
+    "sourceWidth": 1440,
+    "sourceHeight": 1920,
+    "crop": [
+      0,
+      0,
+      1440,
+      1920
+    ],
+    "capture": true,
+    "videos": [
+      "/media/tattoos/organizado/lettering-ornamental-img_7531.mp4"
+    ]
+  },
+  {
+    "id": "portfolio-que-dios-me-perdone-0",
+    "category": "tattoo",
+    "title": "Que Dios Me Perdone",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/que-dios-me-perdone-img_3708.webp",
+    "original": "/media/tattoos/organizado/que-dios-me-perdone-img_3708.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      0,
+      1152,
+      1536
+    ],
+    "capture": true
+  },
+  {
+    "id": "portfolio-ambitious-0",
+    "category": "tattoo",
+    "title": "Ambitious",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/ambitious-img_3714.webp",
+    "original": "/media/tattoos/organizado/ambitious-img_3714.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      0,
+      1152,
+      1536
+    ],
+    "capture": true
+  },
+  {
+    "id": "portfolio-carpe-diem-0",
+    "category": "tattoo",
+    "title": "Carpe Diem",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/carpe-diem-img_3720.webp",
+    "original": "/media/tattoos/organizado/carpe-diem-img_3720.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      0,
+      1152,
+      1536
+    ],
+    "capture": true
+  },
+  {
+    "id": "portfolio-sebastian-c-color-0",
+    "category": "tattoo",
+    "title": "Sebastian C Color",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/sebastian-c-color-img_3702.webp",
+    "original": "/media/tattoos/organizado/sebastian-c-color-img_3702.webp",
+    "sourceWidth": 1440,
+    "sourceHeight": 1920,
+    "crop": [
+      0,
+      0,
+      1440,
+      1920
+    ],
+    "capture": true
+  },
+  {
+    "id": "portfolio-vegeta-0",
+    "category": "tattoo",
+    "title": "Vegeta",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/vegeta-img_3715.webp",
+    "original": "/media/tattoos/organizado/vegeta-img_3715.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      0,
+      1152,
+      1536
+    ],
+    "capture": true
+  },
+  {
+    "id": "portfolio-ojo-en-mano-0",
+    "category": "tattoo",
+    "title": "Ojo en Mano",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/ojo-en-mano-img_3711.webp",
+    "original": "/media/tattoos/organizado/ojo-en-mano-img_3711.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      0,
+      1152,
+      1536
+    ],
+    "capture": true,
+    "videos": [
+      "/media/tattoos/organizado/ojo-en-mano-img_0508.mp4"
+    ]
+  },
+  {
+    "id": "portfolio-mecedora-0",
+    "category": "tattoo",
+    "title": "Mecedora",
+    "subtitle": "Jean Carlos · Tatuaje",
+    "source": "/media/tattoos/organizado/mecedora-img_3710.webp",
+    "original": "/media/tattoos/organizado/mecedora-img_3710.webp",
+    "sourceWidth": 1152,
+    "sourceHeight": 1536,
+    "crop": [
+      0,
+      0,
+      1152,
+      1536
+    ],
+    "capture": true
   }
 ]

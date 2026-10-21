@@ -9,6 +9,7 @@ const protectedPaths = ["/administracion", "/gestion", "/barbero", "/cuenta"];
  * el rol en el servidor.
  */
 export async function proxy(request: NextRequest) {
+  if(process.env.NODE_ENV==="production" && request.nextUrl.pathname.startsWith("/api/demo")) return NextResponse.json({error:"El sistema anterior está desactivado."},{status:410,headers:{"Cache-Control":"no-store"}});
   let response = NextResponse.next({ request });
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -53,5 +54,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/administracion/:path*", "/gestion/:path*", "/barbero/:path*", "/cuenta/:path*", "/ingresar", "/api/demo/:path*"],
+  matcher: ["/administracion/:path*", "/gestion/:path*", "/barbero/:path*", "/cuenta/:path*", "/ingresar", "/api/demo/:path*", "/api/equipo/:path*"],
 };

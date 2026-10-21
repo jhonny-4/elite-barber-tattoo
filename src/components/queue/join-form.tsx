@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import { barbers, currency, services } from "../../domain/catalog";
+import { currency } from "../../domain/catalog";
 import { postDemo } from "../../services/adapters/http-demo";
 import type { DemoCommand, PublicTicket } from "../../services/contracts/demo";
 import { usePublicQueue } from "../../lib/use-public-queue";
@@ -33,6 +33,9 @@ export function JoinForm({
     [error, setError] = useState(""),
     [notice, setNotice] = useState("");
   const live = usePublicQueue(token);
+  const [catalog,setCatalog]=useState<{barbers:{id:string;name:string}[];services:{id:string;name:string;priceCOP:number}[]}|null>(null);
+  useEffect(()=>{const controller=new AbortController();void fetch("/api/reservas/catalogo",{signal:controller.signal,cache:"no-store"}).then(async r=>{const d=await r.json();if(!r.ok) throw new Error(d.error);return d;}).then(d=>setCatalog({barbers:d.barbers.map((b:{slug:string;display_name:string})=>({id:b.slug,name:b.display_name})),services:d.services.map((s:{slug:string;name:string;price_cop:number})=>({id:s.slug,name:s.name,priceCOP:s.price_cop}))})).catch(()=>{if(!controller.signal.aborted)setError("No se pudo cargar el catálogo. Recarga para reintentar.");});return()=>controller.abort();},[]);
+  const barbers=catalog?.barbers??[],services=catalog?.services??[];
   const uid = useId();
   const receipt = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -76,7 +79,7 @@ export function JoinForm({
         setNotice("Turno presencial guardado en la fila compartida.");
       } else {
         const result = await postDemo<{ ticket: PublicTicket; token: string }>(
-          "/api/demo/queue",
+          "/api/fila",
           command,
         );
         setCreated(result.ticket);
@@ -275,7 +278,7 @@ export function JoinForm({
               </label>
             ))}
           </div>
-          <p className="queue-fieldset-note">Precios de referencia.</p>
+          <p className="queue-fieldset-note">Tarifas actuales del establecimiento.</p>
         </fieldset>
         <fieldset className="queue-fieldset">
           <legend>Profesional</legend>
@@ -300,8 +303,8 @@ export function JoinForm({
           <input type="checkbox" name="consent" required />
           <span>
             {manual
-              ? "Confirmo que registro datos ficticios: esta versión del sistema aún no debe guardar datos reales."
-              : "Entiendo que la espera es estimada y puede cambiar, y que en esta versión debo usar un nombre y un teléfono ficticios."}
+              ? "Confirmo que el cliente autorizó registrar su turno."
+              : "Autorizo el uso de mis datos para gestionar este turno. La espera puede cambiar."}
           </span>
         </label>
       </div>
@@ -330,7 +333,7 @@ export function JoinForm({
       <div className="queue-join-actions">
         <button
           className={`button button-large queue-submit${manual ? "" : " button-accent"}`}
-          disabled={!live.online}
+          disabled={!live.online || !catalog || busy}
           aria-busy={busy || undefined}
         >
           {busy ? "Registrando…" : manual ? "Registrar turno" : "Tomar turno"}

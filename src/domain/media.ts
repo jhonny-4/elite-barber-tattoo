@@ -16,6 +16,7 @@ export type PortfolioItem = {
   position?: string;
   /** Additional angles of the same tattoo, grouped under one gallery card. */
   views?: PortfolioItem[];
+  videos?: string[];
   capture?: boolean;
 };
 const tattoo = {
@@ -28,7 +29,7 @@ const barber = {
   sourceWidth: 709,
   sourceHeight: 1536,
 };
-export const portfolio: PortfolioItem[] = [
+const legacyPortfolio: PortfolioItem[] = [
   ...(additionalPortfolio as PortfolioItem[]),
   {
     id: "tattoo-01",
@@ -85,3 +86,4 @@ export const portfolio: PortfolioItem[] = [
     crop: [474, 1164, 234, 313],
   },
 ];
+export const portfolio = legacyPortfolio.filter(item => item.category === "barberia" || item.id.startsWith("portfolio-"));

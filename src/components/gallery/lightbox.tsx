@@ -339,6 +339,7 @@ export function Lightbox({
           </div>
 
           <div className="lightbox-info">
+            {item?.videos?.map(video => <video key={video} controls playsInline preload="none" style={{width:"100%",maxHeight:"60vh",objectFit:"contain"}} src={video} aria-label={`Video de ${item.title}`} />)}
             {shots.length > 1 && (
               <div className="gallery-angle-controls" role="group" aria-label="Fotos del mismo tatuaje">
                 <button type="button" className="icon-button" aria-label="Ángulo anterior" onClick={() => setAngle((angle - 1 + shots.length) % shots.length)}><Icon name="chevron" /></button>

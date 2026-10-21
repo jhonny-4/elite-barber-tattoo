@@ -33,7 +33,6 @@ import {
   type SummaryData,
 } from "./booking/summary";
 import { TimeSlots } from "./booking/time-slots";
-import { BookingArrival } from "./booking/arrival";
 
 type Errors = ContactErrors;
 
@@ -125,7 +124,7 @@ export function BookingFlow() {
       setClock(Date.now());
     }, 30000);
     return () => clearInterval(tick);
-  }, []);
+  }, [params]);
 
   // Al cambiar de paso: foco en el título del paso y bloque visible bajo la cabecera.
   useEffect(() => {
@@ -311,7 +310,7 @@ export function BookingFlow() {
             }}
           />
           <div className="bk-next">
-            <BookingArrival id={result.id} />
+            <p className="bk-note">Al llegar al local, informa al equipo que tienes una reserva.</p>
             <h3>Siguientes pasos</h3>
             <ol>
               <li>

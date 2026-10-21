@@ -1,5 +1,7 @@
 # Elite Barber & Tattoo · ZENKO
 
+> **Estado vigente (21/10/2026): leer [docs/ESTADO_ACTUAL.md](docs/ESTADO_ACTUAL.md).** Hostinger está conectado a GitHub con despliegue automático. Reservas, panel, fila, monitor y tatuajes usan Supabase; acceso real con roles. Resend tiene cola y reintentos. Corte $25.000 / corte con barba $32.000, ambos 45 min. Galería actualizada desde el ZIP organizado. Lo siguiente conserva información histórica y no sustituye ese estado.
+
 Versión navegable de presentación del proyecto real. Un único local en Cartagena: Elite es la marca del negocio y Jean Carlos es su dueño y tatuador. Interfaz blanca y negra con acentos rojos y colores originales de redes, con logos 3D, animación de scroll, galería, agenda, solicitudes, turnos y panel administrativo.
 
 ## Ejecutar

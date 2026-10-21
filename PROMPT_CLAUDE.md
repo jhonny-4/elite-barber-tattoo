@@ -1,5 +1,7 @@
 # Continuidad completa — Elite Barber & Tattoo / ZENKO
 
+**ACTUALIZACIÓN VIGENTE 21/10/2026:** lee primero `docs/ESTADO_ACTUAL.md` y mantenlo actualizado en cada entrega. Las instrucciones y pendientes históricos de este documento quedan subordinados a ese estado: Hostinger autodespliega desde GitHub; Supabase, panel real, fila, tatuajes y Resend con cola/reintentos ya están conectados. El usuario autorizó publicar esta entrega en GitHub. No reconstruir ni volver a la demo en producción.
+
 Retoma este repositorio como desarrollador full stack senior y director de diseño. Trabaja sobre el código existente; no reconstruyas la aplicación. Comunica en español, con mensajes breves y decisiones concretas.
 
 ## Estado vigente y arranque

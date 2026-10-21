@@ -1,5 +1,5 @@
 import "server-only";
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import { adminClient } from "../supabase/clients";
 import { businessAddress, whatsappDisplay } from "../../domain/business";
 import { localBogota, slotsForDay } from "../../domain/booking/slots";
@@ -13,7 +13,7 @@ const weekday = (date: string) => dateParts(date).getUTCDay();
 const shiftDate = (date: string, n: number) => { const d = dateParts(date); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
 const todayBogota = () => new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 const dayStart = (date: string) => `${date}T00:00:00-05:00`;
-const validDate = (s: string) => /^\d{4}-\d{2}-\d{2}$/.test(s) && dateParts(s).toISOString().slice(0, 10) === s;
+const validDate = (s: string) => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s) && Number.isFinite(dateParts(s).getTime()) && dateParts(s).toISOString().slice(0, 10) === s;
 const toMin = (s: string) => { const [h, m] = s.slice(0, 5).split(":").map(Number); return h * 60 + m; };
 
 export async function catalog() {
@@ -70,23 +70,40 @@ const normalizePhone = (value: string) => {
   return digits.length === 10 ? digits : "";
 };
 
-export async function createBooking(input: BookingInput, idempotencyKey: string) {
+export async function createBooking(input: BookingInput, idempotencyKey: string): Promise<{id:string;token:string;service:string;barber:string;date:string;time:string;price_cop:number;status:string}> {
+  if(!input || typeof input!=="object" || Array.isArray(input) || typeof input.date!=="string" || typeof input.time!=="string" || typeof input.barberSlug!=="string" || typeof input.serviceSlug!=="string") throw new BookingError("Datos de reserva inválidos.");
   const name = typeof input.name === "string" ? input.name.trim() : "";
   const phone = typeof input.phone === "string" ? normalizePhone(input.phone) : "";
   const email = typeof input.email === "string" ? input.email.trim().toLowerCase() : "";
   if (name.length < 2 || name.length > 80) throw new BookingError("El nombre debe tener entre 2 y 80 caracteres.");
   if (!phone) throw new BookingError("Escribe un teléfono colombiano válido de 10 dígitos o +57.");
   if (email.length > 254 || !emailRe.test(email)) throw new BookingError("Escribe un correo válido.");
+  if (!validDate(input.date) || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(input.time) || toMin(input.time) % 15 !== 0) throw new BookingError("Fecha u hora inválida.");
+  const db = adminClient();
+  const token = createHmac("sha256", process.env.SUPABASE_SECRET_KEY!).update(`booking:${idempotencyKey}`).digest("base64url");
+  const hash = createHash("sha256").update(token).digest("hex");
+  const { data: previous, error: previousError } = await db.from("bookings").select("*").eq("idempotency_key", idempotencyKey).maybeSingle();
+  if (previousError) throw new Error("No se pudo comprobar la reserva.");
+  if (previous) {
+    if (previous.access_token_hash !== hash || previous.customer_email !== email || previous.customer_phone !== phone || previous.customer_name !== name || Date.parse(previous.starts_at) !== localBogota(input.date,input.time)) throw new BookingError("Usa una referencia nueva para cambiar los datos de la reserva.",409);
+    const [{data:s},{data:b}] = await Promise.all([db.from("services").select("slug,name").eq("id",previous.service_id).single(),db.from("barbers").select("slug,display_name").eq("id",previous.barber_id).single()]);
+    if(!s || !b || s.slug!==input.serviceSlug || (input.barberSlug!=="any" && b.slug!==input.barberSlug)) throw new BookingError("La referencia pertenece a otra reserva.",409);
+    await sendConfirmation(previous,s.name,b.display_name,token);
+    return { id:previous.id,token,service:s.slug,barber:b.slug,date:input.date,time:input.time,price_cop:previous.price_cop,status:previous.status };
+  }
   if (!validDate(input.date) || !/^\d{2}:\d{2}$/.test(input.time) || toMin(input.time) % 15 !== 0) throw new BookingError("Fecha u hora inválida.");
   if (toMin(input.time) >= 24 * 60) throw new BookingError("Hora inválida.");
   const info = await barbersFor(input.serviceSlug, input.barberSlug);
   if (!info.eligible.length) throw new BookingError("No hay profesional disponible para ese servicio.", 409);
   const avail = await availability(input.barberSlug, input.serviceSlug, input.date);
   const slot = avail.slots.find(s => s.time === input.time && s.available);
-  if (!slot) throw new BookingError("Ese horario ya no está disponible. Elige otro.", 409);
+  if (!slot) {
+    const {data:retry}=await db.from("bookings").select("id").eq("idempotency_key",idempotencyKey).maybeSingle();
+    if(retry) return createBooking(input,idempotencyKey);
+    throw new BookingError("Ese horario ya no está disponible. Elige otro.", 409);
+  }
   const barber = info.eligible.find(b => b.slug === (input.barberSlug === "any" ? slot.barberSlug : input.barberSlug));
   if (!barber) throw new BookingError("Profesional no disponible.", 409);
-  const token = randomBytes(32).toString("base64url"), hash = createHash("sha256").update(token).digest("hex");
   const { data, error } = await adminClient().rpc("create_booking", { p_barber: barber.id, p_service: info.service.id, p_starts: new Date(localBogota(input.date, input.time)).toISOString(), p_name: name, p_phone: phone, p_email: email, p_token_hash: hash, p_idempotency: idempotencyKey, p_requires_payment: false });
   if (error) {
     const message = (error.message ?? "").match(/horario_ocupado|horario_pasado|servicio_no_disponible|profesional_no_disponible/)?.[0];
@@ -94,13 +111,27 @@ export async function createBooking(input: BookingInput, idempotencyKey: string)
     throw new Error("No se pudo guardar la reserva.");
   }
   const booking = Array.isArray(data) ? data[0] : data;
-  const summary = { id: booking.id, token, service: info.service.slug, barber: barber.slug, date: input.date, time: input.time, price_cop: booking.price_cop, status: booking.status };
-  await sendConfirmation(booking, info.service.name, barber.display_name, token);
+  const actualBarber=info.eligible.find(b=>b.id===booking.barber_id);
+  if(!actualBarber || booking.access_token_hash!==hash || booking.customer_name!==name || booking.customer_phone!==phone || booking.customer_email!==email || booking.service_id!==info.service.id || Date.parse(booking.starts_at)!==localBogota(input.date,input.time)) throw new BookingError("La referencia pertenece a otra reserva.",409);
+  const summary = { id: booking.id, token, service: info.service.slug, barber: actualBarber.slug, date: input.date, time: input.time, price_cop: booking.price_cop, status: booking.status };
+  await sendConfirmation(booking, info.service.name, actualBarber.display_name, token);
   return summary;
 }
 
 const escapeHtml = (s: string) => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+export async function retryConfirmation(id:string) {
+  const db=adminClient();
+  const {data:b,error}=await db.from("bookings").select("*").eq("id",id).maybeSingle();
+  if(error || !b || b.status!=="confirmada" || !b.idempotency_key) throw new BookingError("No hay una confirmación pendiente para esta cita.",409);
+  const token=createHmac("sha256",process.env.SUPABASE_SECRET_KEY!).update(`booking:${b.idempotency_key}`).digest("base64url");
+  if(createHash("sha256").update(token).digest("hex")!==b.access_token_hash) throw new BookingError("Esta cita fue creada con el sistema anterior. Conserva el enlace original.",409);
+  const [{data:s},{data:barber}]=await Promise.all([db.from("services").select("name").eq("id",b.service_id).single(),db.from("barbers").select("display_name").eq("id",b.barber_id).single()]);
+  if(!s || !barber) throw new Error("No se pudo leer la cita.");
+  await sendConfirmation(b,s.name,barber.display_name,token);
+}
 async function sendConfirmation(booking: { id: string; customer_email: string; starts_at: string; price_cop: number }, service: string, barber: string, token: string) {
+  const { data: delivered } = await adminClient().from("notifications").select("sent_at").eq("booking_id",booking.id).eq("channel","email").eq("template","confirmacion").maybeSingle();
+  if(delivered?.sent_at) return;
   const site = process.env.SITE_URL ?? (process.env.NODE_ENV === "production" ? "https://elite-barber-tatto.com" : "http://localhost:3000");
   const url = `${site}/mi-reserva/${token}`;
   const date = new Intl.DateTimeFormat("es-CO", { timeZone: tz, dateStyle: "full", timeStyle: "short" }).format(new Date(booking.starts_at));
@@ -110,13 +141,25 @@ async function sendConfirmation(booking: { id: string; customer_email: string; s
   let sent = false, failure = "RESEND_API_KEY no configurada";
   try {
     if (process.env.RESEND_API_KEY) {
-      const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ from: process.env.RESEND_FROM ?? "Elite Barber & Tattoo <reservas@elite-barber-tatto.com>", to: [booking.customer_email], subject: "Tu reserva en Elite Barber & Tattoo", html }) });
+      const response = await fetch("https://api.resend.com/emails", { method: "POST", signal: AbortSignal.timeout(10000), headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json", "Idempotency-Key": `booking-confirmation-${booking.id}` }, body: JSON.stringify({ from: process.env.RESEND_FROM ?? "Elite Barber & Tattoo <reservas@elite-barber-tatto.com>", to: [booking.customer_email], subject: "Tu reserva en Elite Barber & Tattoo", html }) });
       sent = response.ok; if (!sent) failure = `Resend respondió ${response.status}`;
     }
   } catch (e) { failure = e instanceof Error ? e.message : "Error al enviar correo"; }
   const db = adminClient();
   const { data: existing } = await db.from("notifications").select("id,attempts").eq("booking_id", booking.id).eq("channel", "email").eq("template", "confirmacion").maybeSingle();
-  const values = { channel: "email", template: "confirmacion", sent_at: sent ? new Date().toISOString() : null, last_error: sent ? null : failure, attempts: (existing?.attempts ?? 0) + 1 };
+  const attempts=(existing?.attempts??0)+1;
+  const values = { channel: "email", template: "confirmacion", sent_at: sent ? new Date().toISOString() : null, last_error: sent ? null : failure, attempts, scheduled_for:new Date(Date.now()+Math.min(15,2**(attempts-1))*60000).toISOString() };
   if (existing) await db.from("notifications").update(values).eq("id", existing.id);
   else await db.from("notifications").insert({ ...values, booking_id: booking.id });
+}
+
+export async function retryPendingConfirmations() {
+  const db=adminClient();
+  const {data,error}=await db.from("notifications").select("id,booking_id").eq("channel","email").eq("template","confirmacion").is("sent_at",null).lt("attempts",5).lte("scheduled_for",new Date().toISOString()).limit(10);
+  if(error) throw new Error("No se pudo consultar la cola de correo.");
+  for(const n of data??[]) {
+    if(!n.booking_id) continue;
+    try { await retryConfirmation(n.booking_id); }
+    catch(e) { await db.from("notifications").update({attempts:5,last_error:e instanceof Error?e.message:"No se pudo recuperar la confirmación."}).eq("id",n.id); }
+  }
 }

@@ -71,6 +71,7 @@ function sameOrigin(request: Request) {
 }
 export async function commandResponse(request: Request, allowed?: string[]) {
   try {
+    if (process.env.NODE_ENV === "production") return Response.json({error:"El sistema anterior está desactivado. Usa las reservas y turnos actuales."},{status:410,headers:noStore});
     if (!sameOrigin(request))
       return Response.json(
         { error: "Origen no permitido." },

@@ -1,5 +1,7 @@
 # Paso a producción
 
+**Actualización 21/10/2026:** consultar [ESTADO_ACTUAL.md](ESTADO_ACTUAL.md). Hostinger, Supabase, roles reales, agenda/panel/fila y Resend ya están implementados. Las fases siguientes son el plan histórico; no describen tareas enteramente pendientes. Bold, validaciones físicas y revisión de respaldos continúan pendientes según el estado vigente.
+
 La interfaz y los módulos de dominio se conservan. Sustituir el adaptador local por persistencia remota; quitar etiquetas demo solo después de completar y verificar cada integración.
 
 ## Fase 1: contenido y reglas confirmadas

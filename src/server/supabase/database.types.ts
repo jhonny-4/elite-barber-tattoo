@@ -361,6 +361,9 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
+            "join_queue": { Args: { p_id: string; p_barber: string; p_service: string; p_name: string; p_phone: string; p_token_hash: string }; Returns: Database["public"]["Tables"]["queue_tickets"]["Row"] },
+            "checkin_booking": { Args: { p_booking: string }; Returns: Database["public"]["Tables"]["queue_tickets"]["Row"] },
+            "save_work_hours": { Args: { p_barber: string; p_hours: Json }; Returns: undefined },
             "busy_ranges":
 { Args: { "p_barber": string,"p_from": string,"p_to": string }; Returns: {
               "ends_at": string,"starts_at": string

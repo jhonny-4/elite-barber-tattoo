@@ -12,12 +12,15 @@ insert into public.profiles (id, role, barber_id) values
   ('00000000-0000-0000-0000-0000000000b2', 'barbero', (select id from public.barbers where slug = 'barbero-2'));
 
 -- Reservas creadas por el servidor: precio y duración salen de la base.
+-- La hora de ejecución no debe volver aleatoria esta prueba de permisos.
+update public.work_hours set opens='00:00', closes='23:59';
+delete from public.breaks;
 select public.create_booking((select id from public.barbers where slug='barbero-1'), (select id from public.services where slug='corte'),
   date_trunc('hour', now()) + interval '2 days', 'Cliente Uno', '3000000001', 'uno@test.local', 'h1', 'k1');
 select public.create_booking((select id from public.barbers where slug='barbero-2'), (select id from public.services where slug='corte-barba'),
   date_trunc('hour', now()) + interval '2 days', 'Cliente Dos', '3000000002', 'dos@test.local', 'h2', 'k2');
 
-select is((select price_cop from public.bookings where idempotency_key='k2'), 25000, 'el precio viene del catálogo');
+select is((select price_cop from public.bookings where idempotency_key='k2'), 32000, 'el precio viene del catálogo');
 select is((select ends_at - starts_at from public.bookings where idempotency_key='k2'), interval '45 minutes', 'la duración viene del catálogo');
 select is((select id from public.create_booking((select id from public.barbers where slug='barbero-1'), (select id from public.services where slug='corte'),
   date_trunc('hour', now()) + interval '2 days', 'Cliente Uno', '3000000001', 'uno@test.local', 'h1x', 'k1')),

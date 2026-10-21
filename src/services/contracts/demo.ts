@@ -60,7 +60,7 @@ export type PublicQueue = {
   called: PublicTicket[];
   serving: PublicTicket[];
   next: PublicTicket[];
-  connection: "demo";
+  connection: "demo" | "supabase";
 };
 export interface DemoService {
   read(): Promise<SharedState>;

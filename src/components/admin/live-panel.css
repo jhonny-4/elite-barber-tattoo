@@ -1,0 +1,96 @@
+.live-panel {
+  max-width: 1280px;
+  margin: auto;
+  padding: 36px 20px 80px;
+}
+.live-panel header,
+.live-panel nav,
+.live-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.live-panel header {
+  justify-content: space-between;
+}
+.live-panel nav {
+  margin: 28px 0;
+}
+.live-panel h2 {
+  margin: 30px 0 18px;
+}
+.live-panel p {
+  overflow-wrap: anywhere;
+}
+.live-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+  gap: 16px;
+}
+.live-grid article,
+.live-grid form {
+  border: 1px solid #383838;
+  border-radius: 16px;
+  padding: 22px;
+  background: #141414;
+  color: #eee;
+}
+.live-grid h3 {
+  margin: 8px 0;
+}
+.live-grid p {
+  margin: 10px 0;
+}
+.live-panel input {
+  display: block;
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  background: #161616;
+  color: #fff;
+  margin: 6px 0 16px;
+  max-width: 100%;
+  color-scheme: dark;
+}
+.live-panel input[type="checkbox"] {
+  display: inline;
+  margin-right: 8px;
+}
+.live-panel button[aria-pressed="true"] {
+  background: #eee;
+  color: #111;
+}
+.live-panel [role="alert"] {
+  border: 1px solid #b33;
+  padding: 16px;
+}
+.live-panel .button {
+  font-size: 12px;
+  min-height: 42px;
+}
+.live-panel button:disabled {
+  opacity: 0.5;
+}
+.live-panel select {
+  padding: 10px;
+  background: #161616;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 8px;
+  max-width: 100%;
+  margin: 6px 0 16px;
+}
+.live-panel details {
+  width: 100%;
+  padding-top: 10px;
+}
+.live-panel summary {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.live-panel fieldset {
+  border: 1px solid #383838;
+  padding: 8px 12px;
+  margin: 12px 0;
+}

@@ -1,5 +1,7 @@
 # Continuar Elite Barber & Tattoo
 
+**ESTADO VIGENTE 21/10/2026: leer primero `docs/ESTADO_ACTUAL.md`.** Actualizar ese archivo en cada entrega para mantener informados a Claude y Codex. Los párrafos históricos de este archivo sobre JSON, ausencia de autenticación, GSAP o precios anteriores quedaron superados. La entrega actual usa Supabase real, Resend con reintentos y Hostinger autodespliega desde GitHub; el usuario autorizó subir esta entrega. Conservar arquitectura, identidad, fotos y permisos.
+
 Este repositorio ya contiene el proyecto. No reconstruirlo desde cero.
 
 **Leer primero `PROMPT_CLAUDE.md`: contiene el encargo completo, las prioridades y el estado vigente para continuar en la nube.**

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useDemo } from "../lib/use-demo";
+import { postDemo } from "../services/adapters/http-demo";
 import { Icon } from "./icons";
 import { JCMark } from "./media";
 import {
@@ -23,7 +23,7 @@ type Errors = ContactErrors &
   Partial<Record<keyof Fields | "consent" | "reference", string>>;
 type Reference = { dataUrl: string; name: string; size: number };
 
-const fieldOrder = ["idea", "placement", "size", "name", "phone", "consent"] as const;
+const fieldOrder = ["idea", "placement", "size", "name", "phone", "email", "consent"] as const;
 
 function formatBytes(bytes: number) {
   return bytes < 1024 * 1024
@@ -45,8 +45,9 @@ function validate(contact: ContactValue, fields: Fields, consent: boolean): Erro
 }
 
 export function TattooForm() {
-  const demo = useDemo();
-  const [contact, setContact] = useState<ContactValue>({ name: "", phone: "" });
+  const [contact, setContact] = useState<ContactValue>({ name: "", phone: "", email: "" });
+  const [offline, setOffline] = useState(false);
+  useEffect(() => { const sync = () => setOffline(!navigator.onLine); sync(); window.addEventListener("online",sync); window.addEventListener("offline",sync); return () => {window.removeEventListener("online",sync);window.removeEventListener("offline",sync);}; }, []);
   const [fields, setFields] = useState<Fields>({ idea: "", placement: "", size: "" });
   const [consent, setConsent] = useState(false);
   const [attempted, setAttempted] = useState(false);
@@ -84,7 +85,6 @@ export function TattooForm() {
     }
   }, [sent]);
 
-  const offline = demo.ready && !demo.online;
 
   function revalidate(nextContact: ContactValue, nextFields: Fields, nextConsent: boolean) {
     if (attempted)
@@ -159,11 +159,12 @@ export function TattooForm() {
     setBusy(true);
     setSubmitError("");
     try {
-      await demo.dispatch({
+      await postDemo("/api/tatuajes", {
         type: "tattoo.create",
         input: {
           name: contact.name.trim(),
           phone: contact.phone.trim(),
+          email: contact.email?.trim(),
           idea: fields.idea.trim(),
           placement: fields.placement.trim(),
           size: fields.size.trim(),
@@ -188,7 +189,7 @@ export function TattooForm() {
     moved.current = true;
     setSent(null);
     setFields({ idea: "", placement: "", size: "" });
-    setContact({ name: "", phone: "" });
+    setContact({ name: "", phone: "", email: "" });
     setConsent(false);
     setAttempted(false);
     setErrors({});
@@ -298,14 +299,14 @@ export function TattooForm() {
           <div className="bk-offline" role="alert">
             <p>
               <strong>Sin conexión con el estudio.</strong>{" "}
-              {publicMessage(demo.error) ||
+              {publicMessage(submitError) ||
                 "No se pueden enviar solicitudes por ahora."}{" "}
               Lo que escribiste se conserva.
             </p>
             <button
               type="button"
               className="button button-outline button-small"
-              onClick={() => void demo.refresh()}
+              onClick={() => setOffline(!navigator.onLine)}
             >
               Reintentar
             </button>
@@ -478,7 +479,7 @@ export function TattooForm() {
               {errors.reference}
             </p>
           )}
-          <p className="tt-help">Usa una imagen de ejemplo, sin información privada.</p>
+          <p className="tt-help">La referencia se guarda de forma privada para valorar tu idea.</p>
         </fieldset>
 
         <fieldset className="tt-section">
@@ -488,8 +489,7 @@ export function TattooForm() {
           <p className="bk-note">
             <Icon name="lock" />
             <span>
-              Mientras la solicitud en línea está en pruebas, usa un nombre y un
-              teléfono ficticios.
+              Usaremos tus datos de contacto para responder a esta solicitud.
             </span>
           </p>
           <ContactInputs
@@ -518,7 +518,7 @@ export function TattooForm() {
             />
             <span>
               Entiendo que es una solicitud de valoración: no reserva una cita ni
-              fija un precio. Usaré datos ficticios.
+              fija un precio. Autorizo el contacto para valorar mi idea.
             </span>
           </label>
           {errors.consent && (

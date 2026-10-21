@@ -28,7 +28,7 @@ export function usePublicQueue(token = "") {
       const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
       try {
         const response = await fetch(
-          `/api/demo/queue${token ? `?ticket=${encodeURIComponent(token)}` : ""}`,
+          `/api/fila${token ? `?ticket=${encodeURIComponent(token)}` : ""}`,
           { cache: "no-store", signal: controller.signal },
         );
         const data = await response.json().catch(() => ({}));
@@ -70,6 +70,7 @@ export function usePublicQueue(token = "") {
       }
     };
     const stop = startLiveSync({
+      eventsUrl: "/api/fila/events",
       refresh,
       onLiveChange: (value) => {
         if (alive) setLive(value);
