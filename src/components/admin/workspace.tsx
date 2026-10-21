@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useDemo } from "../../lib/use-demo";
+import { usePanel as useDemo } from "../../lib/use-panel";
 import { bogotaDate } from "../../domain/queue/logic";
 import { activeTicket } from "../../domain/queue/model";
 import type { DemoCommand, SharedState } from "../../services/contracts/demo";
@@ -82,8 +82,8 @@ const sections: {
     label: "Avisos",
     icon: "bell",
     title: "Avisos",
-    serif: "simulados.",
-    lead: "Registro de confirmaciones y cambios. No se envían correos, WhatsApp ni notificaciones reales.",
+    serif: "y correos.",
+    lead: "Confirmaciones enviadas a clientes y correos pendientes.",
   },
 ];
 
@@ -94,12 +94,14 @@ const isSection = (value: string | null): value is SectionId =>
 export function AdminWorkspace({
   professionalOnly = false,
   onExit,
+  barberSlug,
 }: {
   professionalOnly?: boolean;
   onExit?: () => void;
+  barberSlug?: string | null;
 }) {
   return professionalOnly ? (
-    <BarberView onExit={onExit} />
+    <BarberView onExit={onExit} lockedSlug={barberSlug} />
   ) : (
     <OwnerWorkspace onExit={onExit} />
   );
@@ -264,7 +266,7 @@ function OwnerWorkspace({ onExit }: { onExit?: () => void }) {
             </div>
           )}
 
-          <ResetZone revision={state.revision} runner={runner} />
+          {/* Restablecer datos no aplica en producción. */}
 
           <nav className="adm-foot-links" aria-label="Otros accesos">
             <Link className="text-link" href="/pantalla-turnos" target="_blank" rel="noopener noreferrer">
@@ -311,30 +313,3 @@ function TeamSection({ state, runner }: { state: SharedState; runner: Runner }) 
   );
 }
 
-function ResetZone({ revision, runner }: { revision: number; runner: Runner }) {
-  const reset: DemoCommand = { type: "reset" };
-  const control = runner.control(reset);
-  return (
-    <section className="adm-reset" aria-labelledby="reset-titulo">
-      <h2 id="reset-titulo">Datos de presentación</h2>
-      <p>
-        Todo lo que ves es ficticio y se guarda en este servidor local (revisión{" "}
-        {revision}). Restablecer borra citas, turnos, solicitudes, avisos y
-        cambios de jornada en todos los dispositivos conectados.
-      </p>
-      <ConfirmAction
-        className="button button-danger"
-        title="¿Restablecer los datos de presentación?"
-        description="Se borrarán citas, turnos, solicitudes de tatuaje, avisos y cambios de jornada para todos los dispositivos conectados. No se puede deshacer."
-        confirmLabel="Sí, restablecer"
-        cancelLabel="Volver"
-        disabled={control.disabled}
-        busy={control["aria-busy"]}
-        onConfirm={() => runner.run(reset)}
-      >
-        <Icon name="refresh" />
-        Restablecer datos
-      </ConfirmAction>
-    </section>
-  );
-}

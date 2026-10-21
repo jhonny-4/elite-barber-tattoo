@@ -104,7 +104,7 @@ export function HomeServices() {
             text={details[service.id]?.text ?? "Barbería Elite."}
             amount={currency(service.priceCOP)}
             unit="COP"
-            note="Precio de referencia"
+            note="Precio"
             action="Reservar"
           />
         ))}

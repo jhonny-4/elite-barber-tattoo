@@ -68,7 +68,7 @@ export const httpDemo: DemoService = {
       throw new Error(
         errorText(
           await readJson(response),
-          "No hay conexión con el servidor demo. No se pueden confirmar cambios.",
+          "No hay conexión con el servidor. No se pueden confirmar cambios.",
         ),
       );
     return response.json();

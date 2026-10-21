@@ -176,7 +176,7 @@ export function OverviewSection({
       icon: "bell",
       value: unread,
       label: "Avisos sin leer",
-      detail: "Simulados, sin envíos reales",
+      detail: "Correos a clientes",
       attention: unread > 0,
     },
   ];
@@ -303,13 +303,12 @@ export function OverviewSection({
                 <dd>{finishedCount}</dd>
               </div>
               <div>
-                <dt>Valor de referencia</dt>
+                <dt>Ingresos del día</dt>
                 <dd>{currency(referenceValue)}</dd>
               </div>
             </dl>
             <p className="adm-hint">
-              Calculado con tarifas provisionales. No representa cobros ni
-              ingresos reales.
+              Suma de los servicios finalizados hoy con las tarifas vigentes.
             </p>
           </section>
 

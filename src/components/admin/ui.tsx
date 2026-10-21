@@ -101,7 +101,7 @@ export function ConnectionBadge({
       ? { key: "offline", label: "Sin conexión" }
       : live
         ? { key: "live", label: "En vivo" }
-        : { key: "sync", label: "Sincronizando" };
+        : { key: "sync", label: "Al día" };
   return (
     <span className="adm-conn" data-state={state.key} role="status">
       {state.key === "live" ? (
@@ -172,7 +172,7 @@ export function PanelHead({
   );
 }
 
-/** Franja de sesión simulada con salida. */
+/** Franja de sesión con salida. */
 export function SessionBar({
   role,
   onExit,
@@ -185,7 +185,7 @@ export function SessionBar({
       <p>
         <Icon name="lock" />
         <span>
-          <strong>Acceso simulado</strong> · {role}
+          <strong>Sesión iniciada</strong> · {role}
         </span>
       </p>
       {onExit ? (

@@ -72,7 +72,7 @@ export const ticketSource: Record<QueueTicket["source"], string> = {
 
 export const channelLabel: Record<DemoNotification["channel"], string> = {
   app: "Aviso en la app",
-  "correo-simulado": "Correo simulado",
+  "correo-simulado": "Correo",
 };
 
 export const barberName = (id?: string) =>

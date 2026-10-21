@@ -39,7 +39,7 @@ export function Photo({
       width={item.crop[2]}
       height={item.crop[3]}
       role="img"
-      aria-label={`${item.title}. Captura de referencia provisional.`}
+      aria-label={`${item.title}.`}
     >
       <image
         href={item.source}

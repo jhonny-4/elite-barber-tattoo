@@ -6,7 +6,8 @@ export function limitPublic(request: Request, scope: string) {
   for (const [key, value] of buckets)
     if (value.until <= now) buckets.delete(key);
   const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    // La última IP la añade el proxy de Hostinger; las primeras las puede inventar el cliente.
+    request.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ?? "unknown";
   const key = `${scope}:${ip}`,
     current = buckets.get(key) ?? { count: 0, until: now + 600000 };
   if (current.count >= 5 || (buckets.size >= 10000 && !buckets.has(key)))

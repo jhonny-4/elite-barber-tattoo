@@ -30,6 +30,8 @@ import {
   type SummaryData,
 } from "./booking/summary";
 import { TimeSlots } from "./booking/time-slots";
+import { BoldPay } from "./booking/bold-pay";
+import type { BoldCheckout } from "../server/payments/bold";
 
 type Errors = ContactErrors;
 
@@ -125,6 +127,7 @@ export function BookingFlow() {
     time: string;
     price_cop: number;
     status: string;
+    payment?: BoldCheckout;
   } | null>(null);
   const attemptKey = useRef("");
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -439,7 +442,7 @@ export function BookingFlow() {
               professionalNote:
                 barberId === ANY_BARBER
                   ? "Asignado automáticamente"
-                  : "Perfil provisional",
+                  : "Barbero Elite",
               date: longDate(result.date),
               time: result.time,
             }}
@@ -469,13 +472,17 @@ export function BookingFlow() {
               </li>
             </ol>
           </div>
+          {result.payment && result.status === "pendiente_pago" ? (
+            <BoldPay checkout={result.payment} email={contact.email ?? ""} name={contact.name} />
+          ) : (
           <p className="bk-honest">
-            <Icon name="clock" />
-            <span>
-              Te enviamos la confirmación a {contact.email}. No se realizó
-              ningún cobro en línea.
-            </span>
-          </p>
+              <Icon name="clock" />
+              <span>
+                Te enviamos la confirmación a {contact.email}. No se realizó
+                ningún cobro en línea.
+              </span>
+            </p>
+          )}
           <div className="button-row bk-success-actions">
             <Link
               className="button button-outline"

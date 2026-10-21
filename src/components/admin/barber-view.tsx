@@ -5,7 +5,7 @@ import { barbers } from "../../domain/catalog";
 import { bogotaDate } from "../../domain/queue/logic";
 import type { QueueTicket } from "../../domain/queue/model";
 import type { DemoCommand } from "../../services/contracts/demo";
-import { useDemo } from "../../lib/use-demo";
+import { usePanel as useDemo } from "../../lib/use-panel";
 import { ConfirmAction } from "../confirm-action";
 import { Icon } from "../icons";
 import { BookingItem, TicketItem } from "./items";
@@ -30,18 +30,20 @@ import {
 const storageKey = "elite.barber-view";
 
 /** Vista de barbero: agenda y atención del profesional elegido, con botones grandes. */
-export function BarberView({ onExit }: { onExit?: () => void }) {
+export function BarberView({ onExit, lockedSlug }: { onExit?: () => void; lockedSlug?: string | null }) {
   const demo = useDemo();
   const now = useNow();
   const runner = useCommandRunner(demo.dispatch, demo.online);
-  const [barberId, setBarberId] = useState<string>(barbers[0].id);
+  // Un barbero con sesión ve solo su agenda; el dueño puede elegir.
+  const locked = barbers.find((b) => b.slug === lockedSlug)?.id;
+  const [barberId, setBarberId] = useState<string>(locked ?? barbers[0].id);
   const state = demo.state;
   const today = bogotaDate(now);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(storageKey);
-      if (saved && barbers.some((b) => b.id === saved)) setBarberId(saved);
+      if (!locked && saved && barbers.some((b) => b.id === saved)) setBarberId(saved);
     } catch {
       /* Sin almacenamiento: se usa Barbero 1. */
     }
@@ -132,7 +134,7 @@ export function BarberView({ onExit }: { onExit?: () => void }) {
             </p>
           ) : null}
 
-          <div className="adm-picker" role="group" aria-label="Profesional">
+          {locked ? null : <div className="adm-picker" role="group" aria-label="Profesional">
             {barbers.map((b) => (
               <button
                 key={b.id}
@@ -143,7 +145,7 @@ export function BarberView({ onExit }: { onExit?: () => void }) {
                 {b.name}
               </button>
             ))}
-          </div>
+          </div>}
 
           {!demo.ready ? (
             <p className="loading-state">Conectando con el servidor…</p>

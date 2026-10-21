@@ -9,7 +9,7 @@ import { EmptyState, StatusBadge } from "./ui";
 
 const pageSize = 30;
 
-/** Avisos simulados que genera el servidor al guardar cambios. */
+/** Estado de los correos de confirmación enviados a clientes. */
 export function NotificationsSection({
   state,
   runner,
@@ -83,7 +83,7 @@ export function NotificationsSection({
         <EmptyState
           icon="bell"
           title="Sin avisos"
-          text="Cada reserva, cambio o turno deja aquí un aviso simulado. No se envían correos, WhatsApp ni notificaciones reales."
+          text="Aquí aparece cada correo de confirmación enviado a tus clientes y los que no se pudieron entregar."
         />
       )}
     </>

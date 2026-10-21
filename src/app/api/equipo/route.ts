@@ -32,8 +32,12 @@ export async function GET(request: Request) {
       !Number.isFinite(Date.parse(`${date}T00:00:00-05:00`))
     )
       throw new BookingError("Fecha inválida.");
+    // Rango opcional (días antes/después) para agenda futura e historial de clientes; máximo 90.
+    const params = new URL(request.url).searchParams;
+    const span = (key: string) => Math.min(90, Math.max(0, Number(params.get(key)) || 0));
+    const start = new Date(Date.parse(`${date}T00:00:00-05:00`) - span("before") * 86400000).toISOString();
     const end = new Date(
-      Date.parse(`${date}T00:00:00-05:00`) + 86400000,
+      Date.parse(`${date}T00:00:00-05:00`) + (1 + span("after")) * 86400000,
     ).toISOString();
     const db = await sessionClient(); // RLS filtra por la cuenta real, nunca por un selector del navegador.
     const results = await Promise.all([
@@ -42,7 +46,7 @@ export async function GET(request: Request) {
         .select(
           "id,barber_id,service_id,starts_at,ends_at,status,customer_name,customer_phone,customer_email,price_cop",
         )
-        .gte("starts_at", `${date}T00:00:00-05:00`)
+        .gte("starts_at", start)
         .lt("starts_at", end)
         .order("starts_at"),
       db
