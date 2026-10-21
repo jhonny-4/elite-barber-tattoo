@@ -1,4 +1,5 @@
 import "server-only";
+import { cleanOrphanVideos } from "../media/cleanup";
 import { createHash } from "node:crypto";
 import { adminClient } from "../supabase/clients";
 import { tokenFor } from "../bookings";
@@ -223,6 +224,7 @@ export async function runTick(now = Date.now()) {
     recordatorio_2h: () => sendReminders("recordatorio_2h", now),
     resena: () => sendReviews(now),
     resumen_dia: () => sendDigest(now),
+    videos_huerfanos: () => cleanOrphanVideos(now),
     reservas_expiradas: async () => {
       const { data, error } = await adminClient().rpc("expire_holds");
       if (error) throw new Error("No se pudieron expirar las reservas sin pago.");
