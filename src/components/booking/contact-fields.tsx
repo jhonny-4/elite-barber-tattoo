@@ -1,6 +1,6 @@
 "use client";
 
-export type ContactValue = { name: string; phone: string };
+export type ContactValue = { name: string; phone: string; email?: string };
 export type ContactErrors = Partial<Record<keyof ContactValue, string>>;
 
 /** Mismo patrón que valida el dominio (`addBooking`, `addTattooRequest`). */
@@ -12,9 +12,12 @@ export function validateContact(value: ContactValue): ContactErrors {
   else if (value.name.trim().length > 100)
     errors.name = "El nombre admite hasta 100 caracteres.";
   if (!value.phone.trim()) errors.phone = "Escribe un teléfono de contacto.";
-  else if (!phonePattern.test(value.phone.trim()))
-    errors.phone =
-      "Usa de 7 a 20 caracteres: números, espacios, +, guiones o paréntesis.";
+  else if (!phonePattern.test(value.phone.trim()) || !/^\+?57?\d{10}$/.test(value.phone.replace(/[\s()-]/g, "")))
+    errors.phone = "Usa un celular colombiano de 10 dígitos o +57 seguido de 10 dígitos.";
+  if (value.email !== undefined) {
+    if (!value.email.trim()) errors.email = "Escribe tu correo electrónico.";
+    else if (value.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email)) errors.email = "Escribe un correo válido.";
+  }
   return errors;
 }
 
@@ -50,7 +53,7 @@ export function ContactInputs({
             name={key}
             required
             autoComplete="off"
-            value={value[key]}
+            value={value[key] ?? ""}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? `${id}-error` : undefined}
             onChange={(event) => onChange({ ...value, [key]: event.target.value })}
@@ -77,6 +80,7 @@ export function ContactInputs({
         maxLength: 20,
         placeholder: "300 000 0000",
       })}
+      {value.email !== undefined && field("email", "Correo electrónico", { type: "email", autoComplete: "email", maxLength: 254, placeholder: "tu@correo.com" })}
     </div>
   );
 }
