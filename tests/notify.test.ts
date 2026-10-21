@@ -52,3 +52,12 @@ test("Cron: secreto Bearer exacto; sin secreto configurado nunca autoriza", () =
   assert.equal(cronAuthorized("Bearer undefined", undefined), false);
   assert.equal(cronAuthorized("Bearer corto", "corto"), false); // secreto débil: rechazado
 });
+
+import { isPushEndpoint } from "../src/domain/push-endpoint.ts";
+test("push: solo servicios oficiales, sin IP, puerto ni http", () => {
+  assert.equal(isPushEndpoint("https://fcm.googleapis.com/fcm/send/abc"), true);
+  assert.equal(isPushEndpoint("https://web.push.apple.com/xyz"), true);
+  assert.equal(isPushEndpoint("https://wns2-par02p.notify.windows.com/w/?token=1"), true);
+  for (const bad of ["http://fcm.googleapis.com/x", "https://127.0.0.1/x", "https://fcm.googleapis.com:8443/x", "https://evil.com/fcm.googleapis.com", "https://fcm.googleapis.com.evil.com/x", "https://169.254.169.254/latest"])
+    assert.equal(isPushEndpoint(bad), false, bad);
+});

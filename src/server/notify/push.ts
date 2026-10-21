@@ -1,3 +1,4 @@
+import { isPushEndpoint } from "../../domain/push-endpoint";
 import "server-only";
 import webpush, { WebPushError } from "web-push";
 import { adminClient } from "../supabase/clients";
@@ -52,6 +53,8 @@ export async function notifyStaff(title: string, body: string, url: string, barb
       const keys = s.keys as { p256dh?: unknown; auth?: unknown } | null;
       if (typeof keys?.p256dh !== "string" || typeof keys?.auth !== "string") return;
       try {
+        // Segunda comprobación antes de enviar: filas antiguas o insertadas por otra vía.
+        if (!isPushEndpoint(s.endpoint)) return;
         await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: keys.p256dh, auth: keys.auth } }, payload, { TTL: 3600, urgency: "high", timeout: 10000 });
         result.sent++;
       } catch (e) {

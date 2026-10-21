@@ -1,3 +1,4 @@
+import { isPushEndpoint } from "../../../domain/push-endpoint";
 import { getStaff } from "../../../server/auth/staff";
 import { BookingError } from "../../../server/bookings";
 import { errorResponse, noStore, readJson, sameOrigin } from "../../../server/bookings/http";
@@ -8,14 +9,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /** Endpoint de un servicio push: https y tamaño acotado. */
-const validEndpoint = (value: unknown): value is string => {
-  if (typeof value !== "string" || value.length > 1000) return false;
-  try {
-    return new URL(value).protocol === "https:";
-  } catch {
-    return false;
-  }
-};
+const validEndpoint = isPushEndpoint;
 const validKey = (value: unknown): value is string => typeof value === "string" && /^[A-Za-z0-9_-]{16,200}={0,2}$/.test(value);
 
 async function staffOrThrow(request: Request) {
