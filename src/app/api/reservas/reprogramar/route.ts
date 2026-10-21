@@ -1,6 +1,13 @@
 import { errorResponse, noStore, readJson, sameOrigin } from "../../../../server/bookings/http";
-import { rescheduleBooking } from "../../../../server/bookings/reschedule";
+import { rescheduleBooking, rescheduleSlots } from "../../../../server/bookings/reschedule";
 import { limitPublic } from "../../../../server/rate-limit";
+
+export async function GET(request: Request) {
+  const params = new URL(request.url).searchParams;
+  try {
+    return Response.json(await rescheduleSlots(params.get("token"), params.get("fecha")), { headers: noStore });
+  } catch (e) { return errorResponse(e); }
+}
 
 export async function POST(request: Request) {
   if (!sameOrigin(request)) return Response.json({ error: "Origen no permitido." }, { status: 403, headers: noStore });

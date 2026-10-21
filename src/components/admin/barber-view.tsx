@@ -48,7 +48,7 @@ export function BarberView({ onExit, lockedSlug }: { onExit?: () => void; locked
     } catch {
       /* Sin almacenamiento: se usa Barbero 1. */
     }
-  }, []);
+  }, [locked]);
 
   function choose(id: string) {
     setBarberId(id);

@@ -14,7 +14,9 @@
     "db:start": "supabase start -x studio,imgproxy,vector,logflare,edge-runtime",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
-    "db:test": "supabase test db"
+    "db:test": "supabase test db",
+    "qa:prod": "node scripts/qa/production-smoke.mjs https://elite-barber-tatto.com",
+    "qa:local": "node scripts/qa/flujo-local.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",

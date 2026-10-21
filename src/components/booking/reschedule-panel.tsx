@@ -13,14 +13,10 @@ import type { SlotView } from "./availability-view";
  */
 export function ReschedulePanel({
   token,
-  barberSlug,
-  serviceSlug,
   today,
   remaining,
 }: {
   token: string;
-  barberSlug: string;
-  serviceSlug: string;
   /** Fecha de hoy en Bogotá (AAAA-MM-DD), calculada en el servidor. */
   today: string;
   remaining: number;
@@ -45,7 +41,8 @@ export function ReschedulePanel({
     setLoading(true);
     setLoadError("");
     fetch(
-      `/api/reservas/disponibilidad?barbero=${encodeURIComponent(barberSlug)}&servicio=${encodeURIComponent(serviceSlug)}&fecha=${date}`,
+      // Consulta por enlace privado: el servidor no cuenta la cita propia como ocupada.
+      `/api/reservas/reprogramar?token=${encodeURIComponent(token)}&fecha=${date}`,
     )
       .then(async (r) => {
         const d = await r.json();
@@ -73,7 +70,7 @@ export function ReschedulePanel({
     return () => {
       active = false;
     };
-  }, [open, date, barberSlug, serviceSlug]);
+  }, [open, date, token]);
 
   function show() {
     setOpen(true);

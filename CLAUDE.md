@@ -1,39 +1,28 @@
-# Continuar Elite Barber & Tattoo
+# Elite Barber & Tattoo — instrucciones del proyecto
 
-**ESTADO VIGENTE 21/10/2026: leer primero `docs/ESTADO_ACTUAL.md`.** Actualizar ese archivo en cada entrega para mantener informados a Claude y Codex. Los párrafos históricos de este archivo sobre JSON, ausencia de autenticación, GSAP o precios anteriores quedaron superados. La entrega actual usa Supabase real, Resend con reintentos y Hostinger autodespliega desde GitHub; el usuario autorizó subir esta entrega. Conservar arquitectura, identidad, fotos y permisos.
+Proyecto **en producción**: https://elite-barber-tatto.com. Antes de cambiar nada, leer `docs/ESTADO_ACTUAL.md` y actualizarlo en cada entrega (lo leen Claude y Codex). No reconstruir desde cero: conservar arquitectura, identidad, fotos y permisos.
 
-Este repositorio ya contiene el proyecto. No reconstruirlo desde cero.
+## Cliente
+- Un único local en Cartagena. Marca `@elite_barber_tattoo`; Jean Carlos (`@jeancarlostattoo19`) es el dueño y tatuador. Barberos: Ivan, Jean Carlos y Nelson.
+- Precios oficiales: corte $25.000 y corte con barba $32.000 COP, 45 min cada uno. Tatuajes: valoración y cotización manual, nunca confirmación automática.
+- WhatsApp oficial +57 301 669 7908 y dirección en `src/domain/business.ts`.
+- No inventar equipo, experiencia, testimonios ni detalles de imágenes. Conservar logos y fotos reales.
 
-**Leer primero `PROMPT_CLAUDE.md`: contiene el encargo completo, las prioridades y el estado vigente para continuar en la nube.**
+## Stack y arquitectura
+- Next.js 16 (App Router; `proxy.ts` en lugar de middleware; leer `AGENTS.md` y `node_modules/next/dist/docs`), React 19, TypeScript estricto, Tailwind, Three.js. Node 24.
+- **Supabase** (proyecto `oospdgjdjoiyolsyuizv`, us-east-1): Postgres con RLS, Auth (solo invitación; roles `dueno`/`barbero`), Storage, pg_cron + pg_net. Migraciones en `supabase/migrations/` (solo hacia adelante), pruebas pgTAP en `supabase/tests/database/`.
+- **Resend** para correos (`src/server/notify/email.ts`, plantilla clara de marca: legible con el modo oscuro de Gmail). **Web Push** del equipo con VAPID. **Bold** listo y apagado (`BOLD_ENABLED`).
+- **Hostinger** despliega solo desde `main` (Node, salida `standalone`, `next.config.mjs`).
+- Reglas puras en `src/domain/`; servidor en `src/server/` (bookings, notify, payments, panel, auth); rutas en `src/app/api/`. El panel conserva el diseño original (`src/components/admin/*`) alimentado por `src/lib/use-panel.ts`.
+- `src/server/demo/` y `/api/demo` son legado: en producción responden 410.
 
-## Abrir y ejecutar
+## Entornos y secretos
+- Local: `npm run db:start` (puertos 553xx), `.env.local` con llaves locales. `npm run dev`.
+- Producción: valores en `.env.hostinger` (ignorado por Git) y en las variables de Hostinger. Nunca usar `.env.hostinger` para pruebas locales: crearía datos reales.
+- Nunca subir `.env*`, credenciales ni datos de clientes. Nunca pegar llaves secretas en el chat.
 
-- Rama de partida: `main`, que contiene el proyecto completo. Repositorio público.
-- Leer `README.md`, `docs/v4/VALIDACION.md` y `AGENTS.md` antes de modificar.
-- Código en la raíz: `src/`, `public/`, `tests/`, `docs/`. No crear otra aplicación dentro de otra carpeta.
-- Node.js 24. Ejecutar `npm ci` y `npm run dev`. Para PWA: `npm run build` y `npm start`.
-
-## Cliente y arquitectura
-
-Elite Barber & Tattoo es un único local en Cartagena. @elite_barber_tattoo es la marca; @jeancarlostattoo19 es Jean Carlos, tatuador del mismo local. Conservar logos y fotos. No inventar equipo, experiencia, testimonios ni detalles de imágenes.
-
-Precios oficiales: corte $25.000 y corte con barba $32.000 COP. Barbero 1–3 y jornadas son de ejemplo. Los tatuajes requieren evaluación, sin confirmación automática. Dirección en `src/domain/business.ts`. WhatsApp oficial del negocio: +57 301 669 7908 (`src/domain/business.ts`).
-
-Next.js App Router, React, TypeScript, Tailwind y Three.js. Reglas en `src/domain/`; persistencia y comandos en `src/server/demo/`; contratos en `src/services/`. `useDemo` usa HTTP + SSE. Un proceso servidor guarda en `var/demo/state.json`, excluido de Git. El antiguo localStorage se conserva, pero no crea reservas V4.
-
-Hay reservas, primer disponible, reprogramación, cancelación, jornadas, pausas, turnos QR/presenciales, monitor público, gestión de tatuajes y avisos simulados. Acceso de propietario/barbero sin autenticación real: no usar datos reales.
-
-## Continuar
-
-Acuerdo: funciones con Light; luego acabado visual con High. Base funcional comprobada con 20 pruebas, build y lint. Sigue revisar alineación, contraste, 3D, animaciones y marcas originales. GSAP no está instalado: incorporarlo cuando corresponda, respetando movimiento reducido y rendimiento.
-
-Pendientes físicos: instalación Android/iOS, escaneo QR con cámara y sincronización desde dos teléfonos. HTTP por IP privada no garantiza instalación PWA. No confirmar operaciones offline.
-
-El usuario autorizó subir esta entrega a GitHub; no futuros merges, despliegues o cambios de visibilidad. No conectar servicios reales sin nuevas instrucciones. Conservar historial, sin force push. Nunca subir `.env`, credenciales o `var/demo`.
-
-Al modificar implementación: `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`. Mantener documentadas simulaciones y limitaciones.
-
-## Actualización del proyecto
-
-Repositorio público. Usar main: contiene el proyecto completo. Es el proyecto real en desarrollo; la versión de presentación mantiene flujos simulados, almacenamiento JSON local y no tiene base de datos de producción ni autenticación real. El mapa integrado y el acabado premium siguen pendientes.
-
+## Reglas de trabajo
+- Producción (migraciones, cambios de datos, push a `main`) solo con aprobación explícita del usuario. Trabajar en `feat/produccion`; sin force push.
+- Al modificar: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, `npm run db:test`.
+- Pruebas automáticas: `npm run qa:prod` (solo lectura contra producción, no ocupa cupos) y `npm run qa:local` (flujo completo, se niega a correr si no es Supabase local).
+- Cambios de base: migración nueva + prueba pgTAP + `supabase gen types` a `src/server/supabase/database.types.ts`.

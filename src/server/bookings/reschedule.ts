@@ -29,7 +29,7 @@ export async function rescheduleBooking(input: { token: unknown; date: unknown; 
   if (typeof date !== "string" || typeof time !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time) || Number(time.slice(3)) % 15 !== 0)
     throw new BookingError("Fecha u hora inválida.");
   const db = adminClient();
-  const { data: booking } = await db.from("bookings").select("id,status,starts_at,price_cop,customer_email,customer_name,service_id,barber_id,reschedule_count,services(slug,name),barbers(slug,display_name)").eq("access_token_hash", hashToken(token)).maybeSingle();
+  const { data: booking } = await db.from("bookings").select("id,status,starts_at,ends_at,price_cop,customer_email,customer_name,service_id,barber_id,reschedule_count,services(slug,name),barbers(slug,display_name)").eq("access_token_hash", hashToken(token)).maybeSingle();
   if (!booking || !booking.services || !booking.barbers) throw new BookingError("No encontramos esta reserva.", 404);
   const startsAt = new Date(localBogota(date, time));
   if (Number.isNaN(startsAt.getTime())) throw new BookingError("Fecha u hora inválida.");
@@ -38,7 +38,7 @@ export async function rescheduleBooking(input: { token: unknown; date: unknown; 
   const rule = checkReschedule({ status: booking.status, startsAt: Date.parse(booking.starts_at), now: Date.now(), rescheduleCount: booking.reschedule_count });
   if (!rule.ok) throw new BookingError(denialMessage[rule.reason], 409);
   // Mismo barbero y servicio: la disponibilidad ya aplica jornada, pausas, ausencias y citas ajenas.
-  const avail = await availability(booking.barbers.slug, booking.services.slug, date);
+  const avail = await availability(booking.barbers.slug, booking.services.slug, date, { startsAt: Date.parse(booking.starts_at), endsAt: Date.parse(booking.ends_at) });
   if (!avail.slots.some(s => s.time === time && s.available)) throw new BookingError("Ese horario no está disponible. Elige otro.", 409);
   const { data, error } = await db.rpc("reschedule_booking_by_token", { p_token_hash: hashToken(token), p_starts: startsAt.toISOString() });
   if (error) {
@@ -76,4 +76,13 @@ async function sendRescheduleEmail(b: { id: string; email: string; name: string;
   });
   // La clave incluye la hora nueva: cada reprogramación es un correo distinto para Resend.
   await sendEmail(b.email, `Cita reprogramada · ${day}, ${hour} · Elite Barber & Tattoo`, html, { idempotencyKey: `booking-reschedule-${b.id}-${when.getTime()}`, record: { bookingId: b.id, template: "reprogramacion" } });
+}
+
+/** Horarios para el selector de reprogramación: mismos que la reserva pública, sin contar la cita propia. */
+export async function rescheduleSlots(token: unknown, date: unknown) {
+  if (typeof token !== "string" || !tokenRe.test(token)) throw new BookingError("Enlace de reserva inválido.", 404);
+  if (typeof date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new BookingError("Fecha inválida.", 400);
+  const { data: b } = await adminClient().from("bookings").select("starts_at,ends_at,status,services(slug),barbers(slug)").eq("access_token_hash", hashToken(token)).maybeSingle();
+  if (!b || b.status !== "confirmada" || !b.services || !b.barbers) throw new BookingError("No encontramos esta reserva.", 404);
+  return availability(b.barbers.slug, b.services.slug, date, { startsAt: Date.parse(b.starts_at), endsAt: Date.parse(b.ends_at) });
 }

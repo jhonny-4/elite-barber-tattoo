@@ -55,3 +55,9 @@ Migraciones `20261020000001` a `20261021000011` aplicadas al Supabase conectado,
 5. Respaldos y recuperación de base/Storage deben verificarse en la cuenta del proveedor. El limitador de formularios es por proceso; al escalar, añadir limitación en infraestructura.
 
 Nunca versionar `.env*`, claves, tokens ni datos personales. `.env.example` solo contiene nombres/ejemplos públicos. Para revisar migraciones: `node scripts/db-maintenance.mjs inspect`; aplicar solo archivos revisados. El script usa `.env.supabase` local, excluido de Git.
+
+## Actualización 22/10/2026
+- Reprogramar desde `/mi-reserva` ya permite mover la cita a la hora contigua (la disponibilidad ignora la cita propia; `GET /api/reservas/reprogramar?token&fecha`).
+- Pruebas automáticas: `npm run qa:prod` (solo lectura en producción) y `npm run qa:local` (flujo reservar → reprogramar a la hora siguiente → enlace privado, solo contra Supabase local).
+- `instrumentation.ts` carga `instrumentation-node.ts` solo en Node (evita empaquetar web-push en edge en desarrollo); `web-push` en `serverExternalPackages`.
+- `CLAUDE.md` reescrito con el estado real de producción.

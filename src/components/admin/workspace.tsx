@@ -7,7 +7,6 @@ import { bogotaDate } from "../../domain/queue/logic";
 import { activeTicket } from "../../domain/queue/model";
 import type { DemoCommand, SharedState } from "../../services/contracts/demo";
 import { EliteLogo } from "../brand/logos";
-import { ConfirmAction } from "../confirm-action";
 import { Icon } from "../icons";
 import { AgendaSection } from "./agenda";
 import { BarberView } from "./barber-view";

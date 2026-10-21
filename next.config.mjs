@@ -38,7 +38,7 @@ export default function nextConfig(phase) {
     poweredByHeader: false,
     // Hostinger despliega el servidor autónomo que genera Next (.next/standalone).
     output: "standalone",
-    serverExternalPackages: ["@netlify/blobs"],
+    serverExternalPackages: ["@netlify/blobs", "web-push"],
     // allowedDevOrigins solo lo usa `next dev`; el build y Netlify no lo necesitan.
     ...(phase === PHASE_DEVELOPMENT_SERVER
       ? { allowedDevOrigins: ["localhost", "127.0.0.1", ...localAddresses()] }

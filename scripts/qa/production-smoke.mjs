@@ -51,6 +51,30 @@ await check("/api/tatuajes", 403, {
   },
   body: "{}",
 });
+
+// --- Ampliación: todo de solo lectura o rechazado antes de escribir (no ocupa cupos). ---
+for (const page of ["/", "/reservar", "/tatuaje", "/turnos", "/jean-carlos", "/ingresar", "/offline"]) {
+  const html = await (await check(page, 200)).text();
+  if (page === "/") {
+    assert.match(html, /property="og:image" content="https:\/\//, "og:image debe ser absoluta");
+    assert.ok(html.includes("wa.me/573016697908"), "WhatsApp oficial en portada");
+  }
+}
+const catalogo = await (await check("/api/reservas/catalogo", 200)).json();
+assert.ok(catalogo.services?.length && catalogo.barbers?.length, "Catálogo con servicios y barberos");
+const manana = new Date(Date.now() + 2 * 86400000).toISOString().slice(0, 10);
+const disp = await (await check(`/api/reservas/disponibilidad?barbero=any&servicio=${catalogo.services[0].slug}&fecha=${manana}`, 200)).json();
+assert.ok(Array.isArray(disp.slots), "Disponibilidad con horarios");
+await check("/api/reservas/disponibilidad?barbero=any&servicio=corte&fecha=2020-01-01", 400);
+// Reserva con correo inválido: el servidor la rechaza antes de tocar la base.
+await check("/api/reservas", 400, { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": crypto.randomUUID(), Origin: base }, body: JSON.stringify({ barberSlug: "any", serviceSlug: "corte", date: manana, time: "10:00", name: "QA", phone: "3000000000", email: "no-es-correo" }) });
+await check("/api/cron/tick", 401, { method: "POST" });
+const push = await (await check("/api/push", 200)).json();
+assert.ok(typeof push.publicKey === "string" && push.publicKey.length > 40, "Clave pública push");
+await check("/api/pagos/bold", 503, { method: "POST", body: "{}" });
+const reserva = await (await check(`/mi-reserva/${"A".repeat(43)}`, 200)).text();
+assert.ok(reserva.includes("No encontramos"), "Enlace falso no revela reservas");
+await check(`/api/reservas/reprogramar?token=${"A".repeat(43)}&fecha=${manana}`, 404);
 console.log(
   `${passed} comprobaciones HTTP aprobadas; sin crear reservas, turnos ni enviar correos.`,
 );

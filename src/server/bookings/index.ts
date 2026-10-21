@@ -47,7 +47,8 @@ async function barbersFor(serviceSlug: string, barberSlug: string) {
   return { service, eligible, hours: hours ?? [], breaks: breaks ?? [] };
 }
 
-export async function availability(barberSlug: string, serviceSlug: string, date: string) {
+/** `ignore`: rango de la propia cita al reprogramar, para poder moverla a horas contiguas. */
+export async function availability(barberSlug: string, serviceSlug: string, date: string, ignore?: { startsAt: number; endsAt: number }) {
   if (!validDate(date) || date < todayBogota() || date > shiftDate(todayBogota(), 60)) throw new BookingError("Fecha fuera del periodo disponible.", 400);
   const { service, eligible, hours, breaks } = await barbersFor(serviceSlug, barberSlug);
   const from = dayStart(date), to = dayStart(shiftDate(date, 1));
@@ -57,7 +58,7 @@ export async function availability(barberSlug: string, serviceSlug: string, date
     const { data, error } = await adminClient().rpc("busy_ranges", { p_barber: barber.id, p_from: from, p_to: to });
     if (error) throw error;
     const pauses = breaks.filter(b => b.barber_id === barber.id && b.weekday === weekday(date));
-    return { barber, slots: slotsForDay({ date, opens: work.opens, closes: work.closes, durationMin: service.duration_min, breaks: pauses, busy: (data ?? []).map(r => ({ startsAt: Date.parse(r.starts_at), endsAt: Date.parse(r.ends_at) })), now: Date.now() }) };
+    return { barber, slots: slotsForDay({ date, opens: work.opens, closes: work.closes, durationMin: service.duration_min, breaks: pauses, busy: (data ?? []).map(r => ({ startsAt: Date.parse(r.starts_at), endsAt: Date.parse(r.ends_at) })).filter(r => !ignore || r.startsAt !== ignore.startsAt || r.endsAt !== ignore.endsAt), now: Date.now() }) };
   }));
   const times = [...new Set(results.flatMap(r => r.slots.map(s => s.time)))].sort();
   return { date, slots: times.map(time => ({ time, available: results.some(r => r.slots.some(s => s.time === time && s.available)), barberSlug: barberSlug === "any" ? results.find(r => r.slots.some(s => s.time === time && s.available))?.barber.slug ?? null : barberSlug })) };
