@@ -7,5 +7,6 @@ dist/
 *.log
 *.tsbuildinfo
 /var/portfolio-import/
+/var/qa-tools/
 /var/demo/*
 !/var/demo/.gitkeep

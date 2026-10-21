@@ -10,13 +10,7 @@ import Link from "next/link";
 import type { PortfolioItem } from "../../domain/media";
 import { Brand, Photo } from "../media";
 import { Icon } from "../icons";
-import {
-  aspectOf,
-  isCapture,
-  maxWidthOf,
-  pad2,
-  prefersReducedMotion,
-} from "./shared";
+import { aspectOf, maxWidthOf, pad2, prefersReducedMotion } from "./shared";
 
 const LIGHTBOX_SIZES = "(max-width: 760px) 94vw, 760px";
 const CLOSE_MS = 220;
@@ -56,10 +50,11 @@ export function Lightbox({
   const closeTimer = useRef(0);
   const swipe = useRef<Swipe | null>(null);
   const swallowClick = useRef(false);
-  const [direction, setDirection] = useState<"next" | "prev" | "none">(
-    "none",
-  );
-  const [angleState, setAngleState] = useState<{ work: string | null; value: number }>({ work: null, value: 0 });
+  const [direction, setDirection] = useState<"next" | "prev" | "none">("none");
+  const [angleState, setAngleState] = useState<{
+    work: string | null;
+    value: number;
+  }>({ work: null, value: 0 });
   const angle = angleState.work === activeId ? angleState.value : initialAngle;
   const setAngle = (value: number) => setAngleState({ work: activeId, value });
   const baseId = useId();
@@ -255,7 +250,6 @@ export function Lightbox({
     }
   }
 
-  const capture = photo ? isCapture(photo) : false;
   const frameStyle = photo
     ? ({
         "--ar": aspectOf(photo),
@@ -319,7 +313,14 @@ export function Lightbox({
                 data-dir={direction}
                 style={frameStyle}
               >
-                {photo && <Photo item={photo} fit="contain" priority sizes={LIGHTBOX_SIZES} />}
+                {photo && (
+                  <Photo
+                    item={photo}
+                    fit="contain"
+                    priority
+                    sizes={LIGHTBOX_SIZES}
+                  />
+                )}
               </figure>
             </div>
             <p className="lightbox-count" aria-hidden="true">
@@ -339,23 +340,57 @@ export function Lightbox({
           </div>
 
           <div className="lightbox-info">
-            {item?.videos?.map(video => <video key={video} controls playsInline preload="none" style={{width:"100%",maxHeight:"60vh",objectFit:"contain"}} src={video} aria-label={`Video de ${item.title}`} />)}
+            {item?.videos?.map((video) => (
+              <video
+                key={video}
+                controls
+                playsInline
+                preload="none"
+                style={{
+                  width: "100%",
+                  maxHeight: "60vh",
+                  objectFit: "contain",
+                }}
+                src={video}
+                aria-label={`Video de ${item.title}`}
+              />
+            ))}
             {shots.length > 1 && (
-              <div className="gallery-angle-controls" role="group" aria-label="Fotos del mismo tatuaje">
-                <button type="button" className="icon-button" aria-label="Ángulo anterior" onClick={() => setAngle((angle - 1 + shots.length) % shots.length)}><Icon name="chevron" /></button>
-                <span aria-live="polite">Mismo tatuaje · foto {angle + 1} de {shots.length}</span>
-                <button type="button" className="icon-button" aria-label="Ángulo siguiente" onClick={() => setAngle((angle + 1) % shots.length)}><Icon name="chevron" /></button>
+              <div
+                className="gallery-angle-controls"
+                role="group"
+                aria-label="Fotos del mismo tatuaje"
+              >
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label="Ángulo anterior"
+                  onClick={() =>
+                    setAngle((angle - 1 + shots.length) % shots.length)
+                  }
+                >
+                  <Icon name="chevron" />
+                </button>
+                <span aria-live="polite">
+                  Mismo tatuaje · foto {angle + 1} de {shots.length}
+                </span>
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label="Ángulo siguiente"
+                  onClick={() => setAngle((angle + 1) % shots.length)}
+                >
+                  <Icon name="chevron" />
+                </button>
               </div>
             )}
             <p className="eyebrow">{item.subtitle}</p>
             <h2 id={titleId}>{item.title}</h2>
             <p id={noteId} className="lightbox-note">
-              {capture && (
-                <span className="lightbox-capture">Captura de referencia</span>
-              )}
-              {capture
-                ? "Tomada de Instagram: la nitidez mejorará con la fotografía original. Cada diseño se valora y se cotiza de forma personal."
-                : item.category === "tattoo" ? "Tatuaje de Jean Carlos en Elite. Cada diseño requiere valoración personal." : "Corte seleccionado del trabajo de Elite."}
+              {item.description ??
+                (item.category === "tattoo"
+                  ? "Tatuaje realizado por Jean Carlos en Elite."
+                  : "Corte realizado por el equipo de Elite.")}
             </p>
             <Link
               className="button button-accent button-small"

@@ -2,22 +2,19 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { currency } from "../domain/catalog";
+import { currency, barbers as barberAliases } from "../domain/catalog";
 import { todayBogota } from "../domain/demo";
-import {
-  parseDate,
-  prettyDate,
-  shiftDate,
-} from "../domain/availability";
+import { parseDate, prettyDate, shiftDate } from "../domain/availability";
 import { whatsappUrl } from "../domain/business";
 import { Calendar, type CalendarDayStatus } from "./calendar";
 import { Icon } from "./icons";
 import { BrandGlyph, EliteLogo } from "./brand/logos";
-import {
-  ANY_BARBER,
-  type SlotView,
-} from "./booking/availability-view";
-import type { BarberServiceLink, BarberSummary, ServiceSummary } from "../domain/booking/slots";
+import { ANY_BARBER, type SlotView } from "./booking/availability-view";
+import type {
+  BarberServiceLink,
+  BarberSummary,
+  ServiceSummary,
+} from "../domain/booking/slots";
 import {
   ContactInputs,
   validateContact,
@@ -37,7 +34,8 @@ import { TimeSlots } from "./booking/time-slots";
 type Errors = ContactErrors;
 
 const anyProfessional = { id: ANY_BARBER, name: "Primer disponible" };
-const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+const capitalize = (text: string) =>
+  text.charAt(0).toUpperCase() + text.slice(1);
 const longDate = (date: string) => (date ? capitalize(prettyDate(date)) : "");
 
 function whenLabel(next: { date: string; time: string }, today: string) {
@@ -79,7 +77,11 @@ function StepHead({
 
 function BackButton({ onClick }: { onClick: () => void }) {
   return (
-    <button type="button" className="button button-outline bk-back" onClick={onClick}>
+    <button
+      type="button"
+      className="button button-outline bk-back"
+      onClick={onClick}
+    >
       <Icon name="chevron" className="bk-back-icon" />
       <span className="bk-back-label">Atrás</span>
     </button>
@@ -88,7 +90,11 @@ function BackButton({ onClick }: { onClick: () => void }) {
 
 export function BookingFlow() {
   const params = useSearchParams();
-  const [catalog, setCatalog] = useState<{barbers:BarberSummary[];services:ServiceSummary[];barberServices:BarberServiceLink[]}>({barbers:[],services:[],barberServices:[]});
+  const [catalog, setCatalog] = useState<{
+    barbers: BarberSummary[];
+    services: ServiceSummary[];
+    barberServices: BarberServiceLink[];
+  }>({ barbers: [], services: [], barberServices: [] });
   const [serverSlots, setServerSlots] = useState<SlotView[]>([]);
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
   const [availabilityError, setAvailabilityError] = useState("");
@@ -100,21 +106,61 @@ export function BookingFlow() {
   const [today, setToday] = useState("");
   const [clock, setClock] = useState(0);
   const [step, setStep] = useState<StepId>(1);
-  const [contact, setContact] = useState<ContactValue>({ name: "", phone: "", email: "" });
+  const [contact, setContact] = useState<ContactValue>({
+    name: "",
+    phone: "",
+    email: "",
+  });
   const [attempted, setAttempted] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [stepError, setStepError] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<{id:string;token:string;service:string;barber:string;date:string;time:string;price_cop:number;status:string}|null>(null);
+  const [result, setResult] = useState<{
+    id: string;
+    token: string;
+    service: string;
+    barber: string;
+    date: string;
+    time: string;
+    price_cop: number;
+    status: string;
+  } | null>(null);
   const attemptKey = useRef("");
   const headingRef = useRef<HTMLHeadingElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const moved = useRef(false);
 
   useEffect(() => {
-    const serviceParam=params.get("servicio"), barberParam=params.get("profesional");
-    void fetch("/api/reservas/catalogo").then(async r => { const d=await r.json(); if(!r.ok) throw new Error(d.error); return d; }).then((d:{barbers:BarberSummary[];services:ServiceSummary[];barberServices:BarberServiceLink[]})=>{setCatalog(d);const selected=d.services.find(s=>s.slug===serviceParam)??d.services[0];setServiceId(selected?.slug??"");setBarberId(d.barbers.some(b=>b.slug===barberParam)?barberParam!:ANY_BARBER);}).catch((e:Error)=>setAvailabilityError(e.message));
+    const serviceParam = params.get("servicio"),
+      requestedBarber = params.get("profesional"),
+      barberParam =
+        barberAliases.find((b) => b.id === requestedBarber)?.slug ??
+        requestedBarber;
+    void fetch("/api/reservas/catalogo")
+      .then(async (r) => {
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error);
+        return d;
+      })
+      .then(
+        (d: {
+          barbers: BarberSummary[];
+          services: ServiceSummary[];
+          barberServices: BarberServiceLink[];
+        }) => {
+          setCatalog(d);
+          const selected =
+            d.services.find((s) => s.slug === serviceParam) ?? d.services[0];
+          setServiceId(selected?.slug ?? "");
+          setBarberId(
+            d.barbers.some((b) => b.slug === barberParam)
+              ? barberParam!
+              : ANY_BARBER,
+          );
+        },
+      )
+      .catch((e: Error) => setAvailabilityError(e.message));
     const now = todayBogota();
     setToday(now);
     setDate(shiftDate(now, 1));
@@ -133,9 +179,12 @@ export function BookingFlow() {
     headingRef.current?.focus({ preventScroll: true });
     const top = topRef.current?.getBoundingClientRect().top ?? 0;
     const header =
-      document.querySelector(".site-header")?.getBoundingClientRect().height ?? 0;
+      document.querySelector(".site-header")?.getBoundingClientRect().height ??
+      0;
     if (top < header || top > window.innerHeight * 0.45) {
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
       window.scrollTo({
         top: Math.max(0, window.scrollY + top - header - 16),
         behavior: reduce ? "auto" : "smooth",
@@ -143,21 +192,83 @@ export function BookingFlow() {
     }
   }, [step, result]);
 
-  const services = catalog.services, barbers = catalog.barbers;
-  const service = services.find(s => s.slug === serviceId) ?? {name:"Servicio",duration_min:0,price_cop:0,slug:"",id:"",sort_order:0};
+  const services = catalog.services,
+    barbers = catalog.barbers;
+  const service = services.find((s) => s.slug === serviceId) ?? {
+    name: "Servicio",
+    duration_min: 0,
+    price_cop: 0,
+    slug: "",
+    id: "",
+    sort_order: 0,
+  };
   const professional =
     barberId === ANY_BARBER
       ? anyProfessional
-      : (barbers.find(b => b.slug === barberId) ? {id:barberId,name:barbers.find(b=>b.slug===barberId)!.display_name} : anyProfessional);
+      : barbers.find((b) => b.slug === barberId)
+        ? {
+            id: barberId,
+            name: barbers.find((b) => b.slug === barberId)!.display_name,
+          }
+        : anyProfessional;
 
-  useEffect(()=>{if(!serviceId||!date)return;let active=true;setAvailabilityLoading(true);setAvailabilityError("");fetch(`/api/reservas/disponibilidad?barbero=${encodeURIComponent(barberId)}&servicio=${encodeURIComponent(serviceId)}&fecha=${date}`).then(async r=>{const d=await r.json();if(!r.ok)throw new Error(d.error);return d as {slots:{time:string;available:boolean}[]};}).then(d=>{if(active)setServerSlots(d.slots.map(s=>({time:s.time,available:s.available,reason:s.available?"":"No disponible",short:s.available?"":"Ocupado"})));}).catch((e:Error)=>{if(active){setServerSlots([]);setAvailabilityError(e.message);}}).finally(()=>active&&setAvailabilityLoading(false));return()=>{active=false;};},[barberId,serviceId,date]);
+  useEffect(() => {
+    if (!serviceId || !date) return;
+    let active = true;
+    setAvailabilityLoading(true);
+    setAvailabilityError("");
+    fetch(
+      `/api/reservas/disponibilidad?barbero=${encodeURIComponent(barberId)}&servicio=${encodeURIComponent(serviceId)}&fecha=${date}`,
+    )
+      .then(async (r) => {
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error);
+        return d as { slots: { time: string; available: boolean }[] };
+      })
+      .then((d) => {
+        if (active)
+          setServerSlots(
+            d.slots.map((s) => ({
+              time: s.time,
+              available: s.available,
+              reason: s.available ? "" : "No disponible",
+              short: s.available ? "" : "Ocupado",
+            })),
+          );
+      })
+      .catch((e: Error) => {
+        if (active) {
+          setServerSlots([]);
+          setAvailabilityError(e.message);
+        }
+      })
+      .finally(() => active && setAvailabilityLoading(false));
+    return () => {
+      active = false;
+    };
+  }, [barberId, serviceId, date]);
   const slots = serverSlots;
   const selectedAvailable = slots.some((s) => s.time === time && s.available);
 
   // Estado de cada día del periodo reservable (hoy + 60 días) para el calendario.
-  const dayStatus = useCallback((day: string): CalendarDayStatus => day===date?{available:slots.some(s=>s.available),count:slots.filter(s=>s.available).length}:{available:day>=today&&day<=shiftDate(today,60),reason:"Selecciona el día para consultar horarios"},[date,slots,today]);
+  const dayStatus = useCallback(
+    (day: string): CalendarDayStatus =>
+      day === date
+        ? {
+            available: slots.some((s) => s.available),
+            count: slots.filter((s) => s.available).length,
+          }
+        : {
+            available: day >= today && day <= shiftDate(today, 60),
+            reason: "Selecciona el día para consultar horarios",
+          },
+    [date, slots, today],
+  );
 
-  const nextByProfessional: Record<string,{date:string;time:string}|null> = {};
+  const nextByProfessional: Record<
+    string,
+    { date: string; time: string } | null
+  > = {};
 
   function go(next: StepId) {
     moved.current = true;
@@ -202,8 +313,7 @@ export function BookingFlow() {
 
   function updateContact(next: ContactValue) {
     setContact(next);
-    if (attempted)
-      setErrors(validateContact(next));
+    if (attempted) setErrors(validateContact(next));
   }
 
   function continueFromContact(event: React.FormEvent<HTMLFormElement>) {
@@ -211,7 +321,9 @@ export function BookingFlow() {
     setAttempted(true);
     const next: Errors = validateContact(contact);
     setErrors(next);
-    const first = (["name", "phone", "email"] as const).find((key) => next[key]);
+    const first = (["name", "phone", "email"] as const).find(
+      (key) => next[key],
+    );
     if (first) {
       document.getElementById(`bk-${first}`)?.focus();
       return;
@@ -229,15 +341,35 @@ export function BookingFlow() {
     event.preventDefault();
     if (busy) return;
     if (!selectedAvailable) {
-      setSubmitError("Esa hora dejó de estar disponible. Elige otra en el paso 2.");
+      setSubmitError(
+        "Esa hora dejó de estar disponible. Elige otra en el paso 2.",
+      );
       return;
     }
     setBusy(true);
     setSubmitError("");
     try {
-      if (!attemptKey.current) attemptKey.current = crypto.randomUUID().replaceAll("-", "");
-      const response=await fetch("/api/reservas",{method:"POST",headers:{"Content-Type":"application/json","Idempotency-Key":attemptKey.current},body:JSON.stringify({barberSlug:barberId,serviceSlug:serviceId,date,time,name:contact.name,phone:contact.phone,email:contact.email})});
-      const booking=await response.json(); if(!response.ok) throw new Error(booking.error??"No se pudo reservar.");
+      if (!attemptKey.current)
+        attemptKey.current = crypto.randomUUID().replaceAll("-", "");
+      const response = await fetch("/api/reservas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Idempotency-Key": attemptKey.current,
+        },
+        body: JSON.stringify({
+          barberSlug: barberId,
+          serviceSlug: serviceId,
+          date,
+          time,
+          name: contact.name,
+          phone: contact.phone,
+          email: contact.email,
+        }),
+      });
+      const booking = await response.json();
+      if (!response.ok)
+        throw new Error(booking.error ?? "No se pudo reservar.");
       moved.current = true;
       setResult(booking);
     } catch (error) {
@@ -252,7 +384,7 @@ export function BookingFlow() {
     setResult(null);
     setTime("");
     setContact({ name: "", phone: "", email: "" });
-    attemptKey.current="";
+    attemptKey.current = "";
     setAttempted(false);
     setErrors({});
     setSubmitError("");
@@ -266,7 +398,7 @@ export function BookingFlow() {
     price: service.price_cop,
     professional: professional.name,
     professionalNote:
-      barberId === ANY_BARBER ? "Se asigna al confirmar" : "Perfil provisional",
+      barberId === ANY_BARBER ? "Se asigna al confirmar" : "Barbero de Elite",
     date: longDate(date),
     time: selectedAvailable ? time : "",
     presencial,
@@ -278,7 +410,10 @@ export function BookingFlow() {
     const reference = result.id.slice(0, 8).toUpperCase();
     return (
       <div className="bk bk-done" ref={topRef}>
-        <section className="success-panel bk-success" aria-labelledby="bk-success-title">
+        <section
+          className="success-panel bk-success"
+          aria-labelledby="bk-success-title"
+        >
           <span className="bk-seal" aria-hidden="true">
             <EliteLogo className="bk-seal-logo" />
           </span>
@@ -310,11 +445,15 @@ export function BookingFlow() {
             }}
           />
           <div className="bk-next">
-            <p className="bk-note">Al llegar al local, informa al equipo que tienes una reserva.</p>
+            <p className="bk-note">
+              Al llegar al local, informa al equipo que tienes una reserva.
+            </p>
             <h3>Siguientes pasos</h3>
             <ol>
               <li>
-                <span>Tu cita ya aparece en la agenda del equipo de Elite.</span>
+                <span>
+                  Tu cita ya aparece en la agenda del equipo de Elite.
+                </span>
               </li>
               <li>
                 <span>
@@ -324,8 +463,8 @@ export function BookingFlow() {
               </li>
               <li>
                 <span>
-                  Te esperamos en el local el {longDate(result.date).toLowerCase()} a
-                  las {result.time}.
+                  Te esperamos en el local el{" "}
+                  {longDate(result.date).toLowerCase()} a las {result.time}.
                 </span>
               </li>
             </ol>
@@ -333,11 +472,17 @@ export function BookingFlow() {
           <p className="bk-honest">
             <Icon name="clock" />
             <span>
-              Te enviamos la confirmación a {contact.email}. No se realizó ningún cobro en línea.
+              Te enviamos la confirmación a {contact.email}. No se realizó
+              ningún cobro en línea.
             </span>
           </p>
           <div className="button-row bk-success-actions">
-            <Link className="button button-outline" href={`/mi-reserva/${result.token}`}>Consultar mi reserva</Link>
+            <Link
+              className="button button-outline"
+              href={`/mi-reserva/${result.token}`}
+            >
+              Consultar mi reserva
+            </Link>
             <Link className="button" href="/">
               Volver al inicio <Icon name="arrow" />
             </Link>
@@ -353,7 +498,11 @@ export function BookingFlow() {
               WhatsApp
               <span className="visually-hidden"> (abre otra pestaña)</span>
             </a>
-            <button type="button" className="button button-outline" onClick={startOver}>
+            <button
+              type="button"
+              className="button button-outline"
+              onClick={startOver}
+            >
               Otra reserva <Icon name="plus" />
             </button>
           </div>
@@ -384,7 +533,7 @@ export function BookingFlow() {
                   eyebrow="Servicio"
                   title="Elige tu"
                   accent="experiencia."
-                    lead="Selecciona el servicio y quién te atiende."
+                  lead="Selecciona el servicio y quién te atiende."
                   headingRef={headingRef}
                 />
                 <fieldset className="bk-fieldset">
@@ -413,7 +562,7 @@ export function BookingFlow() {
                           </span>
                         </span>
                         <span className="bk-card-price">
-                            <small>Precio</small>
+                          <small>Precio</small>
                           <b>{currency(s.price_cop)}</b>
                         </span>
                         <span className="bk-card-check" aria-hidden="true">
@@ -426,10 +575,22 @@ export function BookingFlow() {
                 <fieldset className="bk-fieldset">
                   <legend className="bk-legend">Profesional</legend>
                   <div className="bk-options bk-options-pros">
-                    {[anyProfessional, ...barbers.map((b)=>({id:b.slug,name:b.display_name}))].map((p) => {
-                      const unavailable = p.id !== ANY_BARBER && !catalog.barberServices.some((link) => link.barber_id === barbers[index]?.id && link.service_id === service.id);
-                      const next = nextByProfessional[p.id];
+                    {[
+                      anyProfessional,
+                      ...barbers.map((b) => ({
+                        id: b.slug,
+                        name: b.display_name,
+                      })),
+                    ].map((p) => {
                       const index = barbers.findIndex((b) => b.slug === p.id);
+                      const unavailable =
+                        p.id !== ANY_BARBER &&
+                        !catalog.barberServices.some(
+                          (link) =>
+                            link.barber_id === barbers[index]?.id &&
+                            link.service_id === service.id,
+                        );
+                      const next = nextByProfessional[p.id];
                       const noteId = `bk-pro-${p.id}`;
                       return (
                         <label
@@ -453,7 +614,11 @@ export function BookingFlow() {
                             onChange={() => pickBarber(p.id)}
                           />
                           <span className="bk-pro-avatar" aria-hidden="true">
-                            {index < 0 ? <Icon name="spark" /> : `E${index + 1}`}
+                            {index < 0 ? (
+                              <Icon name="spark" />
+                            ) : (
+                              `E${index + 1}`
+                            )}
                           </span>
                           <strong className="bk-card-title">{p.name}</strong>
                           <span className="bk-pro-notes" id={noteId}>
@@ -462,13 +627,13 @@ export function BookingFlow() {
                                 ? "No disponible por ahora"
                                 : index < 0
                                   ? "Te asignamos quien esté libre"
-                                  : "Perfil provisional"}
+                                  : "Barbero de Elite"}
                             </span>
                             {!unavailable && clock > 0 && (
                               <span className="bk-pro-next">
                                 {next
                                   ? `Próxima hora: ${whenLabel(next, today)}`
-                                  : "Sin horarios próximos"}
+                                  : "Consulta horarios al elegir fecha"}
                               </span>
                             )}
                           </span>
@@ -481,7 +646,9 @@ export function BookingFlow() {
                   </div>
                 </fieldset>
                 {!services.length && !availabilityError && (
-                  <p className="loading-state bk-loading">Conectando con la agenda…</p>
+                  <p className="loading-state bk-loading">
+                    Conectando con la agenda…
+                  </p>
                 )}
                 {stepError && (
                   <p className="inline-error" role="alert">
@@ -564,23 +731,40 @@ export function BookingFlow() {
                 )}
                 <div className="bk-actions">
                   <BackButton onClick={() => go(1)} />
-                  <button type="button" className="button" onClick={continueFromDate}>
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={continueFromDate}
+                  >
                     Continuar <Icon name="arrow" />
                   </button>
                 </div>
-                {availabilityLoading && <p className="loading-state" role="status">Consultando disponibilidad…</p>}
-                {availabilityError && <p className="inline-error" role="alert">{availabilityError}</p>}
+                {availabilityLoading && (
+                  <p className="loading-state" role="status">
+                    Consultando disponibilidad…
+                  </p>
+                )}
+                {availabilityError && (
+                  <p className="inline-error" role="alert">
+                    {availabilityError}
+                  </p>
+                )}
               </section>
             )}
 
             {step === 3 && (
-              <form key={step} className="bk-step" onSubmit={continueFromContact} noValidate>
+              <form
+                key={step}
+                className="bk-step"
+                onSubmit={continueFromContact}
+                noValidate
+              >
                 <StepHead
                   step={3}
                   eyebrow="Tus datos"
                   title="Hagámoslo"
                   accent="personal."
-                  lead="Solo necesitamos un nombre y un teléfono para la cita."
+                  lead="Tu nombre, teléfono y correo para gestionar la cita y enviarte la confirmación."
                   headingRef={headingRef}
                 />
                 <div className="bk-contact">
@@ -596,7 +780,11 @@ export function BookingFlow() {
                     <span>
                       {stepError ||
                         "La hora elegida dejó de estar disponible. Elige otra para continuar."}{" "}
-                      <button type="button" className="bk-inline-link" onClick={() => go(2)}>
+                      <button
+                        type="button"
+                        className="bk-inline-link"
+                        onClick={() => go(2)}
+                      >
                         Elegir otra hora
                       </button>
                     </span>
@@ -622,22 +810,37 @@ export function BookingFlow() {
                   headingRef={headingRef}
                 />
                 <ReviewTicket data={summary} contact={contact} onEdit={go} />
-                <p className="form-disclaimer bk-review-note">Al confirmar, guardaremos tu cita y enviaremos un correo de confirmación.</p>
+                <p className="form-disclaimer bk-review-note">
+                  Al confirmar, guardaremos tu cita y enviaremos un correo de
+                  confirmación.
+                </p>
                 {!selectedAvailable && (
                   <div className="inline-error bk-alert" role="alert">
                     <span>
                       Esa hora dejó de estar disponible.{" "}
-                      <button type="button" className="bk-inline-link" onClick={() => go(2)}>
+                      <button
+                        type="button"
+                        className="bk-inline-link"
+                        onClick={() => go(2)}
+                      >
                         Elegir otra hora
                       </button>
                     </span>
                   </div>
                 )}
                 {submitError && (
-                  <div className="inline-error bk-alert" role="alert" id="bk-submit-error">
+                  <div
+                    className="inline-error bk-alert"
+                    role="alert"
+                    id="bk-submit-error"
+                  >
                     <span>
                       {submitError}{" "}
-                      <button type="button" className="bk-inline-link" onClick={() => go(2)}>
+                      <button
+                        type="button"
+                        className="bk-inline-link"
+                        onClick={() => go(2)}
+                      >
                         Cambiar fecha u hora
                       </button>
                     </span>
@@ -649,7 +852,9 @@ export function BookingFlow() {
                     type="submit"
                     className="button button-accent button-large"
                     aria-busy={busy || undefined}
-                    aria-describedby={submitError ? "bk-submit-error" : undefined}
+                    aria-describedby={
+                      submitError ? "bk-submit-error" : undefined
+                    }
                     disabled={!selectedAvailable || offline}
                   >
                     {busy ? "Confirmando…" : "Confirmar reserva"}
@@ -658,8 +863,8 @@ export function BookingFlow() {
                 </div>
                 {offline && (
                   <p className="bk-hint" role="status">
-                    Sin conexión no se puede confirmar. Pulsa «Reintentar» arriba
-                    cuando vuelva la señal; tus datos siguen aquí.
+                    Sin conexión no se puede confirmar. Pulsa «Reintentar»
+                    arriba cuando vuelva la señal; tus datos siguen aquí.
                   </p>
                 )}
               </form>
@@ -686,7 +891,7 @@ export function ContactFields({
   return (
     <div className="contact-fields">
       <label>
-        Nombre de ejemplo
+        Tu nombre
         <input
           required
           name="name"
@@ -700,7 +905,7 @@ export function ContactFields({
         />
       </label>
       <label>
-        Teléfono de ejemplo
+        Tu teléfono
         <input
           required
           name="phone"

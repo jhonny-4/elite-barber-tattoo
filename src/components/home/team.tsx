@@ -3,7 +3,7 @@ import { EliteLogo } from "../brand/logos";
 import { Icon } from "../icons";
 import { barbers } from "../../domain/catalog";
 
-/** Equipo provisional: Barbero 1–3 hasta confirmar nombres y retratos. */
+/** Nombres confirmados por el negocio; los retratos aún no se han proporcionado. */
 export function HomeTeam() {
   return (
     <section
@@ -20,8 +20,7 @@ export function HomeTeam() {
           <span className="serif">define tu estilo.</span>
         </h2>
         <p className="section-note">
-          Perfiles provisionales: los nombres y retratos definitivos se
-          publicarán cuando el equipo los confirme.
+          El equipo de Elite, listo para darle forma a tu próximo corte.
         </p>
       </header>
 
@@ -30,7 +29,7 @@ export function HomeTeam() {
           <li className="home-card-slot" key={barber.id} data-anim="card">
             <Link
               className="home-member home-tilt"
-              href={`/reservar?profesional=${barber.id}`}
+              href={`/reservar?profesional=${barber.slug}`}
               data-tilt="6"
             >
               <span className="home-glare" aria-hidden="true" />
@@ -42,7 +41,7 @@ export function HomeTeam() {
               <span className="home-member-info">
                 <h3 className="home-member-name">{barber.name}</h3>
                 <span className="home-member-role">
-                  Barbería · perfil provisional
+                  Barbero · Elite
                 </span>
               </span>
               <span className="home-member-action">

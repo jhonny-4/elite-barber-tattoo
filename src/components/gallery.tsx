@@ -1,5 +1,12 @@
 "use client";
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import Link from "next/link";
 import { portfolio } from "../domain/media";
@@ -15,7 +22,6 @@ import { Icon } from "./icons";
 import { Lightbox } from "./gallery/lightbox";
 import {
   aspectOf,
-  isCapture,
   prefersReducedMotion,
   type GalleryFilter,
 } from "./gallery/shared";
@@ -42,8 +48,7 @@ const splitSubtitle = (subtitle: string) => {
 };
 
 /** Ancho visible estimado de cada tarjeta para elegir la variante del srcSet. */
-const CARD_SIZES =
-  "(max-width: 599px) 56vw, (max-width: 1100px) 40vw, 560px";
+const CARD_SIZES = "(max-width: 599px) 56vw, (max-width: 1100px) 40vw, 560px";
 const EASE_OUT = "cubic-bezier(0.16, 1, 0.3, 1)";
 
 /**
@@ -89,8 +94,17 @@ export function Gallery({
     [filter],
   );
 
-  const selection = filter === "todos" ? [...filteredItems.filter((item) => item.category === "barberia"), ...filteredItems.filter((item) => item.category === "tattoo")] : filteredItems;
-  const items = !previewLimit || expanded ? filteredItems : selection.slice(0, previewLimit);
+  const selection =
+    filter === "todos"
+      ? [
+          ...filteredItems.filter((item) => item.category === "barberia"),
+          ...filteredItems.filter((item) => item.category === "tattoo"),
+        ]
+      : filteredItems;
+  const items =
+    !previewLimit || expanded
+      ? filteredItems
+      : selection.slice(0, previewLimit);
 
   // Inclinación y luz solo con puntero fino y sin movimiento reducido.
   useEffect(() => {
@@ -196,7 +210,9 @@ export function Gallery({
       const rects = new Map<string, DOMRect>();
       grid
         .querySelectorAll<HTMLElement>(".gallery-item")
-        .forEach((el) => rects.set(el.dataset.id ?? "", el.getBoundingClientRect()));
+        .forEach((el) =>
+          rects.set(el.dataset.id ?? "", el.getBoundingClientRect()),
+        );
       flipFrom.current = rects;
     }
     const option = filters.find((f) => f.id === next);
@@ -272,8 +288,8 @@ export function Gallery({
         </h2>
         <p className="section-note">
           {tattooOnly
-            ? "Una selección de su trabajo en piel. Son capturas de referencia de su perfil de Instagram mientras llegan las fotografías originales."
-            : "Cortes del local y tatuajes de Jean Carlos, siempre con la foto completa. Los tatuajes son capturas de referencia mientras llegan las fotografías originales."}
+            ? "Tatuajes realizados por Jean Carlos. Fotografías reales, detalles de cada diseño y distintas vistas de sus trabajos."
+            : "Cortes del equipo de Elite y tatuajes realizados por Jean Carlos. Fotografías reales de nuestro trabajo, con el encuadre completo."}
         </p>
       </header>
 
@@ -316,14 +332,15 @@ export function Gallery({
         className="gallery-grid"
         role="list"
         data-filter={filter}
-        data-preview={previewLimit > 0 && !expanded || undefined}
-        aria-label={tattooOnly ? "Tatuajes de Jean Carlos" : "Trabajos de Elite"}
+        data-preview={(previewLimit > 0 && !expanded) || undefined}
+        aria-label={
+          tattooOnly ? "Tatuajes de Jean Carlos" : "Trabajos de Elite"
+        }
       >
         {items.map((item) => {
           const shots = [item, ...(item.views ?? [])];
           const angle = angles[item.id] ?? 0;
           const photo = shots[angle] ?? item;
-          const capture = isCapture(item);
           const [author, kind] = splitSubtitle(item.subtitle);
           return (
             <li
@@ -346,16 +363,17 @@ export function Gallery({
                   else cards.current.delete(item.id);
                 }}
                 aria-haspopup="dialog"
-                aria-label={`Ver en grande: ${item.title} · ${item.subtitle}${capture ? " · Captura de referencia" : ""}`}
+                aria-label={`Ver en grande: ${item.title} · ${item.subtitle}`}
                 onClick={() => setActiveId(item.id)}
                 onPointerMove={tilt}
                 onPointerLeave={untilt}
               >
                 <span className="gallery-frame">
                   <Photo item={photo} fit="contain" sizes={CARD_SIZES} />
-                  {shots.length > 1 && <span className="gallery-angle-badge">{angle + 1} / {shots.length} fotos</span>}
-                  {capture && (
-                    <span className="gallery-tag">Captura de referencia</span>
+                  {shots.length > 1 && (
+                    <span className="gallery-angle-badge">
+                      {angle + 1} / {shots.length} fotos
+                    </span>
                   )}
                   <span className="gallery-zoom" aria-hidden="true">
                     <Icon name="expand" />
@@ -369,25 +387,69 @@ export function Gallery({
                     {kind}
                   </span>
                   <span className="gallery-title">{item.title}</span>
-                  {capture && (
-                    <span className="gallery-tag-inline">
-                      Captura de referencia
+                  {item.description && (
+                    <span className="gallery-description">
+                      {item.description}
                     </span>
                   )}
                 </span>
               </button>
               {shots.length > 1 && (
-                <div className="gallery-angle-controls" role="group" aria-label={`Ángulos de ${item.title}`}>
-                  <button type="button" className="icon-button" aria-label={`Foto anterior de ${item.title}`} onClick={() => setAngles((previous) => ({ ...previous, [item.id]: (angle - 1 + shots.length) % shots.length }))}><Icon name="chevron" /></button>
-                  <span aria-live="polite">Foto {angle + 1} de {shots.length}</span>
-                  <button type="button" className="icon-button" aria-label={`Foto siguiente de ${item.title}`} onClick={() => setAngles((previous) => ({ ...previous, [item.id]: (angle + 1) % shots.length }))}><Icon name="chevron" /></button>
+                <div
+                  className="gallery-angle-controls"
+                  role="group"
+                  aria-label={`Ángulos de ${item.title}`}
+                >
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label={`Foto anterior de ${item.title}`}
+                    onClick={() =>
+                      setAngles((previous) => ({
+                        ...previous,
+                        [item.id]: (angle - 1 + shots.length) % shots.length,
+                      }))
+                    }
+                  >
+                    <Icon name="chevron" />
+                  </button>
+                  <span aria-live="polite">
+                    Foto {angle + 1} de {shots.length}
+                  </span>
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label={`Foto siguiente de ${item.title}`}
+                    onClick={() =>
+                      setAngles((previous) => ({
+                        ...previous,
+                        [item.id]: (angle + 1) % shots.length,
+                      }))
+                    }
+                  >
+                    <Icon name="chevron" />
+                  </button>
                 </div>
               )}
             </li>
           );
         })}
       </ul>
-      {previewLimit > 0 && filteredItems.length > previewLimit && <div className="gallery-expand"><button type="button" className="button button-outline" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? "Mostrar selección" : `Ver todos los trabajos (${filteredItems.length})`}<Icon name={expanded ? "close" : "plus"} /></button></div>}
+      {previewLimit > 0 && filteredItems.length > previewLimit && (
+        <div className="gallery-expand">
+          <button
+            type="button"
+            className="button button-outline"
+            aria-expanded={expanded}
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded
+              ? "Mostrar selección"
+              : `Ver todos los trabajos (${filteredItems.length})`}
+            <Icon name={expanded ? "close" : "plus"} />
+          </button>
+        </div>
+      )}
 
       <div
         className="gallery-foot"
@@ -411,7 +473,9 @@ export function Gallery({
             </span>
             <span className="button-label">
               Instagram
-              <small>{tattooOnly ? artistInstagramHandle : instagramHandle}</small>
+              <small>
+                {tattooOnly ? artistInstagramHandle : instagramHandle}
+              </small>
             </span>
             <span className="visually-hidden"> (abre otra pestaña)</span>
           </a>
@@ -426,7 +490,7 @@ export function Gallery({
       <Lightbox
         items={items}
         activeId={activeId}
-        initialAngle={activeId ? angles[activeId] ?? 0 : 0}
+        initialAngle={activeId ? (angles[activeId] ?? 0) : 0}
         onNavigate={setActiveId}
         onClosed={(lastId) => {
           setActiveId(null);

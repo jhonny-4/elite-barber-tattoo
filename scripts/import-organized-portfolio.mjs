@@ -5,6 +5,9 @@ const source = path.resolve(process.argv[2] ?? "var/portfolio-import");
 const output = path.resolve("public/media/tattoos/organizado");
 await mkdir(output, { recursive: true });
 const items = [];
+const descriptions = JSON.parse(
+  await readFile("src/domain/portfolio-descriptions.json", "utf8"),
+);
 const walk = async (dir) => {
   const files = [];
   for (const e of await readdir(dir, { withFileTypes: true })) {
@@ -50,7 +53,7 @@ for (const file of all
       sourceWidth: info.width,
       sourceHeight: info.height,
       crop: [0, 0, info.width, info.height],
-      capture: true,
+      capture: false,
     });
   }
   groups.set(slug, current);
@@ -70,6 +73,8 @@ for (const [slug, group] of groups) {
   };
   items.push({
     ...first,
+    ...descriptions[slug],
+    capture: false,
     ...(rest.length ? { views: rest } : {}),
     ...(group.videos.length ? { videos: group.videos } : {}),
   });

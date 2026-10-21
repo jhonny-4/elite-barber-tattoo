@@ -332,9 +332,8 @@ export function Footer() {
         </span>
       </div>
       <p className="footer-note">
-        Precios, profesionales y horarios de referencia, sujetos a
-        confirmación. Las confirmaciones automáticas por WhatsApp o correo aún
-        no están activas.
+        Reservas de barbería en línea y confirmación por correo.
+        Tatuajes sujetos a valoración y cotización.
       </p>
     </footer>
   );

@@ -72,7 +72,7 @@ function Rows({ data }: { data: SummaryData }) {
 function Total({ price }: { price: number }) {
   return (
     <div className="bk-summary-total">
-      <span>Precio de referencia</span>
+      <span>Precio del servicio</span>
       <strong>
         {currency(price)}
         <small> COP</small>
@@ -82,7 +82,7 @@ function Total({ price }: { price: number }) {
 }
 
 const note =
-  "Valor de referencia sujeto a confirmación en la barbería. No se realiza ningún cobro en línea.";
+  "Pago en el establecimiento. No se realiza ningún cobro en línea.";
 
 /** Resumen lateral pegajoso (escritorio). */
 export function BookingSummary({ data }: { data: SummaryData }) {
@@ -218,7 +218,7 @@ export function ReviewTicket({
         ["Teléfono", contact.phone],
       ])}
       <footer className="bk-ticket-total">
-        <span>Precio de referencia</span>
+        <span>Precio del servicio</span>
         <strong>
           {currency(data.price)}
           <small> COP</small>

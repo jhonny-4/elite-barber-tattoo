@@ -3,6 +3,17 @@
 Fuente de continuidad para Codex y Claude. Leer antes que documentos históricos.
 Actualizar este archivo con cada entrega, incluyendo verificaciones y pendientes reales.
 
+## Última corrección — reservas, nombres y fotografías reales
+
+- Corregido el error de `/reservar`: la comprobación de servicios de cada barbero accedía a `index` dentro de `.some()` antes de inicializarlo. El catálogo cargaba y después React caía en la pantalla de error. Se calcula el índice antes de utilizarlo.
+- Nombres confirmados: **Ivan**, **Jeancarlos** y **Nelson**. Los slugs reales de Supabase son `ivan`, `jean-carlos` y `nelson`; se conservan IDs, cuentas y reservas. La migración 11 aplica los nombres al catálogo real; la 10 solo cubría los identificadores históricos. Seed y pruebas SQL se alinearon con los slugs reales.
+- La portada enlaza los slugs reales. Los enlaces antiguos `barbero-1`, `barbero-2`, `barbero-3` se aceptan como alias en reserva. Los IDs históricos del motor demo permanecen para sus pruebas locales.
+- Las fotografías del ZIP están confirmadas como trabajos reales. Se revisaron visualmente y se añadieron descripciones específicas en tarjetas y visor. Eliminadas las etiquetas y advertencias de “captura de referencia”. Los metadatos están en `src/domain/portfolio-descriptions.json`; el importador los conserva al regenerar.
+- Tarifas oficiales y pago en el local, sin avisos de precio provisional. Corregido el pie de página antiguo que afirmaba que el correo no estaba activo. La plantilla de correo sigue usando logo y diseño Elite, servicio, profesional, fecha, precio y enlace de consulta/cancelación; no se enviaron correos de prueba a personas.
+- Build, lint, 59 pruebas y prueba del handler compilado aprobados. Chrome local a 1440 y 390 px: nombres, preselección por enlace nuevo/antiguo, calendario, elección de hora y paso de contacto, sin errores JavaScript ni desbordamiento horizontal. Verificado el visor con foto real y su descripción. Sin confirmar reservas de prueba.
+- QA de navegador: `npm install --prefix var/qa-tools --no-save --package-lock=false playwright`, después `node scripts/qa/booking-browser.mjs http://127.0.0.1:3011` con el build servido. Herramientas y capturas en `var/qa-tools/`, excluidas de Git. La revisión visual anterior del panel administrativo sigue pendiente; esta revisión cubre reserva y galería.
+- Identificador de esta corrección: `elite-reserva-galeria-20261021-2` en `/release.json`. Comprobar autodespliegue con `scripts/qa/production-smoke.mjs`.
+
 ## Entrega actual
 
 - Hostinger ya está publicado en `https://elite-barber-tatto.com`. El usuario confirmó conexión a GitHub con despliegue automático. Rama principal: `main`; rama de trabajo: `feat/produccion`. Subir ambas sin force push. El usuario autorizó publicar esta entrega.
@@ -22,7 +33,7 @@ Actualizar este archivo con cada entrega, incluyendo verificaciones y pendientes
 
 ## Base de datos y comprobaciones
 
-Migraciones `20261020000001` a `20261021000009` aplicadas al Supabase conectado, usando Management API sin mostrar claves. La 09 corrige la sincronización al iniciar una cita desde Agenda.
+Migraciones `20261020000001` a `20261021000011` aplicadas al Supabase conectado, usando Management API sin mostrar claves. La 09 corrige la sincronización al iniciar una cita desde Agenda; 10 y 11 actualizan nombres sin cambiar identificadores.
 
 - 59 pruebas Node aprobadas; TypeScript y lint aprobados; build de producción aprobado durante la entrega. Repetir tras cambios adicionales.
 - `node scripts/qa/booking-http-contract.mjs` ejecuta el handler compilado con HTTP simulado: formato de fecha PostgreSQL, token estable, reintentos concurrentes, correo idempotente, conflicto por cambiar datos y cuerpo JSON inválido. No crea datos ni envía correos reales. Un fallo transitorio de rename en Windows en la batería antigua de archivos pasó al repetir las 59 pruebas; backend demo sin cambios.
@@ -38,7 +49,7 @@ Migraciones `20261020000001` a `20261021000009` aplicadas al Supabase conectado,
 ## Continuar sin reconstruir
 
 1. Validar instalación Android/iOS, QR y sincronización con dos teléfonos físicos.
-2. Confirmar nombres, jornadas, fotos y políticas con el negocio; el dueño puede editar nombres/jornadas en el panel. No inventar estos datos.
+2. Confirmar jornadas, retratos y políticas con el negocio; los nombres ya están confirmados. El dueño puede editar nombres/jornadas en el panel. No inventar estos datos.
 3. Bold requiere cuenta/configuración y pruebas de webhook antes de activar cobros. Hoy las citas se confirman sin pagar.
 4. Revisión visual del panel en móvil y escritorio. Mejorar manteniendo el backend real y sus permisos.
 5. Respaldos y recuperación de base/Storage deben verificarse en la cuenta del proveedor. El limitador de formularios es por proceso; al escalar, añadir limitación en infraestructura.

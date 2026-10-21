@@ -2,7 +2,7 @@
   {
     "id": "portfolio-virgen-maria-0",
     "category": "tattoo",
-    "title": "Virgen Maria",
+    "title": "Virgen María",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/virgen-maria-img_3697.webp",
     "original": "/media/tattoos/organizado/virgen-maria-img_3697.webp",
@@ -14,7 +14,8 @@
       1152,
       1536
     ],
-    "capture": true
+    "capture": false,
+    "description": "Retrato de la Virgen con corona y manos en oración. Sombreado en negro y gris y detalles ornamentales en el antebrazo."
   },
   {
     "id": "portfolio-joker-0",
@@ -31,12 +32,13 @@
       1440,
       1920
     ],
-    "capture": true
+    "capture": false,
+    "description": "Retrato del Joker con una expresión intensa, sombras de alto contraste y lettering en la parte superior."
   },
   {
     "id": "portfolio-justicia-y-espada-0",
     "category": "tattoo",
-    "title": "Justicia y Espada",
+    "title": "Justicia y espada",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/justicia-y-espada-img_3700.webp",
     "original": "/media/tattoos/organizado/justicia-y-espada-img_3700.webp",
@@ -48,7 +50,8 @@
       1152,
       1536
     ],
-    "capture": true,
+    "capture": false,
+    "description": "Figura de la justicia con los ojos vendados, balanza y espada. Una composición de antebrazo trabajada en negro y gris.",
     "views": [
       {
         "id": "portfolio-justicia-y-espada-1",
@@ -65,14 +68,14 @@
           1170,
           2532
         ],
-        "capture": true
+        "capture": false
       }
     ]
   },
   {
     "id": "portfolio-angel-infantil-cuello-0",
     "category": "tattoo",
-    "title": "Angel Infantil Cuello",
+    "title": "Ángel infantil",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/angel-infantil-cuello-img_3705.webp",
     "original": "/media/tattoos/organizado/angel-infantil-cuello-img_3705.webp",
@@ -84,7 +87,8 @@
       1440,
       1920
     ],
-    "capture": true,
+    "capture": false,
+    "description": "Rostro infantil sobre el cuello, con rizos, luces suaves y sombras en negro y gris.",
     "videos": [
       "/media/tattoos/organizado/angel-infantil-cuello-img_4775.mp4"
     ]
@@ -92,7 +96,7 @@
   {
     "id": "portfolio-retrato-scarface-0",
     "category": "tattoo",
-    "title": "Retrato Scarface",
+    "title": "Retrato de Scarface",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/retrato-scarface-img_3709.webp",
     "original": "/media/tattoos/organizado/retrato-scarface-img_3709.webp",
@@ -104,12 +108,13 @@
       1152,
       1536
     ],
-    "capture": true
+    "capture": false,
+    "description": "Retrato de Tony Montana acompañado de lettering. Detalle en la expresión del rostro y sombreado en negro y gris."
   },
   {
     "id": "portfolio-guerrero-angelical-0",
     "category": "tattoo",
-    "title": "Guerrero Angelical",
+    "title": "Guerrero angelical",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/guerrero-angelical-img_3703.webp",
     "original": "/media/tattoos/organizado/guerrero-angelical-img_3703.webp",
@@ -121,12 +126,13 @@
       1152,
       1536
     ],
-    "capture": true
+    "capture": false,
+    "description": "Guerrero alado integrado en una composición ornamental, con líneas curvas y sombras profundas en el antebrazo."
   },
   {
     "id": "portfolio-manga-egipcia-anubis-y-ojo-0",
     "category": "tattoo",
-    "title": "Manga Egipcia Anubis y Ojo",
+    "title": "Manga egipcia · Anubis",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3716.webp",
     "original": "/media/tattoos/organizado/manga-egipcia-anubis-y-ojo-img_3716.webp",
@@ -138,7 +144,8 @@
       1152,
       1536
     ],
-    "capture": true,
+    "capture": false,
+    "description": "Composición de temática egipcia con Anubis y detalles en negro y gris. Las distintas vistas muestran el recorrido del diseño sobre el brazo.",
     "views": [
       {
         "id": "portfolio-manga-egipcia-anubis-y-ojo-1",
@@ -155,7 +162,7 @@
           1440,
           1920
         ],
-        "capture": true
+        "capture": false
       },
       {
         "id": "portfolio-manga-egipcia-anubis-y-ojo-2",
@@ -172,7 +179,7 @@
           1152,
           1536
         ],
-        "capture": true
+        "capture": false
       },
       {
         "id": "portfolio-manga-egipcia-anubis-y-ojo-3",
@@ -189,14 +196,14 @@
           1440,
           1920
         ],
-        "capture": true
+        "capture": false
       }
     ]
   },
   {
     "id": "portfolio-retrato-femenino-solo-video",
     "category": "tattoo",
-    "title": "Retrato Femenino",
+    "title": "Retrato femenino",
     "subtitle": "Jean Carlos · Video",
     "source": "/pwa/icons/elite-512.png",
     "sourceWidth": 512,
@@ -207,6 +214,8 @@
       512,
       512
     ],
+    "description": "Video del retrato femenino realizado por Jean Carlos, para apreciar el trabajo desde distintos ángulos.",
+    "capture": false,
     "videos": [
       "/media/tattoos/organizado/retrato-femenino-solo-video-img_4441.mp4"
     ]
@@ -214,7 +223,7 @@
   {
     "id": "portfolio-lettering-ornamental-0",
     "category": "tattoo",
-    "title": "Lettering Ornamental",
+    "title": "Lettering ornamental",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/lettering-ornamental-img_3701.webp",
     "original": "/media/tattoos/organizado/lettering-ornamental-img_3701.webp",
@@ -226,7 +235,8 @@
       1440,
       1920
     ],
-    "capture": true,
+    "capture": false,
+    "description": "Letras de gran formato acompañadas de trazos curvos y adornos caligráficos. Negro sólido y sombras que dan profundidad a la composición.",
     "videos": [
       "/media/tattoos/organizado/lettering-ornamental-img_7531.mp4"
     ]
@@ -234,7 +244,7 @@
   {
     "id": "portfolio-que-dios-me-perdone-0",
     "category": "tattoo",
-    "title": "Que Dios Me Perdone",
+    "title": "Que Dios me perdone",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/que-dios-me-perdone-img_3708.webp",
     "original": "/media/tattoos/organizado/que-dios-me-perdone-img_3708.webp",
@@ -246,7 +256,8 @@
       1152,
       1536
     ],
-    "capture": true
+    "capture": false,
+    "description": "Lettering de inspiración religiosa con manos en oración. Letras de distintos tamaños y sombreado en negro y gris."
   },
   {
     "id": "portfolio-ambitious-0",
@@ -263,7 +274,8 @@
       1152,
       1536
     ],
-    "capture": true
+    "capture": false,
+    "description": "Caligrafía fina con la palabra Ambitious y una corona. Trazos alargados y delicados sobre el pecho."
   },
   {
     "id": "portfolio-carpe-diem-0",
@@ -280,12 +292,13 @@
       1152,
       1536
     ],
-    "capture": true
+    "capture": false,
+    "description": "Lettering pequeño y discreto en el antebrazo, con escritura fina y una composición de trazo ligero."
   },
   {
     "id": "portfolio-sebastian-c-color-0",
     "category": "tattoo",
-    "title": "Sebastian C Color",
+    "title": "Sebastián C · Color",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/sebastian-c-color-img_3702.webp",
     "original": "/media/tattoos/organizado/sebastian-c-color-img_3702.webp",
@@ -297,7 +310,8 @@
       1440,
       1920
     ],
-    "capture": true
+    "capture": false,
+    "description": "Nombre en negro sobre un fondo de manchas de color, con un efecto visual de acuarela."
   },
   {
     "id": "portfolio-vegeta-0",
@@ -314,12 +328,13 @@
       1152,
       1536
     ],
-    "capture": true
+    "capture": false,
+    "description": "Personaje de Dragon Ball en una composición vertical sobre el brazo. Contornos definidos y sombras que resaltan el rostro y la armadura."
   },
   {
     "id": "portfolio-ojo-en-mano-0",
     "category": "tattoo",
-    "title": "Ojo en Mano",
+    "title": "Ojo en la mano",
     "subtitle": "Jean Carlos · Tatuaje",
     "source": "/media/tattoos/organizado/ojo-en-mano-img_3711.webp",
     "original": "/media/tattoos/organizado/ojo-en-mano-img_3711.webp",
@@ -331,7 +346,8 @@
       1152,
       1536
     ],
-    "capture": true,
+    "capture": false,
+    "description": "Ojo detallado dentro de una composición triangular y ornamental sobre el dorso de la mano, realizado en negro y gris.",
     "videos": [
       "/media/tattoos/organizado/ojo-en-mano-img_0508.mp4"
     ]
@@ -351,6 +367,7 @@
       1152,
       1536
     ],
-    "capture": true
+    "capture": false,
+    "description": "Silla mecedora de líneas finas, con detalles en el respaldo y los apoyos. Una pieza pequeña y delicada en el brazo."
   }
 ]

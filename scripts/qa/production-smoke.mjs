@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 const base = (process.argv[2] ?? "http://127.0.0.1:3011").replace(/\/$/, "");
 let passed = 0;
 async function check(path, status, options) {
@@ -12,7 +13,15 @@ async function check(path, status, options) {
   return r;
 }
 const release = await (await check("/release.json", 200)).json();
-assert.equal(release.release, "elite-supabase-20261021-1");
+assert.equal(
+  release.release,
+  JSON.parse(
+    await readFile(
+      new URL("../../public/release.json", import.meta.url),
+      "utf8",
+    ),
+  ).release,
+);
 const catalog = await (await check("/api/reservas/catalogo", 200)).json();
 assert.ok(catalog.services.length && catalog.barbers.length, "Catálogo vacío");
 const queue = await (await check("/api/fila", 200)).json();

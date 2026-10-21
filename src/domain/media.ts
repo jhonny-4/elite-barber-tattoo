@@ -6,6 +6,7 @@ export type PortfolioItem = {
   category: "barberia" | "tattoo";
   title: string;
   subtitle: string;
+  description?: string;
   source: string;
   sourceWidth: number;
   sourceHeight: number;

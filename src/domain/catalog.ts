@@ -19,10 +19,11 @@ export const services = [
     demoDurationMinutes: 45,
   },
 ] as const;
+// IDs históricos del motor local; slug corresponde al catálogo real de reservas.
 export const barbers = [
-  { id: "barbero-1", name: "Barbero 1" },
-  { id: "barbero-2", name: "Barbero 2" },
-  { id: "barbero-3", name: "Barbero 3" },
+  { id: "barbero-1", slug: "ivan", name: "Ivan" },
+  { id: "barbero-2", slug: "jean-carlos", name: "Jeancarlos" },
+  { id: "barbero-3", slug: "nelson", name: "Nelson" },
 ] as const;
 export const artist = {
   id: "jean-carlos",
