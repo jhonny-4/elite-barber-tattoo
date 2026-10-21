@@ -12,8 +12,8 @@ export const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination
 export const mapEmbedUrl = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
 
 // Contacto provisional autorizado por el usuario; enlaces externos sin automatización.
-export const whatsappUrl = "https://wa.me/573012329541";
-export const whatsappDisplay = "+57 301 232 9541";
+export const whatsappUrl = "https://wa.me/573016697908";
+export const whatsappDisplay = "+57 301 669 7908";
 export const instagramUrl = "https://www.instagram.com/elite_barber_tattoo/";
 export const instagramHandle = "@elite_barber_tattoo";
 export const artistInstagramUrl =

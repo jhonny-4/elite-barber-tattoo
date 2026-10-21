@@ -15,7 +15,7 @@ Este repositorio ya contiene el proyecto. No reconstruirlo desde cero.
 
 Elite Barber & Tattoo es un único local en Cartagena. @elite_barber_tattoo es la marca; @jeancarlostattoo19 es Jean Carlos, tatuador del mismo local. Conservar logos y fotos. No inventar equipo, experiencia, testimonios ni detalles de imágenes.
 
-Corte $20.000 y corte con barba $25.000 COP son provisionales. Barbero 1–3 y jornadas son de ejemplo. Los tatuajes requieren evaluación, sin confirmación automática. Dirección en `src/domain/business.ts`. WhatsApp provisional: +57 301 232 9541.
+Corte $20.000 y corte con barba $25.000 COP son provisionales. Barbero 1–3 y jornadas son de ejemplo. Los tatuajes requieren evaluación, sin confirmación automática. Dirección en `src/domain/business.ts`. WhatsApp oficial del negocio: +57 301 669 7908 (`src/domain/business.ts`).
 
 Next.js App Router, React, TypeScript, Tailwind y Three.js. Reglas en `src/domain/`; persistencia y comandos en `src/server/demo/`; contratos en `src/services/`. `useDemo` usa HTTP + SSE. Un proceso servidor guarda en `var/demo/state.json`, excluido de Git. El antiguo localStorage se conserva, pero no crea reservas V4.
 

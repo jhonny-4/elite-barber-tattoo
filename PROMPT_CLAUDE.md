@@ -16,7 +16,7 @@ Retoma este repositorio como desarrollador full stack senior y director de dise�
 - Un único local: Elite Barber & Tattoo, Cartagena. `@elite_barber_tattoo` es la marca. Jean Carlos es el tatuador y dueño, dentro del mismo establecimiento; su portafolio artístico es `@jeancarlostattoo19`.
 - Logo principal Elite geométrico y monograma JC gótico. Conservar su identidad; no sustituirlos por marcas inventadas. Reforzar la presencia de Elite a lo largo de toda la web.
 - Dirección facilitada: Cra. 59b #mz50-24, barrio Chiquinquirá, Cartagena de Indias, Bolívar. Centralizada en `src/domain/business.ts`.
-- WhatsApp temporal autorizado: `https://wa.me/573012329541`, número del usuario. Instagram de marca: `https://www.instagram.com/elite_barber_tattoo/`; artista: `https://www.instagram.com/jeancarlostattoo19/`. Son enlaces externos, sin automatización integrada.
+- WhatsApp oficial del negocio: `https://wa.me/573016697908` (+57 301 669 7908). Instagram de marca: `https://www.instagram.com/elite_barber_tattoo/`; artista: `https://www.instagram.com/jeancarlostattoo19/`. Son enlaces externos, sin automatización integrada.
 - Corte $20.000 COP; corte + barba $25.000 COP: precios provisionales. Barbero 1, 2 y 3 son nombres temporales. Horarios/duraciones actuales son ejemplos. Tatuajes se cotizan según evaluación del diseño, nunca con confirmación automática.
 - No inventar horarios reales, experiencia, estadísticas, reseñas, integrantes, precios adicionales, pagos o datos de contacto.
 - Fotos y logos actuales son referencias/capturas, reemplazables cuando lleguen originales. No prometer detalle 4K por reescalar ni generar modificaciones que falseen los cortes o tatuajes reales.

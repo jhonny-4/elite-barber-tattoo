@@ -1,23 +1,21 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Header } from "../../components/shell";
-import { OwnerGate } from "../../components/owner-gate";
+import { StaffPanel } from "../../components/auth/staff-panel";
+import { requireStaff } from "../../server/auth/staff";
 
 export const metadata: Metadata = {
   title: "Vista de barbero",
-  description:
-    "Agenda y fila de cada profesional de Elite Barber & Tattoo para la tablet del puesto. Acceso simulado con datos ficticios.",
+  description: "Agenda y fila de cada profesional de Elite Barber & Tattoo.",
   robots: { index: false, follow: false },
 };
 
-export default function BarberPage() {
+export default async function BarberPage() {
+  await requireStaff("/barbero");
   return (
     <>
       <Header />
       <main id="main" className="adm-page">
-        <Suspense fallback={<p className="loading-state">Preparando jornada…</p>}>
-          <OwnerGate professionalView />
-        </Suspense>
+        <StaffPanel barberView />
       </main>
     </>
   );

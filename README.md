@@ -36,7 +36,7 @@ La instalación PWA requiere localhost o HTTPS. La web por IP local funciona sin
 | `/barbero` | Agenda y atención filtradas por profesional |
 | `/offline` | Estado sin conexión |
 
-Para revisar la gestión, pulsar **Iniciar sesión**, completar los datos públicos de prueba (`jean@elite.demo` / `EliteDemo2026!`) y entrar. El formulario incluye logo 3D y validación; el acceso sigue siendo simulado. La autenticación y los permisos reales están pendientes; usar solo datos ficticios.
+El equipo entra por `/ingresar` con cuentas reales de Supabase Auth (dueño y barberos, solo por invitación). Crear cuentas: `node --env-file=.env.local scripts/crear-cuenta.mjs dueno|barbero <correo> [slug]`. Base local: `npm run db:start`, `npm run db:test`.
 
 ## Qué funciona y qué se simula
 
