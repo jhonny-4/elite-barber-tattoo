@@ -14,6 +14,29 @@ import { aspectOf, maxWidthOf, pad2, prefersReducedMotion } from "./shared";
 
 const LIGHTBOX_SIZES = "(max-width: 760px) 94vw, 760px";
 const CLOSE_MS = 220;
+/** Vuelo tarjeta → visor (FLIP) y regreso. */
+const FLIP_OPEN_MS = 460;
+const FLIP_CLOSE_MS = 340;
+const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
+const EASE_IN_OUT = "cubic-bezier(0.77, 0, 0.175, 1)";
+
+/** Transformación que lleva la caja `to` a la caja `from` (para animar desde/hacia ella). */
+function flipTransform(from: DOMRect, to: DOMRect) {
+  const dx = from.left - to.left;
+  const dy = from.top - to.top;
+  return `translate3d(${dx}px, ${dy}px, 0) scale(${from.width / to.width}, ${from.height / to.height})`;
+}
+
+/** Visible en pantalla y con tamaño: solo entonces tiene sentido volar hacia ella. */
+function onScreen(rect: DOMRect | undefined): rect is DOMRect {
+  return (
+    !!rect &&
+    rect.width > 0 &&
+    rect.height > 0 &&
+    rect.bottom > 0 &&
+    rect.top < window.innerHeight
+  );
+}
 const SWIPE_PX = 56;
 const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -37,6 +60,7 @@ export function Lightbox({
   initialAngle = 0,
   onNavigate,
   onClosed,
+  origin,
 }: {
   items: PortfolioItem[];
   activeId: string | null;
@@ -44,6 +68,8 @@ export function Lightbox({
   onNavigate: (id: string) => void;
   /** Se llama al cerrarse, con el id de la última imagen vista. */
   onClosed: (lastId: string) => void;
+  /** Miniatura de la que sale (y a la que vuelve) la foto: transición FLIP. */
+  origin?: (id: string) => HTMLElement | null;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const figureRef = useRef<HTMLDivElement>(null);
@@ -68,6 +94,12 @@ export function Lightbox({
   const total = items.length;
   const open = item !== null;
 
+  // Valores vigentes para el efecto de apertura (que solo depende de `open`).
+  const latest = useRef({ activeId, origin });
+  useEffect(() => {
+    latest.current = { activeId, origin };
+  });
+
   // Abrir como modal y bloquear el scroll del fondo mientras está abierto.
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -82,6 +114,31 @@ export function Lightbox({
     if (root.scrollHeight > root.clientHeight)
       root.style.scrollbarGutter = "stable";
     root.style.overflow = "hidden";
+    // FLIP: la foto sale de su tarjeta y crece hasta el visor.
+    const source = latest.current.activeId && latest.current.origin
+      ? latest.current.origin(latest.current.activeId)?.getBoundingClientRect()
+      : undefined;
+    const frame = figureRef.current?.querySelector<HTMLElement>(".lightbox-frame");
+    if (frame && onScreen(source) && !prefersReducedMotion()) {
+      // Primero se apagan las entradas CSS del visor para medir la caja final real.
+      dialog.dataset.flip = "";
+      const target = frame.getBoundingClientRect();
+      if (!target.width) delete dialog.dataset.flip;
+      else {
+        frame
+          .animate(
+            [
+              { transformOrigin: "0 0", transform: flipTransform(source, target) },
+              { transformOrigin: "0 0", transform: "none" },
+            ],
+            { duration: FLIP_OPEN_MS, easing: EASE_OUT },
+          )
+          .finished.then(
+            () => delete dialog.dataset.flip,
+            () => delete dialog.dataset.flip,
+          );
+      }
+    }
     return () => {
       window.clearTimeout(closeTimer.current);
       root.style.overflow = previous.overflow;
@@ -130,15 +187,36 @@ export function Lightbox({
       dialog.close();
       return;
     }
+    // Regreso FLIP a la tarjeta de la foto visible, si está en pantalla.
+    const card = activeId && origin ? origin(activeId)?.getBoundingClientRect() : undefined;
+    const frame = figureRef.current?.querySelector<HTMLElement>(".lightbox-frame");
+    if (frame && onScreen(card)) {
+      dialog.dataset.flipClosing = "";
+      frame.animate(
+        [
+          { transformOrigin: "0 0", transform: "none" },
+          { transformOrigin: "0 0", transform: flipTransform(card, frame.getBoundingClientRect()) },
+        ],
+        { duration: FLIP_CLOSE_MS, easing: EASE_IN_OUT, fill: "forwards" },
+      );
+      closeTimer.current = window.setTimeout(() => {
+        if (dialog.open) dialog.close();
+      }, FLIP_CLOSE_MS);
+      return;
+    }
     dialog.dataset.closing = "";
     closeTimer.current = window.setTimeout(() => {
       if (dialog.open) dialog.close();
     }, CLOSE_MS);
-  }, []);
+  }, [activeId, origin]);
 
   function handleClose() {
     const dialog = dialogRef.current;
-    if (dialog) delete dialog.dataset.closing;
+    if (dialog) {
+      delete dialog.dataset.closing;
+      delete dialog.dataset.flip;
+      delete dialog.dataset.flipClosing;
+    }
     window.clearTimeout(closeTimer.current);
     setDirection("none");
     setAngleState({ work: null, value: 0 });

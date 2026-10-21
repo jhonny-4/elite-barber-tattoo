@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArtistMonogram } from "../artist-monogram";
 import { BrandGlyph } from "../brand/logos";
 import { Icon } from "../icons";
+import { InkSmoke } from "../motion/ink-smoke";
 import {
   artistInstagramHandle,
   artistInstagramUrl,
@@ -19,6 +20,7 @@ export function HomeArtist() {
 
       <div className="home-artist-stage" data-artist-stage>
         <span className="home-artist-glow" aria-hidden="true" />
+        <InkSmoke />
         <span className="home-marks home-artist-marks" aria-hidden="true" />
         <ArtistMonogram />
       </div>

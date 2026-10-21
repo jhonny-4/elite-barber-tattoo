@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
+const MAX_REPEATS = 3;
+
 /** Audio local: el navegador exige un primer clic en la pantalla del televisor. */
 export function CallSound({ tickets }: { tickets: { number: string; barber: string }[] | null }) {
   const context = useRef<AudioContext | null>(null);
@@ -90,8 +92,12 @@ export function CallSound({ tickets }: { tickets: { number: string; barber: stri
     const calls = JSON.parse(signature) as { number: string; barber: string }[];
     if (!calls.length) { stopVoice(); return; }
     let delayed: ReturnType<typeof setTimeout> | null = null;
+    // Re-llamado acotado: tras el aviso inicial, máximo 3 repeticiones por llamado.
+    let repeats = 0;
     const repeat = setInterval(() => {
+      if (repeats >= MAX_REPEATS) { clearInterval(repeat); return; }
       if (!context.current || context.current.state !== "running" || window.speechSynthesis.speaking || speechTimer.current) return;
+      repeats += 1;
       chime(context.current);
       delayed = setTimeout(() => {
         delayed = null;
@@ -125,7 +131,7 @@ export function CallSound({ tickets }: { tickets: { number: string; barber: stri
       setError("");
       if (checked) speak("Avisos de voz activados.");
       else stopVoice();
-    }} /> Voz · repetir cada 5 segundos</label>
+    }} /> Voz · repite hasta 3 veces</label>
     {error && <span role="status">{error}</span>}
   </div>;
 }

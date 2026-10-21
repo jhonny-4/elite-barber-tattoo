@@ -48,8 +48,9 @@ export function HomeMotion() {
             if (!motion) return;
             heroExit(gsap, wide);
             marquee(gsap, ScrollTrigger);
-            headings(gsap, SplitText);
+            headings(gsap, SplitText, wide);
             reveals(gsap, ScrollTrigger);
+            if (wide) veils(gsap, ScrollTrigger);
             manifesto(gsap);
             depth(gsap, wide);
           },
@@ -152,8 +153,16 @@ function marquee(gsap: Gsap, ScrollTrigger: ScrollTriggerStatic) {
   if (!trigger.isActive) loops.forEach((loop) => loop.pause());
 }
 
-/** Títulos: líneas que se levantan en 3D; el resto del bloque sube en cascada. */
-function headings(gsap: Gsap, SplitText: SplitTextStatic) {
+/** Máscara diagonal: cerrada (todo a la izquierda) y abierta (cubre la línea con holgura). */
+const DIAGONAL_CLOSED = "polygon(0% -30%, 0% -30%, -30% 130%, -30% 130%)";
+const DIAGONAL_OPEN = "polygon(0% -30%, 130% -30%, 100% 130%, -30% 130%)";
+
+/**
+ * Títulos: en escritorio cada línea se descubre con una máscara diagonal mientras sube;
+ * en móvil, la versión ligera (líneas que se levantan en 3D). El resto del bloque sube
+ * en cascada.
+ */
+function headings(gsap: Gsap, SplitText: SplitTextStatic, wide: boolean) {
   all("[data-anim='heading']").forEach((block) => {
     if (!pending(block)) return;
     const parts = Array.from(block.children).filter(
@@ -175,7 +184,25 @@ function headings(gsap: Gsap, SplitText: SplitTextStatic) {
       linesClass: "home-split-line",
       autoSplit: true,
       onSplit: (split) =>
-        // rotateX positivo: la línea se aleja (nunca se amplía ni desborda en móvil).
+        wide
+          ? gsap.fromTo(
+              split.lines,
+              { clipPath: DIAGONAL_CLOSED, yPercent: 38, opacity: 0.001 },
+              {
+                clipPath: DIAGONAL_OPEN,
+                yPercent: 0,
+                opacity: 1,
+                duration: 1.1,
+                ease: "expo.out",
+                stagger: 0.13,
+                scrollTrigger: { trigger: title, start: "clamp(top 88%)", once: true },
+                onComplete: () => {
+                  split.kill();
+                  split.revert();
+                },
+              },
+            )
+          : // rotateX positivo: la línea se aleja (nunca se amplía ni desborda en móvil).
         gsap.from(split.lines, {
           opacity: 0,
           yPercent: 65,
@@ -229,6 +256,37 @@ function reveals(gsap: Gsap, ScrollTrigger: ScrollTriggerStatic) {
   }
 }
 
+/**
+ * Velo que se descorre sobre las fotos de trabajos (solo escritorio): la imagen se
+ * descubre con un recorte que avanza en diagonal y se asienta desde una leve ampliación.
+ * Solo clip-path y transform; al terminar se limpian los estilos en línea.
+ */
+function veils(gsap: Gsap, ScrollTrigger: ScrollTriggerStatic) {
+  const targets = all(
+    ".home-shop-photo .photo, .gallery-section[data-variant='home'] .gallery-frame .photo",
+  ).filter(pending);
+  if (!targets.length) return;
+  gsap.set(targets, {
+    clipPath: "polygon(100% 0%, 100% 0%, 100% 100%, 115% 100%)",
+    scale: 1.14,
+    transformOrigin: "50% 50%",
+  });
+  ScrollTrigger.batch(targets, {
+    start: "clamp(top 90%)",
+    once: true,
+    onEnter: (batch) =>
+      gsap.to(batch, {
+        clipPath: "polygon(-15% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        scale: 1,
+        duration: 1.25,
+        ease: "expo.inOut",
+        stagger: 0.12,
+        overwrite: true,
+        clearProps: "clipPath,transform,transformOrigin",
+      }),
+  });
+}
+
 /** El manifiesto se ilumina palabra a palabra al avanzar (scrub). */
 function manifesto(gsap: Gsap) {
   const paragraph = document.querySelector<HTMLElement>("[data-lit]");
@@ -265,6 +323,27 @@ function depth(gsap: Gsap, wide: boolean) {
       },
     );
   });
+
+  // Marcas de agua de cada sección: capa lenta detrás del contenido (solo escritorio).
+  // Se usa `translate` para no pisar su animación CSS de ambiente (que usa transform).
+  if (wide)
+    all(".home-page > .section > .elite-section-watermark").forEach((mark, i) => {
+      const travel = 34 + (i % 3) * 12; // Cabe en el margen (inset 8 %) de la sección.
+      gsap.fromTo(
+        mark,
+        { translate: `0px ${-travel}px` },
+        {
+          translate: `0px ${travel}px`,
+          ease: "none",
+          scrollTrigger: {
+            trigger: mark.parentElement,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8,
+          },
+        },
+      );
+    });
 
   const ghost = document.querySelector<HTMLElement>("[data-ghost]");
   if (ghost)

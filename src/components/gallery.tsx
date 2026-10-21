@@ -1,5 +1,6 @@
 "use client";
 import {
+  useCallback,
   useEffect,
   useId,
   useLayoutEffect,
@@ -222,6 +223,13 @@ export function Gallery({
     setExpanded(false);
     setFilter(next);
   }
+
+  /** Marco de la foto en su tarjeta: origen y destino del vuelo del visor. */
+  const frameOf = useCallback(
+    (itemId: string) =>
+      cards.current.get(itemId)?.querySelector<HTMLElement>(".gallery-frame") ?? null,
+    [],
+  );
 
   function tilt(event: ReactPointerEvent<HTMLButtonElement>) {
     if (!tiltEnabled.current || event.pointerType !== "mouse") return;
@@ -492,6 +500,7 @@ export function Gallery({
         activeId={activeId}
         initialAngle={activeId ? (angles[activeId] ?? 0) : 0}
         onNavigate={setActiveId}
+        origin={frameOf}
         onClosed={(lastId) => {
           setActiveId(null);
           // Devuelve el foco a la tarjeta de la última imagen vista.

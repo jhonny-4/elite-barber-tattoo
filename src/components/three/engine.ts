@@ -125,7 +125,9 @@ export function mountSculpture(
   let announced = false;
   let frame = 0;
   let last = 0;
-  let clock = 0;
+  // Si la intro ya armó el logo (BrandIntro marca el escenario del hero), esta pieza
+  // arranca asentada: el logo "aterriza" en su sitio sin repetir la entrada.
+  let clock = host.closest("[data-intro-handoff]") ? introEnd + 2.4 : 0;
   let width = 0;
   let height = 0;
   let scroll = 0;

@@ -1,27 +1,27 @@
 "use client";
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { usePublicQueue } from "../../lib/use-public-queue";
+import type { PublicTicket } from "../../services/contracts/demo";
 import { Brand } from "../media";
 import { Icon } from "../icons";
 import { CallSound } from "./call-sound";
 import { defaultQueueUrl, readQueueUrl, useQrImage, validQueueUrl } from "./qr";
+import { useFullscreen, useIdle, useOledShift, useWakeLock } from "./tv-hooks";
+import { TvShowcase, type ShowcaseService } from "./tv-showcase";
+import "../../styles/areas/tv.css";
 
 const ZONE = "America/Bogota";
-const timeFormat = new Intl.DateTimeFormat("es-CO", {
-  timeZone: ZONE,
-  hour: "numeric",
-  minute: "2-digit",
-  hour12: true,
-});
-const dateFormat = new Intl.DateTimeFormat("es-CO", {
-  timeZone: ZONE,
-  weekday: "long",
-  day: "numeric",
-  month: "long",
-});
+const timeFormat = new Intl.DateTimeFormat("es-CO", { timeZone: ZONE, hour: "numeric", minute: "2-digit", hour12: true });
+const dateFormat = new Intl.DateTimeFormat("es-CO", { timeZone: ZONE, weekday: "long", day: "numeric", month: "long" });
 
-/** Reloj del local (hora de Cartagena). Se pinta solo en el cliente. */
+/** Acentos sobrios por barbero, según su orden en el catálogo. */
+const BARBER_COLORS = ["#7aa7d1", "#d0ab6c", "#86b79b", "#b58fcf"];
+const CALL_MS = 5000;
+const IDLE_MS = 60_000;
+const DEMO_IDLE_MS = 8_000;
+
+type Barber = { id: string; display_name: string };
+
 function MonitorClock() {
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
@@ -30,68 +30,26 @@ function MonitorClock() {
     const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
   }, []);
-  if (now === null)
-    return (
-      <div className="monitor-clock" aria-hidden="true">
-        <span className="monitor-time">--:--</span>
-        <span className="monitor-date">&nbsp;</span>
-      </div>
-    );
+  if (now === null) return <div className="tv-clock" aria-hidden="true"><span className="tv-time">--:--</span></div>;
   const parts = timeFormat.formatToParts(now);
   const time = parts
-    .filter(
-      (p) =>
-        p.type === "hour" ||
-        p.type === "minute" ||
-        (p.type === "literal" && p.value.trim() === ":"),
-    )
+    .filter((p) => p.type === "hour" || p.type === "minute" || (p.type === "literal" && p.value.trim() === ":"))
     .map((p) => p.value)
     .join("");
   const period = parts.find((p) => p.type === "dayPeriod")?.value ?? "";
   return (
-    <div className="monitor-clock">
-      <time className="monitor-time" dateTime={new Date(now).toISOString()}>
+    <div className="tv-clock">
+      <time className="tv-time" dateTime={new Date(now).toISOString()}>
         {time}
-        {period && <small>{period}</small>}
+        <small>{period}</small>
       </time>
-      <span className="monitor-date">{dateFormat.format(now)}</span>
+      <span className="tv-date">{dateFormat.format(now)}</span>
     </div>
   );
 }
 
-/** Pantalla completa para TV o tablet, si el navegador lo permite. */
-function FullscreenToggle() {
-  const [supported, setSupported] = useState(false),
-    [active, setActive] = useState(false);
-  useEffect(() => {
-    setSupported(Boolean(document.fullscreenEnabled));
-    const sync = () => setActive(Boolean(document.fullscreenElement));
-    sync();
-    document.addEventListener("fullscreenchange", sync);
-    return () => document.removeEventListener("fullscreenchange", sync);
-  }, []);
-  if (!supported) return null;
-  return (
-    <button
-      type="button"
-      className="icon-button monitor-fullscreen"
-      aria-label="Pantalla completa"
-      aria-pressed={active}
-      title={active ? "Salir de pantalla completa" : "Pantalla completa"}
-      onClick={() => {
-        const request = document.fullscreenElement
-          ? document.exitFullscreen()
-          : document.documentElement.requestFullscreen();
-        request.catch(() => {});
-      }}
-    >
-      <Icon name={active ? "collapse" : "expand"} />
-    </button>
-  );
-}
-
-/** QR para tomar turno: usa el enlace fijado en la tarjeta QR de este navegador. */
-function MonitorJoin() {
+/** QR permanente para tomar turno o reservar. */
+function TvJoin({ floating = false }: { floating?: boolean }) {
   const [url, setUrl] = useState("");
   useEffect(() => {
     const pick = () => {
@@ -102,202 +60,238 @@ function MonitorJoin() {
     window.addEventListener("storage", pick);
     return () => window.removeEventListener("storage", pick);
   }, []);
-  const { image } = useQrImage(url, 240);
+  const { image } = useQrImage(url, 480);
   return (
-    <div className="monitor-join">
-      <div className="monitor-qr">
-        {image && (
-          <img
-            src={image}
-            width={120}
-            height={120}
-            alt="Código QR para tomar turno en Elite Barber & Tattoo"
-          />
-        )}
+    <aside className={`tv-join${floating ? " tv-join-floating" : ""}`} aria-label="Toma tu turno o reserva aquí">
+      <div className="tv-qr">
+        {image && <img src={image} width={240} height={240} alt="Código QR para tomar turno o reservar en Elite Barber & Tattoo" />}
       </div>
-      <p className="monitor-join-copy">
-        <b>Reserva tu corte</b>
-        <span>Escanea el código con tu celular</span>
+      <p>
+        <b>Toma tu turno</b>
+        <span>Reserva aquí</span>
       </p>
+    </aside>
+  );
+}
+
+const colorOf = (order: string[], barber: string) => BARBER_COLORS[Math.max(0, order.indexOf(barber)) % BARBER_COLORS.length];
+const waitLabel = (t: PublicTicket) =>
+  t.estimatedMinutes === null ? null : t.estimatedMinutes <= 0 ? "Ahora" : `≈ ${t.estimatedMinutes} min`;
+const ticketKey = (t: PublicTicket) => `${t.number}:${t.status}:${t.barber}`;
+
+function CallOverlay({ ticket, color }: { ticket: PublicTicket; color: string }) {
+  return (
+    <div className="tv-callfx" role="alert" aria-label={`Turno ${ticket.number}, pasar con ${ticket.barber}`} style={{ "--barber": color } as CSSProperties}>
+      <div className="tv-callfx-flash" aria-hidden="true" />
+      <div className="tv-callfx-card">
+        <p className="tv-kicker">Llamando</p>
+        <strong className="tv-callfx-number">{ticket.number}</strong>
+        <p className="tv-callfx-barber">
+          Pasar con <b>{ticket.barber}</b>
+        </p>
+        <p className="tv-callfx-service">{ticket.service}</p>
+      </div>
     </div>
   );
 }
 
-/** Evita que la tablet o la TV apaguen la pantalla mientras el monitor está visible. */
-function useScreenAwake() {
-  useEffect(() => {
-    if (!("wakeLock" in navigator)) return;
-    let lock: WakeLockSentinel | null = null,
-      alive = true;
-    const request = () => {
-      if (!alive || document.visibilityState !== "visible") return;
-      navigator.wakeLock
-        .request("screen")
-        .then((sentinel) => {
-          if (alive) lock = sentinel;
-          else void sentinel.release();
-        })
-        .catch(() => {});
-    };
-    request();
-    document.addEventListener("visibilitychange", request);
-    return () => {
-      alive = false;
-      document.removeEventListener("visibilitychange", request);
-      void lock?.release().catch(() => {});
-    };
-  }, []);
-}
-
 export function QueueMonitor() {
   const { queue, error, online } = usePublicQueue();
-  useScreenAwake();
-  const called = queue?.called ?? [],
-    serving = queue?.serving ?? [],
-    next = queue?.next ?? [],
-    waiting = queue?.waiting ?? 0,
-    more = Math.max(0, waiting - next.length);
+  const { supported, active, enter } = useFullscreen();
+  const shift = useRef<HTMLDivElement>(null);
+  useWakeLock();
+  useOledShift(shift);
+
+  const [barbers, setBarbers] = useState<Barber[]>([]);
+  const [services, setServices] = useState<ShowcaseService[]>([]);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/reservas/catalogo", { signal: controller.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data) return;
+        setBarbers(data.barbers ?? []);
+        setServices(data.services ?? []);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
+
+  const called = useMemo(() => queue?.called ?? [], [queue]);
+  const serving = useMemo(() => queue?.serving ?? [], [queue]);
+  const next = useMemo(() => queue?.next ?? [], [queue]);
+  const waiting = queue?.waiting ?? 0;
+
+  // Orden estable de barberos: catálogo y, si falta alguno, los nombres vistos en la fila.
+  const order = useMemo(() => {
+    const names = barbers.map((b) => b.display_name);
+    for (const t of [...called, ...serving, ...next]) if (!names.includes(t.barber)) names.push(t.barber);
+    return names;
+  }, [barbers, called, serving, next]);
+
+  // Animación de llamado: solo para números que aparecen después de la primera carga.
+  const seen = useRef<Set<string> | null>(null);
+  const [announce, setAnnounce] = useState<PublicTicket[]>([]);
+  useEffect(() => {
+    if (!queue) return;
+    const fresh = called.filter((t) => !seen.current?.has(t.number));
+    const first = seen.current === null;
+    seen.current = new Set(called.map((t) => t.number));
+    if (!first && fresh.length) setAnnounce((list) => [...list, ...fresh]);
+  }, [queue, called]);
+  const showing = announce[0];
+  useEffect(() => {
+    if (!showing) return;
+    const timer = setTimeout(() => setAnnounce((list) => list.slice(1)), CALL_MS);
+    return () => clearTimeout(timer);
+  }, [showing]);
+
+  // Modo vitrina tras 60 s sin cambios y sin turnos llamados.
+  const [demo, setDemo] = useState(false);
+  useEffect(() => {
+    // ?demoVitrina=1 acorta los tiempos para probar; solo fuera de producción.
+    setDemo(process.env.NODE_ENV !== "production" && new URLSearchParams(window.location.search).has("demoVitrina"));
+  }, []);
+  const signature = useMemo(() => [...called, ...serving, ...next].map(ticketKey).join("|"), [called, serving, next]);
+  const { idle, wake } = useIdle(signature, called.length > 0 || announce.length > 0 || !queue, demo ? DEMO_IDLE_MS : IDLE_MS);
+
+  const hero: { ticket: PublicTicket; label: string } | null = called[0]
+    ? { ticket: called[0], label: "Llamando" }
+    : serving[0]
+      ? { ticket: serving[0], label: "En atención" }
+      : next[0]
+        ? { ticket: next[0], label: "Siguiente turno" }
+        : null;
+  const heroColor = hero ? colorOf(order, hero.ticket.barber) : "var(--steel-300)";
   const pending = queue ? null : error ? "Sin datos por ahora." : "Cargando…";
-  const alert = !online && Boolean(queue || error);
+  const reconnecting = !online && Boolean(queue || error);
+
   return (
-    <main
-      id="main"
-      className="queue-monitor"
-      data-state={queue ? "ready" : "loading"}
-    >
-      <header className="monitor-head">
-        <div className="monitor-brand monitor-banner">
-          <div className="monitor-banner-face">
-            <Brand className="monitor-logo" />
-            <span className="monitor-banner-copy">TU ESTILO.<small>TU FIRMA.</small></span>
+    <main id="main" className="tv" data-state={queue ? "ready" : "loading"} data-called={called.length > 0 || undefined}>
+      <div className="tv-shift" ref={shift}>
+        <header className="tv-head">
+          <div className="tv-brand">
+            <Brand className="tv-logo" />
+            <p>
+              <b>Turnos en vivo</b>
+              <span>Barbería &amp; tatuaje · Cartagena</span>
+            </p>
           </div>
-        </div>
-        <div className="monitor-title">
-          <p className="eyebrow">Barbería &amp; tatuaje · Cartagena</p>
-          <h1>
-            Turnos <span className="serif">en vivo</span>
-          </h1>
-        </div>
-        <div className="monitor-meta">
-          <div className="monitor-clock-block">
+          <div className="tv-meta">
+            {reconnecting && (
+              <p className="tv-reconnect" role="status">
+                <span aria-hidden="true" />
+                Reconectando…
+              </p>
+            )}
             <MonitorClock />
-            <p
-              className="monitor-connection"
-              role="status"
-              data-online={online || undefined}
-              data-alert={alert || undefined}
-            >
-              <span className="monitor-connection-dot" aria-hidden="true" />
-              {online
-                ? "En línea"
-                : queue
-                  ? "Reconectando · datos sin actualizar"
-                  : error
-                    ? "Reconectando…"
-                    : "Conectando…"}
-            </p>
+            {supported && !active && (
+              <button type="button" className="tv-fullscreen" onClick={enter}>
+                <Icon name="expand" aria-hidden="true" />
+                Pantalla completa
+              </button>
+            )}
           </div>
-          <FullscreenToggle />
-        </div>
-      </header>
+        </header>
 
-      <div className="monitor-board">
-        <section
-          className="monitor-col monitor-called"
-          aria-labelledby="monitor-called-title"
-          data-count={Math.min(called.length, 4)}
-        >
-          <h2 id="monitor-called-title" className="monitor-col-title">
-            <span className="live-dot" aria-hidden="true" />
-            Llamando
-          </h2>
-          <div className="monitor-called-list" aria-live="polite">
-            {called.length ? (
-              called.map((t) => (
-                <article key={t.number} className="monitor-call">
-                  <strong className="monitor-number">{t.number}</strong>
-                  <p className="monitor-call-meta">
-                    <b>{t.barber}</b>
-                    <span>{t.service}</span>
+        <div className="tv-body">
+        <section className="tv-hero" data-status={hero?.ticket.status ?? "empty"} style={{ "--barber": heroColor } as CSSProperties} aria-live="polite">
+          <div className="tv-hero-main">
+            {hero ? (
+              <>
+                <p className="tv-kicker">
+                  <span className="tv-dot" aria-hidden="true" />
+                  {hero.label}
+                </p>
+                <strong className="tv-hero-number" key={hero.ticket.number}>{hero.ticket.number}</strong>
+                <p className="tv-hero-barber">
+                  <span aria-hidden="true" />
+                  {hero.ticket.barber}
+                </p>
+                <p className="tv-hero-service">{hero.ticket.service}</p>
+                {called.length > 1 && (
+                  <p className="tv-hero-more">
+                    También llamando:{" "}
+                    {called.slice(1).map((t) => (
+                      <b key={t.number} style={{ "--barber": colorOf(order, t.barber) } as CSSProperties}>
+                        {t.number} · {t.barber}
+                      </b>
+                    ))}
                   </p>
-                </article>
-              ))
-            ) : pending ? (
-              <p className="monitor-empty monitor-empty-called">{pending}</p>
+                )}
+              </>
             ) : (
-              <div className="monitor-empty monitor-empty-called">
-                <p className="monitor-empty-title">Atentos a la pantalla</p>
-                <p>El próximo número aparecerá aquí.</p>
-              </div>
+              <>
+                <p className="tv-kicker">{pending ?? "Fila libre"}</p>
+                <strong className="tv-hero-empty">{pending ? "" : "Sin espera"}</strong>
+                <p className="tv-hero-service">{pending ? "" : "Escanea el código y toma tu turno"}</p>
+              </>
             )}
           </div>
+          <TvJoin />
         </section>
 
-        <section
-          className="monitor-col monitor-serving"
-          aria-labelledby="monitor-serving-title"
-        >
-          <h2 id="monitor-serving-title" className="monitor-col-title">
-            En atención
-          </h2>
-          {serving.length ? (
-            <ul className="monitor-list">
-              {serving.map((t) => (
-                <li key={t.number} className="monitor-row">
-                  <strong className="monitor-row-number">{t.number}</strong>
-                  <span className="monitor-row-meta">
-                    <b>{t.barber}</b> · {t.service}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="monitor-empty">
-              {pending ?? "Sin atenciones en curso."}
-            </p>
-          )}
+        <section className="tv-barbers" aria-label="Turnos por profesional">
+          {order.map((name) => {
+            const color = colorOf(order, name);
+            const now = serving.find((t) => t.barber === name) ?? called.find((t) => t.barber === name);
+            const queued = next.filter((t) => t.barber === name);
+            const extraCalled = serving.some((t) => t.barber === name) ? called.find((t) => t.barber === name) : undefined;
+            return (
+              <article key={name} className="tv-barber" style={{ "--barber": color } as CSSProperties}>
+                <h2>
+                  <span aria-hidden="true" />
+                  {name}
+                </h2>
+                <div className="tv-now" data-status={now?.status ?? "free"}>
+                  <p className="tv-label">{now?.status === "llamado" ? "Llamando" : "Atendiendo ahora"}</p>
+                  {now ? (
+                    <p className="tv-now-body">
+                      <strong>{now.number}</strong>
+                      <span>{now.service}</span>
+                    </p>
+                  ) : (
+                    <p className="tv-free">Disponible</p>
+                  )}
+                  {extraCalled && <p className="tv-extra">Llamando: <b>{extraCalled.number}</b></p>}
+                </div>
+                <div className="tv-next">
+                  <p className="tv-label">Siguientes</p>
+                  {queued.length ? (
+                    <ol>
+                      {queued.slice(0, 3).map((t) => (
+                        <li key={t.number}>
+                          <strong>{t.number}</strong>
+                          <span>{t.service}</span>
+                          {waitLabel(t) && <em>{waitLabel(t)}</em>}
+                        </li>
+                      ))}
+                    </ol>
+                  ) : (
+                    <p className="tv-free">{pending ?? "Sin espera"}</p>
+                  )}
+                  {queued.length > 3 && <p className="tv-more">+{queued.length - 3} más</p>}
+                </div>
+              </article>
+            );
+          })}
+          {!order.length && <p className="tv-free">{pending ?? "Sin profesionales activos"}</p>}
         </section>
+        </div>
 
-        <section
-          className="monitor-col monitor-next"
-          aria-labelledby="monitor-next-title"
-        >
-          <h2 id="monitor-next-title" className="monitor-col-title">
-            Siguientes
-            {queue && (
-              <span className="monitor-count">
-                {waiting} en espera
-              </span>
-            )}
-          </h2>
-          {next.length ? (
-            <ol className="monitor-next-grid">
-              {next.map((t) => (
-                <li key={t.number}>
-                  <strong>{t.number}</strong>
-                  <span>{t.barber}</span>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="monitor-empty">{pending ?? "La fila está libre."}</p>
-          )}
-          {more > 0 && <p className="monitor-more">+{more} más en la fila</p>}
-        </section>
+        <footer className="tv-foot">
+          <CallSound tickets={queue ? called.map(({ number, barber }) => ({ number, barber })) : null} />
+          <p>{waiting} en espera · solo se muestran número, profesional y servicio</p>
+        </footer>
       </div>
 
-      <footer className="monitor-foot">
-        <CallSound tickets={queue ? called.map(({ number, barber }) => ({ number, barber })) : null} />
-        <MonitorJoin />
-        <p className="monitor-privacy">
-          <Icon name="lock" />
-          Solo se muestran número, profesional y servicio. Sin nombres ni
-          teléfonos.
-        </p>
-        <Link href="/reservar" className="button button-outline button-small monitor-join-link">
-          Elegir barbero y reservar <Icon name="ticket" />
-        </Link>
-      </footer>
+      {showing && <CallOverlay key={showing.number} ticket={showing} color={colorOf(order, showing.barber)} />}
+      {idle && !showing && (
+        <>
+          <TvShowcase services={services} onExit={wake} demo={demo} />
+          <TvJoin floating />
+        </>
+      )}
     </main>
   );
 }

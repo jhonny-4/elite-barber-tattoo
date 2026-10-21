@@ -74,7 +74,7 @@ export const JC_SPEC: SculptureSpec = {
   motion: {
     rest: { pitch: 0.06, yaw: 0 },
     // Giro muy lento de ida y vuelta: nunca muestra el dorso ni el canto.
-    sway: { yaw: 0.36, pitch: 0.035, period: 22 },
+    sway: { yaw: 0.4, pitch: 0.04, period: 17 },
     float: { amplitude: 0.012, period: 7.5 },
     pointer: { yaw: 0.2, pitch: 0.12 },
     scroll: null,

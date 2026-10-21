@@ -20,6 +20,8 @@ export function HomeHero() {
       <span className="elite-section-watermark" aria-hidden="true" />
       <div className="home-hero-backdrop" aria-hidden="true">
         <span className="home-hero-beam" />
+        {/* Polvo de luz en el foco: lo anima HeroDepth (solo escritorio y tableta). */}
+        <canvas className="home-hero-dust" data-hero-dust />
         <span className="home-hero-floor" data-hero-floor>
           <span className="home-hero-grid" />
         </span>

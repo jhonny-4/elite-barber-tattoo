@@ -63,3 +63,17 @@ Nunca versionar `.env*`, claves, tokens ni datos personales. `.env.example` solo
 - `CLAUDE.md` reescrito con el estado real de producción.
 - Galería por barbero: fotos (Supabase Storage, WebP) y videos (Cloudflare R2, bucket `elite-videos`, subida firmada directa y proxy con Range en `/api/media/video/...`). Aprobación del dueño en la pestaña Galería; el barbero sube desde "Mi galería"; botón "Ver trabajos" en /reservar. Variables `R2_*` en Hostinger. En desarrollo las claves usan prefijo `dev/`.
 - Videos de tatuajes existentes (4, 23,7 MB) quedan en `public/`; los nuevos van a R2.
+
+## Actualización 21/10/2026 — portada cinematográfica (sin commit)
+- Intro (`brand-intro.tsx`): armado 3D por piezas, barrido metálico, destello rojo #e11d2e y vuelo FLIP al logo del hero (que arranca asentado vía `data-intro-handoff`). ≤ 2 s desde el primer pintado, una vez por sesión (`elite:intro:v4`), saltable con botón, tecla, rueda o toque; un script previo en `layout.tsx` la oculta antes de pintar si ya se vio o hay movimiento reducido.
+- Hero: polvo de luz en canvas 2D (`motion/hero-depth.tsx`, 72/36/0 partículas según ancho, pausa fuera de pantalla y pestaña oculta) y paralaje de capas con el ratón usando `translate`.
+- Scroll (`motion/home-motion.tsx`): títulos con máscara diagonal por línea (≥ 900 px), velo diagonal en fotos de trabajos, marcas de agua con paralaje lento.
+- Visor: vuelo FLIP tarjeta ↔ visor (`gallery/lightbox.tsx`, prop `origin`).
+- Precios: odómetro (`motion/odometer.tsx`), valor real en texto oculto, sin desplazamiento de diseño.
+- Botones: brillo periódico por transform, imán ≤ 6 px (puntero fino) y onda al pulsar (`motion/button-fx.tsx`).
+- Cortina negra con logo entre `/`, `/reservar`, `/jean-carlos`, `/tatuaje` y `/turnos` (`motion/page-curtain.tsx`, ≈ 430 ms); nunca en paneles; atrás/adelante nativos.
+- JC: tinta/humo con turbulencia SVG estática animada solo por transform (`motion/ink-smoke.tsx`).
+- Estilos en `src/styles/cinematic.css`. Verificado: typecheck, lint, 85 pruebas, build; Playwright a 1440/1280/768/390 sin errores de consola ni desbordamiento; movimiento reducido estático. Pendiente: fluidez real en GPU física y móviles (headless usa SwiftShader).
+
+## 2026-10-21 · Pantalla de turnos (TV)
+- `/pantalla-turnos` rediseñada: turno actual gigante, columnas por barbero, espera estimada (`/api/fila` calcula `estimatedMinutes`), animación de llamado, voz repetida máx. 3 veces, modo vitrina con trabajos publicados (`GET /api/galeria` sin parámetro), QR fijo, Wake Lock y reconexión, desplazamiento anti-OLED. Guía de kiosco en `docs/PANTALLA_TV.md`.

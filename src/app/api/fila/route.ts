@@ -26,6 +26,22 @@ async function queueData() {
     .order("number");
   if (error) throw new Error("No se pudo cargar la fila.");
   const waiting = (data ?? []).filter((t) => t.status === "esperando");
+  // Espera estimada: lo que el mismo barbero tiene delante (en curso + en espera
+  // antes), con la duración del servicio de cada uno, redondeada a 5 min.
+  const minutesOf = (t: NonNullable<typeof data>[number]) =>
+    catalog.services.find((s) => s.id === t.service_id)?.duration_min ?? 45;
+  const estimate = (t: NonNullable<typeof data>[number]) => {
+    if (t.status !== "esperando") return null;
+    const ahead = (data ?? []).filter(
+      (o) =>
+        o.barber_id === t.barber_id &&
+        (o.status === "llamado" ||
+          o.status === "en_atencion" ||
+          (o.status === "esperando" && o.number < t.number)),
+    );
+    const total = ahead.reduce((sum, o) => sum + minutesOf(o), 0);
+    return Math.round(total / 5) * 5;
+  };
   const format = (t: NonNullable<typeof data>[number]): PublicTicket => ({
     number: String(t.number).padStart(3, "0"),
     status: t.status.replace(
@@ -41,7 +57,7 @@ async function queueData() {
       t.status === "esperando"
         ? waiting.findIndex((w) => w.id === t.id) + 1
         : null,
-    estimatedMinutes: null,
+    estimatedMinutes: estimate(t),
   });
   return { data: data ?? [], format, waiting };
 }
@@ -63,7 +79,8 @@ export async function GET(request: Request) {
         waiting: waiting.length,
         called: data.filter((t) => t.status === "llamado").map(format),
         serving: data.filter((t) => t.status === "en_atencion").map(format),
-        next: waiting.slice(0, 5).map(format),
+        // Hasta 30: el monitor reparte "siguientes" por barbero.
+        next: waiting.slice(0, 30).map(format),
         connection: "supabase",
       },
       { headers: noStore },

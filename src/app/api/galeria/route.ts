@@ -8,19 +8,20 @@ export const runtime = "nodejs";
 /** Trabajos publicados de un barbero. Público: el filtro `published` va en la consulta, nunca en el cliente. */
 export async function GET(request: Request) {
   try {
+    // Sin parámetro: todos los publicados de todos los barberos (pantalla del local).
     const slug = new URL(request.url).searchParams.get("barbero") ?? "";
-    if (!/^[a-z0-9-]{2,40}$/.test(slug)) throw new BookingError("Profesional inválido.");
     const db = adminClient();
-    const { data: barber } = await db.from("barbers").select("id").eq("slug", slug).maybeSingle();
-    if (!barber) throw new BookingError("Profesional no encontrado.", 404);
-    const { data, error } = await db
-      .from("media")
-      .select("*")
-      .eq("barber_id", barber.id)
-      .eq("published", true)
+    let query = db.from("media").select("*").not("barber_id", "is", null).eq("published", true);
+    if (slug) {
+      if (!/^[a-z0-9-]{2,40}$/.test(slug)) throw new BookingError("Profesional inválido.");
+      const { data: barber } = await db.from("barbers").select("id").eq("slug", slug).maybeSingle();
+      if (!barber) throw new BookingError("Profesional no encontrado.", 404);
+      query = query.eq("barber_id", barber.id);
+    }
+    const { data, error } = await query
       .order("sort_order")
       .order("created_at", { ascending: false })
-      .limit(60);
+      .limit(slug ? 60 : 80);
     if (error) throw new Error("No se pudo leer la galería.");
     const items = (await toViews(data)).map((v) => ({
       id: v.id, kind: v.kind, title: v.title, alt: v.alt, width: v.width, height: v.height, url: v.url, posterUrl: v.posterUrl,

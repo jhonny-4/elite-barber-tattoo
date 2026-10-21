@@ -13,6 +13,8 @@ import { HomeTeam } from "../components/home/team";
 import { HomeBookingInvite } from "../components/home/booking-invite";
 import { HomeMotion } from "../components/motion/home-motion";
 import { HoverTilt } from "../components/motion/hover-tilt";
+import { HeroDepth } from "../components/motion/hero-depth";
+import { ButtonFx } from "../components/motion/button-fx";
 
 export default function Home() {
   return (
@@ -36,6 +38,9 @@ export default function Home() {
       <Reveal />
       <HomeMotion />
       <HoverTilt />
+      {/* Profundidad del hero (polvo de luz y capas) y botones vivos. */}
+      <HeroDepth />
+      <ButtonFx />
     </>
   );
 }

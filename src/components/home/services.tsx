@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps } from "react";
 import { Icon } from "../icons";
+import { Odometer } from "../motion/odometer";
 import { currency, services } from "../../domain/catalog";
 
 type IconName = ComponentProps<typeof Icon>["name"];
@@ -57,7 +58,7 @@ function ServiceCard({
         <p className="home-service-text">{text}</p>
         <span className="home-service-price">
           <span className="home-service-amount">
-            {amount}
+            {/^\$/.test(amount) ? <Odometer value={amount} /> : amount}
             {unit ? <small>{unit}</small> : null}
           </span>
           <span className="home-service-note">{note}</span>

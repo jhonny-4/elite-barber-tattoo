@@ -1,0 +1,631 @@
+/* Capa cinematográfica de la portada y la navegación pública.
+   Solo transform/opacity (y clip-path o filtros puntuales). Todo tiene variante para
+   prefers-reduced-motion: reduce. Componentes: src/components/brand-intro.tsx y
+   src/components/motion/{hero-depth,odometer,button-fx,page-curtain,ink-smoke}.tsx. */
+
+:root {
+  --cine-red: #e11d2e;
+  --cine-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --cine-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* ================================================================== */
+/* 1. Intro de marca                                                   */
+/* ================================================================== */
+
+html[data-intro-seen] .elite-intro {
+  display: none;
+}
+
+.elite-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.elite-intro-veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, #2b2829 0%, #140a0d 36%, #050505 72%);
+  transition: opacity 440ms var(--cine-ease-out);
+}
+
+.elite-intro[data-leaving] .elite-intro-veil {
+  opacity: 0;
+}
+
+.elite-intro-flight {
+  position: relative;
+  will-change: transform, opacity;
+}
+
+/* Misma proporción que la escultura del hero: el vuelo es un escalado uniforme. */
+.elite-intro-stage {
+  position: relative;
+  width: min(88vw, 760px);
+  aspect-ratio: 4 / 3;
+  isolation: isolate;
+}
+
+@media (min-width: 768px) {
+  .elite-intro-stage {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.elite-intro-sculpture {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.elite-intro .sculpture__canvas {
+  transition-duration: 240ms;
+}
+
+.elite-intro .sculpture__fallback {
+  transition-duration: 200ms;
+}
+
+/* WebGL llegó tarde: se queda el vector para no saltar a mitad de la intro. */
+.elite-intro[data-late] .sculpture__canvas {
+  visibility: hidden;
+}
+
+.elite-intro[data-late] .sculpture__fallback {
+  opacity: 1;
+  transform: none;
+}
+
+.elite-intro-sculpture .sculpture__mark {
+  filter: drop-shadow(0 2px 0 #fff6) drop-shadow(0 18px 12px #000b);
+}
+
+/* Barrido metálico y destello rojo: recortados con la silueta del logo. */
+.elite-intro-glint,
+.elite-intro-flash::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask: url("/media/brand/elite-logo.svg") center / 85% auto no-repeat;
+  mask: url("/media/brand/elite-logo.svg") center / 85% auto no-repeat;
+}
+
+.elite-intro-glint {
+  overflow: hidden;
+}
+
+.elite-intro-glint::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgb(255 255 255 / 0.15) 30%,
+    rgb(255 255 255 / 0.9) 50%,
+    rgb(255 255 255 / 0.15) 70%,
+    transparent 100%
+  );
+  transform: translate3d(-110%, 0, 0);
+}
+
+.elite-intro-flash {
+  position: absolute;
+  inset: -18% 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(225 29 46 / 0.55), rgb(225 29 46 / 0.16) 48%, transparent 72%);
+  opacity: 0;
+}
+
+.elite-intro-flash::after {
+  content: "";
+  inset: 18% 0;
+  background: linear-gradient(180deg, transparent 10%, rgb(225 29 46 / 0.7) 55%, transparent 95%);
+  mix-blend-mode: screen;
+}
+
+.elite-intro-floor {
+  position: absolute;
+  z-index: -1;
+  bottom: 6%;
+  left: 15%;
+  width: 70%;
+  height: 18%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #ffffff18, rgb(225 29 46 / 0.08) 40%, transparent 70%);
+  transform: rotateX(55deg);
+}
+
+.elite-intro-spot {
+  position: absolute;
+  top: -30vh;
+  width: 55vw;
+  height: 70vh;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #ffffff30, transparent 65%);
+  opacity: 0.4;
+}
+
+.elite-intro-spot-left {
+  left: -10vw;
+  transform: rotate(-25deg);
+}
+
+.elite-intro-spot-right {
+  right: -10vw;
+  transform: rotate(25deg);
+  background: radial-gradient(ellipse, rgb(225 29 46 / 0.2), transparent 65%);
+}
+
+.elite-intro-orbit {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  width: min(88vw, 780px);
+  aspect-ratio: 1;
+  border: 1px solid rgb(225 29 46 / 0.3);
+  border-radius: 50%;
+  box-shadow: 0 0 40px rgb(225 29 46 / 0.12), inset 0 0 30px #ffffff10;
+  opacity: 0.4;
+  transform: translate(-50%, -50%) rotateX(66deg);
+}
+
+.elite-intro-caption {
+  position: relative;
+  margin-top: 6px;
+  color: #e6e1e2;
+  font-size: clamp(0.6rem, 1.1vw, 0.75rem);
+  letter-spacing: 0.25em;
+  text-align: center;
+  text-shadow: 0 0 15px #ffffff45;
+}
+
+.elite-intro-progress {
+  position: relative;
+  width: min(55vw, 230px);
+  height: 2px;
+  margin-top: 10px;
+  background: linear-gradient(90deg, var(--cine-red), #fff);
+  box-shadow: 0 0 12px rgb(225 29 46 / 0.5);
+  transform-origin: left;
+}
+
+.elite-intro-caption,
+.elite-intro-progress {
+  transition: opacity 260ms var(--cine-ease-out);
+}
+
+.elite-intro[data-leaving] .elite-intro-caption,
+.elite-intro[data-leaving] .elite-intro-progress,
+.elite-intro[data-leaving] .elite-intro-skip {
+  opacity: 0;
+}
+
+.elite-intro-skip {
+  position: absolute;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  border-radius: var(--radius-pill);
+  background: rgb(10 10 10 / 0.6);
+  color: var(--steel-200);
+  font: 700 0.6875rem/1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    opacity 260ms var(--cine-ease-out),
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.elite-intro-skip:hover {
+  border-color: rgb(255 255 255 / 0.5);
+  color: var(--white);
+}
+
+.elite-intro-skip:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .elite-intro-stage {
+    animation: cine-intro-stage 1.45s var(--cine-ease-out) both;
+  }
+  .elite-intro-glint::before {
+    animation: cine-intro-glint 620ms var(--cine-ease-in-out) 820ms both;
+  }
+  .elite-intro-flash {
+    animation: cine-intro-flash 640ms var(--cine-ease-out) 1240ms both;
+  }
+  .elite-intro-spot-left {
+    animation: cine-intro-spot-left 1.4s var(--cine-ease-out) both;
+  }
+  .elite-intro-spot-right {
+    animation: cine-intro-spot-right 1.4s var(--cine-ease-out) both;
+  }
+  .elite-intro-orbit {
+    animation: cine-intro-orbit 1.9s var(--cine-ease-in-out) both;
+  }
+  .elite-intro-caption {
+    animation: cine-fade-up 700ms var(--cine-ease-out) 300ms both;
+  }
+  .elite-intro-progress {
+    animation: cine-progress 1.45s linear both;
+  }
+  .elite-intro-floor {
+    animation: cine-intro-floor 1.45s var(--cine-ease-in-out) both;
+  }
+
+  /* Durante la intro, el texto del hero espera; entra cuando el logo aterriza. */
+  html[data-intro="playing"] .home-hero :is(
+    .home-hero-eyebrow,
+    .home-hero-marks,
+    .home-hero-line-inner,
+    .home-hero-lead,
+    .home-hero-actions,
+    .home-hero-foot
+  ) {
+    animation-play-state: paused;
+  }
+}
+
+/* Movimiento reducido: la intro no se muestra (también lo decide el script previo). */
+@media (prefers-reduced-motion: reduce) {
+  .elite-intro {
+    display: none;
+  }
+}
+
+@keyframes cine-intro-stage {
+  0% { opacity: 0; transform: scale(0.94); }
+  30% { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes cine-intro-glint {
+  from { transform: translate3d(-110%, 0, 0); }
+  to { transform: translate3d(260%, 0, 0); }
+}
+@keyframes cine-intro-flash {
+  0% { opacity: 0; transform: scale(0.85); }
+  35% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0; transform: scale(1.12); }
+}
+@keyframes cine-intro-spot-left {
+  from { opacity: 0; transform: translateX(-15vw) rotate(-45deg); }
+  to { opacity: 0.45; transform: rotate(-25deg); }
+}
+@keyframes cine-intro-spot-right {
+  from { opacity: 0; transform: translateX(15vw) rotate(45deg); }
+  to { opacity: 0.55; transform: rotate(25deg); }
+}
+@keyframes cine-intro-orbit {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotateX(70deg) rotateZ(-70deg) scale(0.6); }
+  40% { opacity: 0.7; }
+  100% { opacity: 0.12; transform: translate(-50%, -50%) rotateX(60deg) rotateZ(90deg) scale(1.12); }
+}
+@keyframes cine-intro-floor {
+  0%, 100% { opacity: 0.3; transform: rotateX(55deg) scale(0.75); }
+  55% { opacity: 1; transform: rotateX(55deg) scale(1.1); }
+}
+@keyframes cine-fade-up {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cine-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* ================================================================== */
+/* 2. Hero con profundidad                                             */
+/* ================================================================== */
+
+.home-hero-dust {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition: opacity 1.4s var(--cine-ease-out);
+}
+
+.home-hero-dust[data-live] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Reflejo que recorre el metal con más frecuencia (el motor 3D barre la luz aparte). */
+  .home-hero-stage-inner::after {
+    animation-duration: 7s;
+  }
+}
+
+/* ================================================================== */
+/* 5. Odómetro de precios                                              */
+/* ================================================================== */
+
+.odometer,
+.odometer-reel {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+.odometer {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Las tiras son decorativas: al copiar se toma el valor real (texto oculto). */
+.odometer-reel {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.odometer-char,
+.odometer-col {
+  display: inline-block;
+  height: 1.08em;
+  line-height: 1.08;
+  white-space: pre;
+}
+
+.odometer-col {
+  position: relative;
+  overflow: hidden;
+}
+
+.odometer-ghost {
+  visibility: hidden;
+}
+
+.odometer-strip {
+  position: absolute;
+  inset: 0 0 auto;
+  display: block;
+  text-align: center;
+  /* 20 filas: cada fila es el 5 % de la tira. */
+  transform: translate3d(0, calc(var(--odo) * -5%), 0);
+}
+
+.odometer-strip > span {
+  display: block;
+  height: 1.08em;
+}
+
+/* ================================================================== */
+/* 6. Botones vivos                                                    */
+/* ================================================================== */
+
+.home-page .button-accent,
+.header-book {
+  overflow: hidden;
+}
+
+/* Brillo metálico: banda que cruza por transform (sin repintar el fondo). */
+.home-page .button-accent::before,
+.header-book::before {
+  inset: 0 auto 0 0;
+  width: 55%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgb(255 255 255 / 0.08) 30%,
+    rgb(255 255 255 / 0.42) 50%,
+    rgb(255 255 255 / 0.08) 70%,
+    transparent 100%
+  );
+  background-size: auto;
+  opacity: 1;
+  transform: translate3d(-130%, 0, 0);
+  transition: none;
+}
+
+.button[data-fx] {
+  transition:
+    transform var(--dur-micro) var(--ease-press),
+    box-shadow var(--dur-micro) var(--ease-press),
+    background var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out),
+    filter var(--dur-ui) var(--ease-out),
+    translate 260ms var(--cine-ease-out);
+}
+
+/* Onda al pulsar: la anima ButtonFx con WAAPI desde el punto de contacto. */
+.button[data-fx]:not([aria-busy="true"])::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--fx-x, 50%) var(--fx-y, 50%),
+    rgb(255 255 255 / 0.5),
+    rgb(255 255 255 / 0.12) 40%,
+    transparent 70%
+  );
+  opacity: 0;
+  transform-origin: var(--fx-x, 50%) var(--fx-y, 50%);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-page .button-accent:not(:disabled, [aria-busy="true"])::before,
+  .header-book::before {
+    animation: cine-sheen 7s var(--cine-ease-in-out) 2.4s infinite;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .home-page .button-accent:not(:disabled, [aria-busy="true"]):hover::before,
+    .header-book:hover::before {
+      animation: cine-sheen-once 700ms var(--cine-ease-out) both;
+    }
+  }
+}
+
+@keyframes cine-sheen {
+  0%, 84% { transform: translate3d(-130%, 0, 0); }
+  100% { transform: translate3d(240%, 0, 0); }
+}
+@keyframes cine-sheen-once {
+  from { transform: translate3d(-130%, 0, 0); }
+  to { transform: translate3d(240%, 0, 0); }
+}
+
+/* ================================================================== */
+/* 7. Cortina entre páginas                                            */
+/* ================================================================== */
+
+.page-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(ellipse at 50% 50%, #1d1b1c, #050505 70%);
+  transform: translate3d(0, 100%, 0);
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.page-curtain[data-active] {
+  visibility: visible;
+}
+
+.page-curtain::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cine-red) 50%, transparent);
+  box-shadow: 0 0 18px rgb(225 29 46 / 0.5);
+}
+
+.page-curtain-mark {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  width: min(44vw, 220px);
+}
+
+.page-curtain .sculpture__mark {
+  width: 100%;
+  filter: drop-shadow(0 12px 16px rgb(0 0 0 / 0.7));
+}
+
+.page-curtain .sculpture__layer {
+  --sculpture-depth-unit: 0.7px;
+}
+
+.page-curtain-line {
+  width: 56px;
+  height: 2px;
+  background: var(--cine-red);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-curtain {
+    display: none;
+  }
+}
+
+/* ================================================================== */
+/* 8. Tinta/humo tras el monograma JC                                  */
+/* ================================================================== */
+
+.ink-smoke {
+  position: absolute;
+  inset: -16%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.ink-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  will-change: transform;
+}
+
+@media (max-width: 767px) {
+  .ink-smoke {
+    inset: -8%;
+  }
+  .ink-layer-3 {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ink-layer-1 {
+    animation: cine-ink-a 26s ease-in-out infinite alternate;
+  }
+  .ink-layer-2 {
+    animation: cine-ink-b 19s ease-in-out infinite alternate;
+  }
+  .ink-layer-3 {
+    animation: cine-ink-c 31s ease-in-out infinite alternate;
+  }
+  .ink-smoke:not([data-inview]) .ink-layer {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes cine-ink-a {
+  from { transform: translate3d(-4%, 3%, 0) rotate(-8deg) scale(1); }
+  to { transform: translate3d(5%, -3%, 0) rotate(10deg) scale(1.1); }
+}
+@keyframes cine-ink-b {
+  from { opacity: 0.55; transform: translate3d(6%, 4%, 0) rotate(14deg) scale(0.92); }
+  to { opacity: 1; transform: translate3d(-5%, -4%, 0) rotate(-12deg) scale(1.08); }
+}
+@keyframes cine-ink-c {
+  from { transform: translate3d(0, -5%, 0) rotate(0deg) scale(1.05); }
+  to { transform: translate3d(-3%, 5%, 0) rotate(-22deg) scale(0.95); }
+}
+
+/* ================================================================== */
+/* 4. Visor: vuelo tarjeta ↔ pantalla completa                          */
+/* ================================================================== */
+
+.lightbox[data-flip] .lightbox-shell,
+.lightbox[data-flip] .lightbox-frame,
+.lightbox[data-flip-closing] .lightbox-shell {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox[data-flip] :is(.lightbox-bar, .lightbox-info, .lightbox-nav, .lightbox-count) {
+    animation: cine-fade 300ms var(--cine-ease-out) 150ms both;
+  }
+  .lightbox[data-flip-closing]::backdrop {
+    animation: lightbox-fade 320ms var(--cine-ease-in-out) reverse both;
+  }
+  .lightbox[data-flip-closing] :is(.lightbox-bar, .lightbox-info, .lightbox-nav, .lightbox-count) {
+    opacity: 0;
+    transition: opacity 140ms ease-out;
+  }
+}
+
+@keyframes cine-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

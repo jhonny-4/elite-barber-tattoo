@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { PwaManager } from "../components/pwa/manager";
 import { BackToTop } from "../components/back-to-top";
+import { PageCurtain } from "../components/motion/page-curtain";
 import "@fontsource/barlow-condensed/600.css";
 import "@fontsource/barlow-condensed/700.css";
 import "@fontsource/barlow-condensed/800.css";
@@ -64,11 +65,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es-CO" data-scroll-behavior="smooth">
+    // suppressHydrationWarning: el script de abajo marca <html> antes de hidratar.
+    <html lang="es-CO" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        {/* Antes de pintar: si la intro ya se vio en esta pestaña (o hay movimiento
+            reducido), se oculta desde el primer fotograma. Texto fijo, sin datos. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(sessionStorage.getItem('elite:intro:v4')==='1'||matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.setAttribute('data-intro-seen','')}catch(e){}",
+          }}
+        />
+      </head>
       <body>
         {children}
         <PwaManager />
         <BackToTop />
+        <PageCurtain />
       </body>
     </html>
   );
