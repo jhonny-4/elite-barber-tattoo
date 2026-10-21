@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Icon } from "../icons";
 import { Brand } from "../media";
 import { instagramHandle } from "../../domain/business";
@@ -74,6 +74,8 @@ export function TvShowcase({ services, onExit, demo }: { services: ShowcaseServi
       {layers.map(({ n, leaving }) => (
         <SlideView key={n} slide={slides[n % slides.length]} leaving={leaving} index={n} services={services} />
       ))}
+      {/* Barra de avance de la diapositiva actual. */}
+      <i key={step} className="tv-progress" aria-hidden="true" style={{ "--d": `${demo ? 3500 : duration(current)}ms` } as CSSProperties} />
       <div className="tv-showcase-brand" aria-hidden="true">
         <Brand className="tv-logo" title="" />
       </div>
@@ -115,7 +117,7 @@ function SlideView({ slide, leaving, index, services }: { slide: Slide; leaving:
           </div>
           <p className="tv-slide-caption">
             <small>Trabajos reales · Elite Barber &amp; Tattoo</small>
-            {slide.item.title && <b>{slide.item.title}</b>}
+            <b>{slide.item.title || (slide.item.kind === "video" ? "En la silla" : "Hecho en Elite")}</b>
           </p>
         </>
       )}
@@ -123,8 +125,8 @@ function SlideView({ slide, leaving, index, services }: { slide: Slide; leaving:
         <div className="tv-prices">
           <p className="tv-kicker">Servicios y precios</p>
           <ul>
-            {services.map((s) => (
-              <li key={s.name}>
+            {services.map((s, i) => (
+              <li key={s.name} style={{ "--i": i } as CSSProperties}>
                 <span>
                   {s.name}
                   <small>{s.duration_min} min</small>
@@ -138,7 +140,9 @@ function SlideView({ slide, leaving, index, services }: { slide: Slide; leaving:
       )}
       {slide.type === "instagram" && (
         <div className="tv-instagram">
-          <Icon name="instagram" aria-hidden="true" />
+          <span className="tv-ig-ring" aria-hidden="true">
+            <Icon name="instagram" aria-hidden="true" />
+          </span>
           <p className="tv-kicker">Síguenos</p>
           <strong>{instagramHandle}</strong>
           <span>Cortes, barbas y tatuajes del local, cada día</span>

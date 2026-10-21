@@ -4,6 +4,7 @@ import { usePublicQueue } from "../../lib/use-public-queue";
 import type { PublicTicket } from "../../services/contracts/demo";
 import { Brand } from "../media";
 import { Icon } from "../icons";
+import { HomeMarquee } from "../home/marquee";
 import { CallSound } from "./call-sound";
 import { defaultQueueUrl, readQueueUrl, useQrImage, validQueueUrl } from "./qr";
 import { useFullscreen, useIdle, useOledShift, useWakeLock } from "./tv-hooks";
@@ -63,13 +64,18 @@ function TvJoin({ floating = false }: { floating?: boolean }) {
   const { image } = useQrImage(url, 480);
   return (
     <aside className={`tv-join${floating ? " tv-join-floating" : ""}`} aria-label="Toma tu turno o reserva aquí">
-      <div className="tv-qr">
-        {image && <img src={image} width={240} height={240} alt="Código QR para tomar turno o reservar en Elite Barber & Tattoo" />}
+      <div className="tv-join-card">
+        <p className="tv-join-eyebrow">Escanea con tu cámara</p>
+        <div className="tv-qr">
+          {image && <img src={image} width={240} height={240} alt="Código QR para tomar turno o reservar en Elite Barber & Tattoo" />}
+          <i className="tv-qr-scan" aria-hidden="true" />
+          <i className="tv-qr-corners" aria-hidden="true" />
+        </div>
+        <p className="tv-join-text">
+          <b>Toma tu turno</b>
+          <span>o reserva tu cita</span>
+        </p>
       </div>
-      <p>
-        <b>Toma tu turno</b>
-        <span>Reserva aquí</span>
-      </p>
     </aside>
   );
 }
@@ -79,17 +85,39 @@ const waitLabel = (t: PublicTicket) =>
   t.estimatedMinutes === null ? null : t.estimatedMinutes <= 0 ? "Ahora" : `≈ ${t.estimatedMinutes} min`;
 const ticketKey = (t: PublicTicket) => `${t.number}:${t.status}:${t.barber}`;
 
+/** Número con dígitos separados para que cada uno entre con su propio giro 3D. */
+function Digits({ value, className }: { value: string; className: string }) {
+  return (
+    <strong className={className} aria-label={value}>
+      {[...value].map((d, i) => (
+        <span key={`${i}-${d}`} aria-hidden="true" style={{ "--i": i } as CSSProperties}>
+          {d}
+        </span>
+      ))}
+    </strong>
+  );
+}
+
 function CallOverlay({ ticket, color }: { ticket: PublicTicket; color: string }) {
   return (
     <div className="tv-callfx" role="alert" aria-label={`Turno ${ticket.number}, pasar con ${ticket.barber}`} style={{ "--barber": color } as CSSProperties}>
+      <div className="tv-callfx-rays" aria-hidden="true" />
       <div className="tv-callfx-flash" aria-hidden="true" />
+      <div className="tv-callfx-wipe" aria-hidden="true" />
       <div className="tv-callfx-card">
-        <p className="tv-kicker">Llamando</p>
-        <strong className="tv-callfx-number">{ticket.number}</strong>
+        <p className="tv-callfx-kicker">
+          <span aria-hidden="true" />
+          Llamando turno
+          <span aria-hidden="true" />
+        </p>
+        <Digits value={ticket.number} className="tv-callfx-number" />
         <p className="tv-callfx-barber">
-          Pasar con <b>{ticket.barber}</b>
+          Pasa con <b>{ticket.barber}</b>
         </p>
         <p className="tv-callfx-service">{ticket.service}</p>
+      </div>
+      <div className="tv-callfx-ribbon" aria-hidden="true">
+        <HomeMarquee />
       </div>
     </div>
   );
@@ -196,6 +224,7 @@ export function QueueMonitor() {
 
         <div className="tv-body">
         <section className="tv-hero" data-status={hero?.ticket.status ?? "empty"} style={{ "--barber": heroColor } as CSSProperties} aria-live="polite">
+          <i className="tv-hero-sheen" aria-hidden="true" />
           <div className="tv-hero-main">
             {hero ? (
               <>
@@ -203,7 +232,7 @@ export function QueueMonitor() {
                   <span className="tv-dot" aria-hidden="true" />
                   {hero.label}
                 </p>
-                <strong className="tv-hero-number" key={hero.ticket.number}>{hero.ticket.number}</strong>
+                <Digits key={hero.ticket.number} value={hero.ticket.number} className="tv-hero-number" />
                 <p className="tv-hero-barber">
                   <span aria-hidden="true" />
                   {hero.ticket.barber}
@@ -223,8 +252,15 @@ export function QueueMonitor() {
             ) : (
               <>
                 <p className="tv-kicker">{pending ?? "Fila libre"}</p>
-                <strong className="tv-hero-empty">{pending ? "" : "Sin espera"}</strong>
-                <p className="tv-hero-service">{pending ? "" : "Escanea el código y toma tu turno"}</p>
+                {!pending && (
+                  <>
+                    <strong className="tv-hero-empty">
+                      <span>Sin</span>
+                      <span>espera</span>
+                    </strong>
+                    <p className="tv-hero-service">Escanea el código y toma tu turno</p>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -247,7 +283,7 @@ export function QueueMonitor() {
                   <p className="tv-label">{now?.status === "llamado" ? "Llamando" : "Atendiendo ahora"}</p>
                   {now ? (
                     <p className="tv-now-body">
-                      <strong>{now.number}</strong>
+                      <strong key={now.number}>{now.number}</strong>
                       <span>{now.service}</span>
                     </p>
                   ) : (
@@ -259,8 +295,8 @@ export function QueueMonitor() {
                   <p className="tv-label">Siguientes</p>
                   {queued.length ? (
                     <ol>
-                      {queued.slice(0, 3).map((t) => (
-                        <li key={t.number}>
+                      {queued.slice(0, 3).map((t, i) => (
+                        <li key={t.number} style={{ "--i": i } as CSSProperties}>
                           <strong>{t.number}</strong>
                           <span>{t.service}</span>
                           {waitLabel(t) && <em>{waitLabel(t)}</em>}
@@ -277,6 +313,10 @@ export function QueueMonitor() {
           })}
           {!order.length && <p className="tv-free">{pending ?? "Sin profesionales activos"}</p>}
         </section>
+        </div>
+
+        <div className="tv-banner">
+          <HomeMarquee />
         </div>
 
         <footer className="tv-foot">
