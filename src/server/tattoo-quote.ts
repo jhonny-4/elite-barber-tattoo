@@ -1,6 +1,6 @@
 import "server-only";
 import { createHash, randomBytes } from "node:crypto";
-import { businessAddress, instagramHandle, instagramUrl, whatsappDisplay } from "../domain/business";
+import { actions, detailRow, detailTable, emailLayout, font, primaryButton } from "./notify/email";
 
 export const siteUrl = () =>
   process.env.SITE_URL ?? (process.env.NODE_ENV === "production" ? "https://elite-barber-tatto.com" : "http://localhost:3000");
@@ -35,35 +35,22 @@ export async function sendQuoteEmail(input: {
   const site = siteUrl();
   const url = `${site}/cotizacion/${input.token}`;
   const first = escapeHtml(input.name.trim().split(/\s+/)[0] ?? "");
-  const font = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif";
-  const row = (label: string, value: string, last = false) =>
-    `<tr><td style="padding:16px 0;${last ? "" : "border-bottom:1px solid #222;"}color:#7d7d7d;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;${font}">${label}</td><td align="right" style="padding:16px 0;${last ? "" : "border-bottom:1px solid #222;"}color:#f5f5f5;font-size:15px;font-weight:600;${font}">${value}</td></tr>`;
+  // Misma plantilla clara de marca que el resto de correos (legible con modo oscuro de Gmail).
+  const copLabel = (n: number) => `${escapeHtml(cop(n))} <span style="color:#6b6b6b;font-size:11px">COP</span>`;
   const notes = input.notes.trim()
-    ? `<tr><td style="padding-top:18px"><p style="margin:0;padding:16px 18px;background:#0a0a0a;border:1px solid #232323;border-radius:14px;color:#bdbdbd;font-size:14px;line-height:1.6;${font}">${escapeHtml(input.notes.trim()).replace(/\n/g, "<br>")}</p></td></tr>`
+    ? `<tr><td style="padding-top:18px"><p style="margin:0;padding:16px 18px;background:#f6f5f2;border:1px solid #e7e5e1;border-radius:14px;color:#333333;font-size:14px;line-height:1.6;${font}">${escapeHtml(input.notes.trim()).replace(/\n/g, "<br>")}</p></td></tr>`
     : "";
-  const html = `<!doctype html><html lang="es"><head><meta name="color-scheme" content="dark light"><meta name="supported-color-schemes" content="dark light"></head><body style="margin:0;padding:0;background:#050505">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0">Tu cotización de tatuaje en Elite: ${escapeHtml(cop(input.quote))} COP.</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#050505;padding:36px 12px"><tr><td align="center">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
-<tr><td align="center" style="padding:8px 0 28px"><img src="${site}/email/elite-logo.png" width="190" alt="Elite Barber &amp; Tattoo" style="display:block;width:190px;max-width:60%;height:auto;border:0"></td></tr>
-<tr><td style="background:#101010;background-image:linear-gradient(160deg,#1a1a1a,#0b0b0b);border:1px solid #262626;border-radius:22px;padding:0;overflow:hidden">
-<div style="height:3px;background:#e11d2e;background-image:linear-gradient(90deg,#e11d2e,#ff5a66,#e11d2e)"></div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:38px 32px 34px">
-<tr><td align="center">
-<p style="margin:0 0 14px;color:#e11d2e;font-size:11px;letter-spacing:4px;text-transform:uppercase;font-weight:800;${font}">&#9670; Cotización de tatuaje</p>
-<h1 style="margin:0;color:#ffffff;font-size:32px;line-height:1.1;letter-spacing:1px;text-transform:uppercase;font-weight:900;${font}">${first ? `${first}, tu` : "Tu"} idea ya tiene precio</h1>
-<p style="margin:12px 0 26px;color:#a8a8a8;font-size:15px;line-height:1.6;${font}">Jean Carlos revisó tu propuesta y preparó esta cotización. Revísala con calma y, si te convence, agenda tu sesión por WhatsApp.</p>
-</td></tr>
-<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${row("Valor del tatuaje", `${escapeHtml(cop(input.quote))} <span style="color:#7d7d7d;font-size:11px">COP</span>`)}${row("Abono para apartar", `${escapeHtml(cop(input.deposit))} <span style="color:#7d7d7d;font-size:11px">COP</span>`, true)}</table></td></tr>
-${notes}
-<tr><td align="center" style="padding-top:26px">
-<a href="${url}" style="display:inline-block;background:#ffffff;background-image:linear-gradient(180deg,#ffffff,#d9d9d9);color:#0a0a0a;text-decoration:none;font-weight:900;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;padding:18px 34px;border-radius:14px;border-bottom:4px solid #8f8f8f;${font}">Ver mi cotización &#8599;</a>
-</td></tr>
-</table></td></tr>
-<tr><td align="center" style="padding:28px 16px 0;color:#6f6f6f;font-size:12px;line-height:1.8;${font}">
-${escapeHtml(businessAddress)}<br>WhatsApp ${escapeHtml(whatsappDisplay)} &nbsp;·&nbsp; <a href="${instagramUrl}" style="color:#bdbdbd;text-decoration:none">${escapeHtml(instagramHandle)}</a><br>
-<span style="color:#4a4a4a">Este enlace es personal. Si no solicitaste un tatuaje en Elite, ignora este correo.</span>
-</td></tr></table></td></tr></table></body></html>`;
+  const html = emailLayout({
+    preheader: `Tu cotización de tatuaje en Elite: ${escapeHtml(cop(input.quote))} COP.`,
+    eyebrow: "&#9670; Cotización de tatuaje",
+    title: `${first ? `${first}, tu` : "Tu"} idea ya tiene precio`,
+    intro: "Jean Carlos revisó tu propuesta y preparó esta cotización. Revísala con calma y, si te convence, agenda tu sesión.",
+    content:
+      detailTable(detailRow("Valor del tatuaje", copLabel(input.quote)) + detailRow("Abono para apartar", copLabel(input.deposit), true)) +
+      notes +
+      actions(primaryButton(url, "Ver mi cotización &#8599;")),
+    footerNote: "Este enlace es personal. Si no solicitaste un tatuaje en Elite, ignora este correo.",
+  });
   try {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
