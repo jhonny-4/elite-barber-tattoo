@@ -8,10 +8,15 @@ import { createHash, createHmac, timingSafeEqual } from "node:crypto";
  * Funciones puras (sin "server-only") para poder probarlas con node --test.
  */
 
+/** Llave para firmar y verificar. Vacía solo en modo pruebas explícito (BOLD_SANDBOX=true). */
+export function boldSecret(): string | null {
+  const secret = process.env.BOLD_SECRET_KEY ?? "";
+  if (secret) return secret;
+  return process.env.BOLD_SANDBOX === "true" ? "" : null;
+}
+
 export const boldEnabled = () =>
-  process.env.BOLD_ENABLED === "true" &&
-  Boolean(process.env.BOLD_IDENTITY_KEY) &&
-  process.env.BOLD_SECRET_KEY !== undefined;
+  process.env.BOLD_ENABLED === "true" && Boolean(process.env.BOLD_IDENTITY_KEY) && boldSecret() !== null;
 
 export const orderRefFor = (bookingId: string) => `ELT${bookingId.replace(/-/g, "")}`;
 
@@ -42,7 +47,7 @@ export function checkoutFor(orderId: string, amount: number, description: string
     orderId,
     amount,
     currency: "COP",
-    signature: integritySignature(orderId, amount, "COP", process.env.BOLD_SECRET_KEY ?? ""),
+    signature: integritySignature(orderId, amount, "COP", boldSecret() ?? ""),
     description,
     redirectionUrl,
   };

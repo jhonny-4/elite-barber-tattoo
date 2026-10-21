@@ -102,9 +102,14 @@ export async function createBooking(input: BookingInput, idempotencyKey: string)
     if(retry) return createBooking(input,idempotencyKey);
     throw new BookingError("Ese horario ya no está disponible. Elige otro.", 409);
   }
+  if (boldEnabled()) {
+    // Una sola cita pendiente de pago por contacto: evita apartar horarios sin pagar.
+    const { count } = await db.from("bookings").select("id", { count: "exact", head: true }).eq("status", "pendiente_pago").gt("hold_expires_at", new Date().toISOString()).or(`customer_email.eq.${email},customer_phone.eq.${phone}`);
+    if ((count ?? 0) > 0) throw new BookingError("Ya tienes una reserva pendiente de pago. Complétala o espera unos minutos.", 409);
+  }
   const barber = info.eligible.find(b => b.slug === (input.barberSlug === "any" ? slot.barberSlug : input.barberSlug));
   if (!barber) throw new BookingError("Profesional no disponible.", 409);
-  const { data, error } = await adminClient().rpc("create_booking", { p_barber: barber.id, p_service: info.service.id, p_starts: new Date(localBogota(input.date, input.time)).toISOString(), p_name: name, p_phone: phone, p_email: email, p_token_hash: hash, p_idempotency: idempotencyKey, p_requires_payment: boldEnabled(), p_hold_minutes: 30 });
+  const { data, error } = await adminClient().rpc("create_booking", { p_barber: barber.id, p_service: info.service.id, p_starts: new Date(localBogota(input.date, input.time)).toISOString(), p_name: name, p_phone: phone, p_email: email, p_token_hash: hash, p_idempotency: idempotencyKey, p_requires_payment: boldEnabled(), p_hold_minutes: 20 });
   if (error) {
     const message = (error.message ?? "").match(/horario_ocupado|horario_pasado|servicio_no_disponible|profesional_no_disponible/)?.[0];
     if (error.code === "P0001" || error.code === "23P01") throw new BookingError(({ horario_ocupado: "Ese horario acaba de ocuparse.", horario_pasado: "Ese horario ya pasó.", servicio_no_disponible: "El servicio ya no está disponible.", profesional_no_disponible: "El profesional no está disponible." } as Record<string,string>)[message ?? ""] ?? "No se pudo confirmar el horario.", 409);

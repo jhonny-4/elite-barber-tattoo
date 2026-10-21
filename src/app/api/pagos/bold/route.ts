@@ -1,6 +1,6 @@
 import { adminClient } from "../../../../server/supabase/clients";
 import { confirmPaidBooking } from "../../../../server/bookings";
-import { verifyWebhook } from "../../../../server/payments/bold";
+import { boldEnabled, boldSecret, verifyWebhook } from "../../../../server/payments/bold";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,9 +19,12 @@ const ok = () => Response.json({ received: true }, { headers: { "Cache-Control":
  * Firma verificada, evento idempotente por `id`, y monto/orden contrastados con la base.
  */
 export async function POST(request: Request) {
+  // Sin integración activa o sin llave no se acepta ningún evento (nunca firma con llave vacía en producción).
+  const secret = boldSecret();
+  if (!boldEnabled() || secret === null) return Response.json({ error: "No disponible." }, { status: 503 });
   const raw = await request.text();
   if (raw.length > 64_000) return Response.json({ error: "Cuerpo demasiado grande." }, { status: 413 });
-  if (!verifyWebhook(raw, request.headers.get("x-bold-signature"), process.env.BOLD_SECRET_KEY ?? ""))
+  if (!verifyWebhook(raw, request.headers.get("x-bold-signature"), secret))
     return Response.json({ error: "Firma inválida." }, { status: 401 });
 
   let event: BoldEvent;
