@@ -41,7 +41,7 @@ export function BoldPay({ checkout, email, name }: { checkout: BoldCheckout; ema
       <h3 id="bold-pay-title">Paga tu cita para confirmarla</h3>
       <p className="bold-pay-amount">{currency(checkout.amount)} <small>COP</small></p>
       <p className="bold-pay-note">Tu horario queda apartado unos minutos. La cita se confirma cuando Bold aprueba el pago y te llega el correo.</p>
-      <div className="bold-pay-frame" ref={host} />
+      <div className="bold-pay-frame bold-pay-live" ref={host} />
       {failed && (
         <p className="inline-error" role="alert">
           No se pudo cargar la pasarela de pago. Revisa tu conexión y vuelve a intentarlo.
@@ -62,11 +62,16 @@ export function BoldPayPreview({ amount, active = false }: { amount: number; act
       <h3 id="bold-preview-title">Paga con Bold</h3>
       <p className="bold-pay-amount">{currency(amount)} <small>COP</small></p>
       <p className="bold-pay-note">{active ? "Al confirmar, pagas aquí con tarjeta, PSE o Nequi y tu cita queda asegurada." : "Muy pronto podrás pagar tu cita aquí con tarjeta, PSE o Nequi. Por ahora pagas en el local."}</p>
-      <div className="bold-pay-frame">
-        <button type="button" className="bold-pay-button" disabled aria-describedby="bold-preview-title">
-          Pagar con <strong>Bold</strong> · {active ? "en el siguiente paso" : "Próximamente"}
-        </button>
-      </div>
+      <button type="button" className="bold-cta" disabled aria-describedby="bold-preview-title">
+        <span className="bold-cta-shine" aria-hidden="true" />
+        <span className="bold-cta-label">Pagar con</span>
+        <span className="bold-cta-chip">
+          {/* Logo oficial de Bold (vector), usado para identificar el medio de pago. */}
+          <img src="/media/brand/bold-logo.svg" alt="Bold" width={79} height={28} />
+        </span>
+        <span className="bold-cta-badge">{active ? "Siguiente paso" : "Próximamente"}</span>
+      </button>
+      <p className="bold-pay-methods" aria-label="Medios de pago">Tarjeta · PSE · Nequi · Botón Bancolombia</p>
     </section>
   );
 }

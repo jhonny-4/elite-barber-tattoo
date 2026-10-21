@@ -62,6 +62,7 @@ function UploadForm({ barbers, me, videos, onDone }: { barbers: Barber[]; me: st
   const id = useId();
   const [barberId, setBarberId] = useState(me ?? barbers[0]?.id ?? "");
   const [file, setFile] = useState<File | null>(null);
+  const [dragging, setDragging] = useState(false);
   const [alt, setAlt] = useState("");
   const [title, setTitle] = useState("");
   const [progress, setProgress] = useState<number | null>(null);
@@ -122,7 +123,7 @@ function UploadForm({ barbers, me, videos, onDone }: { barbers: Barber[]; me: st
   return (
     <form className="gal-upload" onSubmit={submit} noValidate>
       {barbers.length > 1 ? (
-        <label>
+        <label className="gal-field gal-field-barber">
           Barbero
           <select value={barberId} onChange={(e) => setBarberId(e.target.value)} disabled={busy}>
             {barbers.map((b) => (
@@ -133,23 +134,38 @@ function UploadForm({ barbers, me, videos, onDone }: { barbers: Barber[]; me: st
           </select>
         </label>
       ) : null}
-      <label>
-        Foto o video
-        <input ref={input} type="file" accept={videos ? "image/jpeg,image/png,image/webp,image/heic,video/mp4,video/webm" : "image/jpeg,image/png,image/webp,image/heic"} disabled={busy} onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <small>Fotos hasta 8 MB, videos MP4 o WebM hasta 80 MB.</small>
-      </label>
-      <label>
+      <div className="gal-field gal-field-file">
+        <span className="gal-label">Foto o video</span>
+        <label
+          className="gal-drop"
+          data-has-file={file ? "" : undefined}
+          data-dragging={dragging ? "" : undefined}
+          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={(e) => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files?.[0]; if (f && !busy) setFile(f); }}
+        >
+          <input ref={input} className="gal-drop-input" type="file" accept={videos ? "image/jpeg,image/png,image/webp,image/heic,video/mp4,video/webm" : "image/jpeg,image/png,image/webp,image/heic"} disabled={busy} onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+          <span className="gal-drop-icon" aria-hidden="true"><Icon name={file?.type.startsWith("video/") ? "play" : file ? "image" : "upload"} /></span>
+          <span className="gal-drop-text">
+            <strong>{file ? file.name : "Toca para elegir o arrastra aquí"}</strong>
+            <small>{file ? `${file.type.startsWith("video/") ? "Video" : "Foto"} · ${(file.size / 1048576).toFixed(1)} MB` : "Fotos hasta 8 MB · Videos MP4 o WebM hasta 80 MB"}</small>
+          </span>
+        </label>
+      </div>
+      <label className="gal-field gal-field-alt">
         Descripción (obligatoria)
         <input type="text" value={alt} maxLength={200} disabled={busy} onChange={(e) => setAlt(e.target.value)} aria-describedby={`${id}-n`} placeholder="Ej.: Degradado bajo con barba perfilada" />
       </label>
-      <label>
+      <label className="gal-field gal-field-title">
         Título (opcional)
         <input type="text" value={title} maxLength={80} disabled={busy} onChange={(e) => setTitle(e.target.value)} />
       </label>
-      <button type="submit" className="button button-accent button-small" disabled={busy} aria-busy={busy || undefined}>
+      <div className="gal-upload-foot">
+      <button type="submit" className="button button-accent" disabled={busy} aria-busy={busy || undefined}>
         <Icon name="upload" />
         {busy ? (isVideo ? `Subiendo ${Math.round((progress ?? 0) * 100)} %` : "Subiendo…") : "Subir para aprobación"}
       </button>
+      </div>
       {busy && isVideo ? <progress value={progress ?? 0} max={1} aria-label="Avance de la subida" /> : null}
       <p id={`${id}-n`} className="pnl-note" data-tone={note?.tone} role={note?.tone === "alert" ? "alert" : "status"} hidden={!note}>
         {note ? <Icon name={note.tone === "ok" ? "check" : "alert"} /> : null}

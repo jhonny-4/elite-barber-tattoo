@@ -2822,3 +2822,93 @@
     transition: none;
   }
 }
+
+/* ---------------------------------------------------------------- Botón Bold (colores oficiales)
+   Paleta tomada de bold.co: azul marino #121E6C, azul eléctrico #0407F5, coral #FF2947. */
+.bold-cta {
+  --bold-navy: #121e6c;
+  --bold-blue: #0407f5;
+  --bold-coral: #ff2947;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  width: 100%;
+  min-height: 4.1rem;
+  margin: 0.4rem 0 0;
+  padding: 0.85rem 1.2rem;
+  border: 0;
+  border-radius: 1.1rem;
+  color: #fff;
+  font: inherit;
+  background: linear-gradient(110deg, var(--bold-navy) 0%, #2a1f8f 38%, #7c2a78 68%, var(--bold-coral) 100%);
+  background-size: 160% 100%;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    inset 0 -2px 0 rgb(0 0 0 / 0.25),
+    0 6px 0 #0b1247,
+    0 16px 34px rgb(18 30 108 / 0.55),
+    0 0 0 1px rgb(255 255 255 / 0.08);
+  transform: translateY(0);
+  transition: transform 200ms ease, box-shadow 200ms ease, background-position 600ms ease;
+  animation: bold-hue 7s ease-in-out infinite alternate;
+}
+.bold-cta:disabled { cursor: not-allowed; }
+.bold-cta:not(:disabled):hover,
+.bold-cta:focus-visible { transform: translateY(-2px); background-position: 100% 0; }
+.bold-cta:not(:disabled):active { transform: translateY(4px); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 2px 0 #0b1247, 0 8px 18px rgb(18 30 108 / 0.45); }
+.bold-cta:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.bold-cta-shine {
+  position: absolute;
+  inset: -40% auto -40% -30%;
+  width: 35%;
+  z-index: -1;
+  background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.38), transparent);
+  transform: translateX(-120%) skewX(-18deg);
+  animation: bold-shine 3.2s ease-in-out infinite;
+}
+.bold-cta-label {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.3);
+}
+.bold-cta-chip {
+  display: inline-grid;
+  place-items: center;
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.7rem;
+  background: #fff;
+  box-shadow: inset 0 -2px 0 #d9dcef, 0 3px 10px rgb(0 0 0 / 0.25);
+}
+.bold-cta-chip img { display: block; width: 66px; height: auto; }
+.bold-cta-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+  border: 1px solid rgb(255 255 255 / 0.35);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.bold-pay-methods { margin: 0.75rem 0 0; color: #a8a8a8; font-size: 0.78rem; letter-spacing: 0.06em; }
+.bold-pay-live {
+  background: linear-gradient(#fff, #fff) padding-box, linear-gradient(110deg, #121e6c, #7c2a78, #ff2947) border-box;
+  border: 2px solid transparent;
+}
+@keyframes bold-shine { 0%, 55% { transform: translateX(-120%) skewX(-18deg); } 100% { transform: translateX(420%) skewX(-18deg); } }
+@keyframes bold-hue { from { background-position: 0 0; } to { background-position: 100% 0; } }
+@media (max-width: 420px) { .bold-cta { flex-wrap: wrap; gap: 0.55rem; } .bold-cta-badge { flex-basis: auto; } }
+@media (prefers-reduced-motion: reduce) {
+  .bold-cta, .bold-cta-shine { animation: none; transition: none; }
+  .bold-cta-shine { display: none; }
+}
+
+/* Encabezado del bloque de pago: icono del tamaño del texto, en línea. */
+.bold-pay .eyebrow { display: inline-flex; align-items: center; gap: 0.45rem; }
+.bold-pay .eyebrow svg { width: 14px; height: 14px; flex: none; }
