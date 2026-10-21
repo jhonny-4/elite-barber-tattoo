@@ -129,6 +129,7 @@ export function BookingFlow() {
     status: string;
     payment?: BoldCheckout;
   } | null>(null);
+  const [paymentsEnabled, setPaymentsEnabled] = useState(false);
   const attemptKey = useRef("");
   const headingRef = useRef<HTMLHeadingElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -822,6 +823,7 @@ export function BookingFlow() {
                   Al confirmar, guardaremos tu cita y enviaremos un correo de
                   confirmación.
                 </p>
+                {summary.price > 0 && <BoldPayPreview amount={summary.price} active={paymentsEnabled} />}
                 {!selectedAvailable && (
                   <div className="inline-error bk-alert" role="alert">
                     <span>
