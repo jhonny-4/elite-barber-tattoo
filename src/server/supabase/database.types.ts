@@ -367,7 +367,7 @@ isOneToOne: false
             }[]
                            },
 "create_booking":
-{ Args: { "p_barber": string,"p_email": string,"p_hold_minutes"?: number,"p_idempotency": string,"p_name": string,"p_phone": string,"p_service": string,"p_starts": string,"p_token_hash": string }; Returns: {
+{ Args: { "p_barber": string,"p_email": string,"p_hold_minutes"?: number,"p_idempotency": string,"p_name": string,"p_phone": string,"p_requires_payment"?: boolean,"p_service": string,"p_starts": string,"p_token_hash": string }; Returns: {
               "access_token_hash": string,
 "barber_id": string,
 "created_at": string,
