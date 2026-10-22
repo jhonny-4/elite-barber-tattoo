@@ -5,8 +5,11 @@ export function sameOrigin(request: Request) {
   const origin = request.headers.get("origin"); if (!origin) return true;
   try { const host = new URL(origin).host; return host === (request.headers.get("host") ?? new URL(request.url).host) || host === request.headers.get("x-forwarded-host"); } catch { return false; }
 }
+/** Solo los BookingError llevan su mensaje al cliente; el resto se registra y sale genérico (no filtra detalles internos). */
 export function errorResponse(error: unknown) {
-  return Response.json({ error: error instanceof Error ? error.message : "Error interno." }, { status: error instanceof BookingError ? error.status : 500, headers: noStore });
+  if (error instanceof BookingError) return Response.json({ error: error.message }, { status: error.status, headers: noStore });
+  console.error(error);
+  return Response.json({ error: "No se pudo completar la operación. Intenta de nuevo." }, { status: 500, headers: noStore });
 }
 export async function readJson(request: Request, max = 10_240) {
   if (!request.headers.get("content-type")?.includes("application/json")) throw new BookingError("Usa un cuerpo JSON.");

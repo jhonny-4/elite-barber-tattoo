@@ -40,7 +40,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ key:
     "Content-Type": VIDEO_MIME_BY_EXT[parsed.ext],
     "Accept-Ranges": "bytes",
     "X-Content-Type-Options": "nosniff",
-    "Cache-Control": row.published ? "public, max-age=31536000, immutable" : "private, no-store",
+    "Cache-Control": row.published ? "public, max-age=3600" : "private, no-store",
   });
   for (const name of ["content-length", "content-range"]) {
     const value = upstream.headers.get(name);

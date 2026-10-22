@@ -32,6 +32,46 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
 ];
 
+/**
+ * Solo producción (en desarrollo Next necesita eval y recarga en caliente).
+ * - HSTS: el navegador no vuelve a intentar http durante un año.
+ * - CSP: scripts, conexiones y marcos solo de orígenes conocidos (Supabase, subida
+ *   directa a R2, Bold y el mapa de Google). 'unsafe-inline' sigue en script-src
+ *   porque Next inyecta scripts en línea sin nonce; aun así bloquea scripts de
+ *   terceros, objetos y que otra web nos meta en un iframe.
+ */
+function productionHeaders() {
+  let supabase = "";
+  try {
+    supabase = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").origin;
+  } catch {
+    supabase = "";
+  }
+  // Solo la cuenta R2 propia (subida directa del panel); sin la variable, cualquier R2.
+  const account = process.env.R2_ACCOUNT_ID ?? "";
+  const r2 = /^[a-f0-9]{32}$/.test(account) ? `https://${account}.r2.cloudflarestorage.com` : "https://*.r2.cloudflarestorage.com";
+  const csp = [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'self'",
+    "form-action 'self'",
+    "script-src 'self' 'unsafe-inline' https://checkout.bold.co https://*.bold.co",
+    "style-src 'self' 'unsafe-inline'",
+    `img-src 'self' data: blob: ${supabase}`,
+    `media-src 'self' blob: ${supabase}`,
+    "font-src 'self' data:",
+    `connect-src 'self' ${supabase} ${supabase.replace(/^http/, "ws")} ${r2} https://*.bold.co`,
+    "frame-src 'self' https://www.google.com https://*.bold.co",
+    "worker-src 'self' blob:",
+    "upgrade-insecure-requests",
+  ].join("; ");
+  return [
+    { key: "Strict-Transport-Security", value: "max-age=31536000" },
+    { key: "Content-Security-Policy", value: csp },
+  ];
+}
+
 /** @param {string} phase @returns {import('next').NextConfig} */
 export default function nextConfig(phase) {
   return {
@@ -45,7 +85,10 @@ export default function nextConfig(phase) {
       : {}),
     async headers() {
       return [
-        { source: "/:path*", headers: securityHeaders },
+        {
+          source: "/:path*",
+          headers: phase === PHASE_DEVELOPMENT_SERVER ? securityHeaders : [...securityHeaders, ...productionHeaders()],
+        },
         {
           source: "/sw.js",
           headers: [
