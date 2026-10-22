@@ -1,5 +1,5 @@
 import type { SVGProps } from "react";
-import { brandGlyphs, eliteLogo, jcMonogram } from "./logo-data";
+import { brandGlyphs, eliteLogo, jcMonogram, jcWordmark } from "./logo-data";
 
 type LogoProps = Omit<SVGProps<SVGSVGElement>, "viewBox"> & {
   /** Texto accesible. Si se omite, el logo se trata como decorativo. */
@@ -37,6 +37,20 @@ export function JCMonogram({ title, ...props }: LogoProps) {
       {...props}
     >
       <path d={jcMonogram.d} fillRule="evenodd" />
+    </svg>
+  );
+}
+
+/** Firma «Jean Carlos» en letra gótica (vector del original); hereda `currentColor`. */
+export function JCWordmark({ title, ...props }: LogoProps) {
+  return (
+    <svg
+      viewBox={`0 0 ${jcWordmark.width} ${jcWordmark.height}`}
+      fill="currentColor"
+      {...a11y(title)}
+      {...props}
+    >
+      <path d={jcWordmark.d} fillRule="evenodd" />
     </svg>
   );
 }

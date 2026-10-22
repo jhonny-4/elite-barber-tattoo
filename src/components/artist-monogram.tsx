@@ -6,6 +6,7 @@
 
 import { JC_BOX, JC_PATHS, JC_SPEC } from "./three/presets";
 import { DepthMark, SculptureStage } from "./three/sculpture-stage";
+import { JCWordmark } from "./brand/logos";
 
 export function ArtistMonogram({
   className = "",
@@ -27,8 +28,8 @@ export function ArtistMonogram({
       </SculptureStage>
       {label ? (
         <figcaption className="jc-sculpture__label">
-          <span>Jean Carlos</span>
-          <span className="jc-sculpture__sep" aria-hidden="true" />
+          {/* Firma original del artista bajo el monograma, como en su logo. */}
+          <JCWordmark className="jc-wordmark" title="Jean Carlos" />
           <span className="visually-hidden">, </span>
           <span>Tattoo artist</span>
           <span className="jc-sculpture__sep" aria-hidden="true" />

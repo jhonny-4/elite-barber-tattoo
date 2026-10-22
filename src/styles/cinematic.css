@@ -646,3 +646,21 @@ html[data-intro-seen] .elite-intro {
   .veil::before { display: none; }
   .veil > .photo { transform: none; transition: none; }
 }
+
+/* Firma «Jean Carlos»: blanco con relieve suave; se entinta de izquierda a derecha al
+   entrar en pantalla (solo navegadores con línea de tiempo de scroll; el resto la ve fija). */
+.jc-wordmark {
+  display: block; height: auto; color: #f5f5f5;
+  filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.35)) drop-shadow(0 8px 18px rgb(0 0 0 / 0.7));
+}
+.jc-sculpture__label .jc-wordmark { flex: 0 0 100%; max-width: 320px; margin: 4px auto 8px; }
+.jc-wordmark-sign { width: min(62vw, 300px); margin: 14px auto 4px; opacity: 0.95; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .jc-wordmark { animation: jc-ink linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
+  }
+}
+@keyframes jc-ink {
+  from { clip-path: inset(0 100% 0 0); opacity: 0.2; transform: translateY(6px); }
+  to { clip-path: inset(0 0 0 0); opacity: 1; transform: none; }
+}

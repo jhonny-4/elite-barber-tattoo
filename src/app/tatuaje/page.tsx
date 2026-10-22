@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JCWordmark } from "../../components/brand/logos";
 import Link from "next/link";
 import { Header, Footer } from "../../components/shell";
 import { TattooForm } from "../../components/tattoo-form";
@@ -24,6 +25,7 @@ export default function TattooPage() {
             <br />
             <span className="serif">Tu piel.</span>
           </h1>
+          <JCWordmark className="jc-wordmark jc-wordmark-sign" title="Por Jean Carlos" />
           <p>
             Cuéntanos tu idea y Jean Carlos la valorará. No es una cita: primero
             se revisa el diseño, luego se cotiza y la fecha se acuerda contigo.
