@@ -10,8 +10,9 @@ export function limitPublic(request: Request, scope: string) {
     request.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ?? "unknown";
   const key = `${scope}:${ip}`,
     current = buckets.get(key) ?? { count: 0, until: now + 600000 };
-  // La fila por QR comparte el Wi-Fi del local: más margen que para reservas.
-  if (current.count >= (scope === "fila" ? 40 : 5) || (buckets.size >= 10000 && !buckets.has(key)))
+  // La fila por QR comparte el Wi-Fi del local: más margen que para reservas, sin
+  // permitir que una sola conexión llene la pantalla (además hay tope diario en /api/fila).
+  if (current.count >= (scope === "fila" ? 15 : 5) || (buckets.size >= 10000 && !buckets.has(key)))
     throw new BookingError("Demasiados intentos. Espera unos minutos.", 429);
   current.count++;
   buckets.set(key, current);

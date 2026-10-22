@@ -89,6 +89,9 @@ export async function GET(request: Request) {
     return errorResponse(e);
   }
 }
+/** Turnos activos (esperando, llamados o en atención) que admite la fila en un día. */
+const MAX_ACTIVE_TICKETS = 40;
+
 export async function POST(request: Request) {
   try {
     if (!sameOrigin(request))
@@ -115,6 +118,9 @@ export async function POST(request: Request) {
       .eq("day", today())
       .in("status", ["esperando", "llamado", "en_atencion"]);
     if (activeError) throw new Error("No se pudo consultar la fila.");
+    // Tope del día: frena que alguien llene la pantalla del local con turnos falsos.
+    if ((active ?? []).length >= MAX_ACTIVE_TICKETS)
+      throw new BookingError("La fila de hoy está llena. Acércate al local y te atendemos.", 429);
     const load = (id: string) =>
       (active ?? []).filter((t) => t.barber_id === id).length;
     const barber =

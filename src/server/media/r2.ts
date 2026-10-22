@@ -60,16 +60,28 @@ export async function deleteObject(key: string) {
   if (!response.ok && response.status !== 404) throw new Error(`R2 DELETE respondió ${response.status}.`);
 }
 
-/** Lista objetos bajo un prefijo (ListObjectsV2, hasta 1000). */
-export async function listObjects(prefix: string) {
+/** Lista objetos bajo un prefijo (ListObjectsV2), recorriendo páginas de 1000 hasta `maxPages`. */
+export async function listObjects(prefix: string, maxPages = 20) {
   const { account, id, secret, bucket } = config();
   const client = new AwsClient({ accessKeyId: id, secretAccessKey: secret, service: "s3", region: "auto" });
-  const response = await client.fetch(`https://${account}.r2.cloudflarestorage.com/${bucket}?list-type=2&max-keys=1000&prefix=${encodeURIComponent(prefix)}`);
-  if (!response.ok) throw new Error(`R2 respondió ${response.status} al listar.`);
-  const xml = await response.text();
-  return [...xml.matchAll(/<Contents>([\s\S]*?)<\/Contents>/g)].map(([, c]) => ({
-    key: c.match(/<Key>([^<]+)<\/Key>/)?.[1] ?? "",
-    size: Number(c.match(/<Size>(\d+)<\/Size>/)?.[1] ?? 0),
-    modified: Date.parse(c.match(/<LastModified>([^<]+)<\/LastModified>/)?.[1] ?? ""),
-  })).filter((o) => o.key);
+  const objects: { key: string; size: number; modified: number }[] = [];
+  let token = "";
+  for (let page = 0; page < maxPages; page++) {
+    const next = token ? `&continuation-token=${encodeURIComponent(token)}` : "";
+    const response = await client.fetch(`https://${account}.r2.cloudflarestorage.com/${bucket}?list-type=2&max-keys=1000&prefix=${encodeURIComponent(prefix)}${next}`);
+    if (!response.ok) throw new Error(`R2 respondió ${response.status} al listar.`);
+    const xml = await response.text();
+    for (const [, c] of xml.matchAll(/<Contents>([\s\S]*?)<\/Contents>/g)) {
+      const key = c.match(/<Key>([^<]+)<\/Key>/)?.[1] ?? "";
+      if (key)
+        objects.push({
+          key,
+          size: Number(c.match(/<Size>(\d+)<\/Size>/)?.[1] ?? 0),
+          modified: Date.parse(c.match(/<LastModified>([^<]+)<\/LastModified>/)?.[1] ?? ""),
+        });
+    }
+    token = xml.includes("<IsTruncated>true</IsTruncated>") ? (xml.match(/<NextContinuationToken>([^<]+)<\/NextContinuationToken>/)?.[1] ?? "") : "";
+    if (!token) break;
+  }
+  return objects;
 }

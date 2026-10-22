@@ -17,7 +17,7 @@ Proyecto **en producción**: https://elite-barber-tatto.com. Antes de cambiar na
 - `src/server/demo/` y `/api/demo` son legado: en producción responden 410.
 
 ## Entornos y secretos
-- Local: `npm run db:start` (puertos 553xx), `.env.local` con llaves locales. `npm run dev`.
+- Local: `npm run db:start` (puertos 563xx; Windows reserva el rango 55237-55336), `.env.local` con llaves locales. `npm run dev`.
 - Producción: valores en `.env.hostinger` (ignorado por Git) y en las variables de Hostinger. Nunca usar `.env.hostinger` para pruebas locales: crearía datos reales.
 - Nunca subir `.env*`, credenciales ni datos de clientes. Nunca pegar llaves secretas en el chat.
 

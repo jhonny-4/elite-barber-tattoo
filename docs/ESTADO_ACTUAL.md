@@ -73,7 +73,7 @@ Nunca versionar `.env*`, claves, tokens ni datos personales. `.env.example` solo
 - Galería por barbero: fotos (Supabase Storage, WebP) y videos (Cloudflare R2, bucket `elite-videos`, subida firmada directa y proxy con Range en `/api/media/video/...`). Aprobación del dueño en la pestaña Galería; el barbero sube desde "Mi galería"; botón "Ver trabajos" en /reservar. Variables `R2_*` en Hostinger. En desarrollo las claves usan prefijo `dev/`.
 - Videos de tatuajes existentes (4, 23,7 MB) quedan en `public/`; los nuevos van a R2.
 
-## Actualización 21/10/2026 — portada cinematográfica (sin commit)
+## Actualización 21/10/2026 — portada cinematográfica
 - Intro (`brand-intro.tsx`): armado 3D por piezas, barrido metálico, destello rojo #e11d2e y vuelo FLIP al logo del hero (que arranca asentado vía `data-intro-handoff`). ≤ 2 s desde el primer pintado, una vez por sesión (`elite:intro:v4`), saltable con botón, tecla, rueda o toque; un script previo en `layout.tsx` la oculta antes de pintar si ya se vio o hay movimiento reducido.
 - Hero: polvo de luz en canvas 2D (`motion/hero-depth.tsx`, 72/36/0 partículas según ancho, pausa fuera de pantalla y pestaña oculta) y paralaje de capas con el ratón usando `translate`.
 - Scroll (`motion/home-motion.tsx`): títulos con máscara diagonal por línea (≥ 900 px), velo diagonal en fotos de trabajos, marcas de agua con paralaje lento.
@@ -86,3 +86,11 @@ Nunca versionar `.env*`, claves, tokens ni datos personales. `.env.example` solo
 
 ## 2026-10-21 · Pantalla de turnos (TV)
 - `/pantalla-turnos` rediseñada: turno actual gigante, columnas por barbero, espera estimada (`/api/fila` calcula `estimatedMinutes`), animación de llamado, voz repetida máx. 3 veces, modo vitrina con trabajos publicados (`GET /api/galeria` sin parámetro), QR fijo, Wake Lock y reconexión, desplazamiento anti-OLED. Guía de kiosco en `docs/PANTALLA_TV.md`.
+
+## 2026-10-22 · Cierre: marca, galería y seguridad
+- **Marca:** `public/media/brand/elite-logo.svg` lleva `fill-rule="evenodd"` (antes rellenaba BARBER/TATTOO). PNG de correo, vista previa social e íconos PWA regenerados desde el vector. Firma gótica «Jean Carlos» (`jcWordmark` en `logo-data.ts`, `<JCWordmark>`) bajo el JC 3D y en `/tatuaje`.
+- **Galería general:** solo el portafolio fijo; los trabajos publicados por cada barbero viven en su página. Cortina de fotos en CSS (transform) + IntersectionObserver.
+- **TV:** QR en tarjeta 3D, cinta de marca, anuncios premium; colores Ivan blanco, Jeancarlos rojo, Nelson negro con filo blanco.
+- **Seguridad:** HSTS + CSP en producción (`next.config.mjs`); errores internos genéricos; tope de 40 turnos activos/día y 15 por IP cada 10 min en `/api/fila`; listado R2 paginado; migración `20261022000021_galeria_solo_servidor` (barberos ya no insertan en `media` ni en `galeria-pendiente` con su JWT; todo pasa por las rutas del panel) con pgTAP `08_galeria_solo_servidor`.
+- **Pendiente del cliente:** revocar el token de Supabase expuesto, contraseñas fuertes, llaves de Bold + webhook, `GOOGLE_REVIEW_URL`, decidir Supabase Pro (copias diarias).
+- **Pendiente técnico:** probar subida de video en producción y el televisor real (Wake Lock, kiosco, voz).
