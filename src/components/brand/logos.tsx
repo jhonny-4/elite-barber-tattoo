@@ -45,7 +45,9 @@ export function JCMonogram({ title, ...props }: LogoProps) {
 export function JCWordmark({ title, ...props }: LogoProps) {
   return (
     <svg
-      viewBox={`0 0 ${jcWordmark.width} ${jcWordmark.height}`}
+      // Margen alrededor del trazo: Safari recorta las puntas y la sombra en el borde exacto.
+      viewBox={`-14 -14 ${jcWordmark.width + 28} ${jcWordmark.height + 28}`}
+      overflow="visible"
       fill="currentColor"
       {...a11y(title)}
       {...props}
