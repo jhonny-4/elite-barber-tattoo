@@ -50,9 +50,10 @@ export function HomeMotion() {
             marquee(gsap, ScrollTrigger);
             headings(gsap, SplitText);
             reveals(gsap, ScrollTrigger);
-            if (wide) veils(gsap, ScrollTrigger);
+            const unveil = wide ? veils() : undefined;
             manifesto(gsap);
             depth(gsap, wide);
+            return unveil;
           },
         );
 
@@ -231,34 +232,32 @@ function reveals(gsap: Gsap, ScrollTrigger: ScrollTriggerStatic) {
 }
 
 /**
- * Velo que se descorre sobre las fotos de trabajos (solo escritorio): la imagen se
- * descubre con un recorte que avanza en diagonal y se asienta desde una leve ampliación.
- * Solo clip-path y transform; al terminar se limpian los estilos en línea.
+ * Cortina sobre las fotos de trabajos (solo escritorio): una capa oscura con filo rojo
+ * se retira de lado y la foto se asienta. Es CSS (solo transform, ver `.veil` en
+ * cinematic.css) disparado por IntersectionObserver, que no guarda posiciones: al
+ * filtrar la galería ninguna foto queda tapada. Devuelve la limpieza.
  */
-function veils(gsap: Gsap, ScrollTrigger: ScrollTriggerStatic) {
-  const targets = all(
-    ".home-shop-photo .photo, .gallery-section[data-variant='home'] .gallery-frame .photo",
-  ).filter(pending);
-  if (!targets.length) return;
-  gsap.set(targets, {
-    clipPath: "polygon(100% 0%, 100% 0%, 100% 100%, 115% 100%)",
-    scale: 1.14,
-    transformOrigin: "50% 50%",
+function veils() {
+  const targets = all(".home-shop-photo, .gallery-section[data-variant='home'] .gallery-frame").filter(pending);
+  if (!targets.length) return () => {};
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-unveiled");
+        io.unobserve(entry.target);
+      }
+    },
+    { rootMargin: "0px 0px -6% 0px" },
+  );
+  targets.forEach((el) => {
+    el.classList.add("veil");
+    io.observe(el);
   });
-  ScrollTrigger.batch(targets, {
-    start: "clamp(top 90%)",
-    once: true,
-    onEnter: (batch) =>
-      gsap.to(batch, {
-        clipPath: "polygon(-15% 0%, 100% 0%, 100% 100%, 0% 100%)",
-        scale: 1,
-        duration: 1.25,
-        ease: "expo.inOut",
-        stagger: 0.12,
-        overwrite: true,
-        clearProps: "clipPath,transform,transformOrigin",
-      }),
-  });
+  return () => {
+    io.disconnect();
+    targets.forEach((el) => el.classList.remove("veil", "is-unveiled"));
+  };
 }
 
 /** El manifiesto se ilumina palabra a palabra al avanzar (scrub). */

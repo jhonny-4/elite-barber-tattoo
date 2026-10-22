@@ -629,3 +629,20 @@ html[data-intro-seen] .elite-intro {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* Cortina de las fotos de trabajos (la activa HomeMotion con `.veil`). Solo transform:
+   la capa sale de lado y la foto baja de 1.08 a 1, sin repintar la imagen. */
+.veil { position: relative; overflow: hidden; }
+.veil > .photo { transform: scale(1.08); transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.veil::before {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(90deg, #0b0b0b 0 calc(100% - 4px), var(--red-600, #e11d2e) calc(100% - 4px));
+  transform: translateX(0); transition: transform 0.6s cubic-bezier(0.7, 0, 0.25, 1);
+  will-change: transform;
+}
+.veil.is-unveiled::before { transform: translateX(101%); }
+.veil.is-unveiled > .photo { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .veil::before { display: none; }
+  .veil > .photo { transform: none; transition: none; }
+}

@@ -10,8 +10,7 @@ import {
 } from "react";
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import Link from "next/link";
-import { portfolio as staticPortfolio, type PortfolioItem } from "../domain/media";
-import { publishedPortfolio, type PublishedWork } from "../domain/published-portfolio";
+import { portfolio } from "../domain/media";
 import {
   artistInstagramHandle,
   artistInstagramUrl,
@@ -35,6 +34,11 @@ const filters: { id: GalleryFilter; label: string; noun: string }[] = [
   { id: "barberia", label: "Barbería", noun: "cortes" },
   { id: "tattoo", label: "Tatuajes", noun: "tatuajes" },
 ];
+
+const countOf = (id: GalleryFilter) =>
+  id === "todos"
+    ? portfolio.length
+    : portfolio.filter((item) => item.category === id).length;
 
 /** «Jean Carlos · Tatuaje» → ["Jean Carlos", "Tatuaje"]: en tarjetas estrechas solo se ve el tipo. */
 const splitSubtitle = (subtitle: string) => {
@@ -70,20 +74,6 @@ export function Gallery({
   eyebrow?: string;
   previewLimit?: number;
 } = {}) {
-  const [barberPortfolio, setBarberPortfolio] = useState<PortfolioItem[]>([]);
-  useEffect(() => {
-    if (tattooOnly) return;
-    const controller = new AbortController();
-    fetch("/api/galeria", { signal: controller.signal })
-      .then((response) => response.ok ? response.json() : null)
-      .then((data: { items?: PublishedWork[] } | null) => {
-        if (Array.isArray(data?.items)) setBarberPortfolio(publishedPortfolio(data.items));
-      })
-      .catch(() => {});
-    return () => controller.abort();
-  }, [tattooOnly]);
-  const portfolio = useMemo(() => [...barberPortfolio, ...staticPortfolio], [barberPortfolio]);
-  const countOf = (id: GalleryFilter) => id === "todos" ? portfolio.length : portfolio.filter((item) => item.category === id).length;
   const [filter, setFilter] = useState<GalleryFilter>(
     tattooOnly ? "tattoo" : initialFilter,
   );
@@ -102,7 +92,7 @@ export function Gallery({
       portfolio.filter(
         (item) => filter === "todos" || item.category === filter,
       ),
-    [filter, portfolio],
+    [filter],
   );
 
   const selection =
@@ -364,7 +354,6 @@ export function Gallery({
             <li
               key={item.id}
               className="gallery-item"
-              data-barber-work={item.id.startsWith("published-") || undefined}
               data-id={item.id}
               style={
                 {
