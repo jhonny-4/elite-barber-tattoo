@@ -21,7 +21,7 @@ export const buildVideoKey = (prefix: string, barberId: string, uuid: string, ex
 /** Descompone una clave de video; null si no tiene exactamente la forma esperada. */
 export function parseVideoKey(key: string, prefix: string) {
   if (!key.startsWith(prefix)) return null;
-  const match = new RegExp(`^videos/(${UUID})/(${UUID})\.(mp4|webm)$`).exec(key.slice(prefix.length));
+  const match = new RegExp(`^videos/(${UUID})/(${UUID})\\.(mp4|webm)$`).exec(key.slice(prefix.length));
   if (!match) return null;
   return { barberId: match[1], uuid: match[2], ext: match[3] as "mp4" | "webm" };
 }
