@@ -15,8 +15,10 @@ const ZONE = "America/Bogota";
 const timeFormat = new Intl.DateTimeFormat("es-CO", { timeZone: ZONE, hour: "numeric", minute: "2-digit", hour12: true });
 const dateFormat = new Intl.DateTimeFormat("es-CO", { timeZone: ZONE, weekday: "long", day: "numeric", month: "long" });
 
-/** Acentos sobrios por barbero, según su orden en el catálogo. */
-const BARBER_COLORS = ["#7aa7d1", "#d0ab6c", "#86b79b", "#b58fcf"];
+/** Color de cada barbero en el televisor (elegido por el dueño). */
+const BLACK = "#0b0b0b";
+const BARBER_COLORS: Record<string, string> = { ivan: "#ffffff", jeancarlos: "#e11d2e", nelson: BLACK };
+const FALLBACK_COLOR = "#a3a3a3";
 const CALL_MS = 5000;
 const IDLE_MS = 60_000;
 const DEMO_IDLE_MS = 8_000;
@@ -80,7 +82,16 @@ function TvJoin({ floating = false }: { floating?: boolean }) {
   );
 }
 
-const colorOf = (order: string[], barber: string) => BARBER_COLORS[Math.max(0, order.indexOf(barber)) % BARBER_COLORS.length];
+/**
+ * Variables CSS del barbero. El negro no se ve sobre el fondo oscuro, así que lleva
+ * un filo blanco (`--barber-stroke`) y sus líneas usan blanco (`--barber-line`).
+ */
+const barberVars = (barber: string): CSSProperties => {
+  const key = barber.normalize("NFD").replace(/[^a-z]/gi, "").toLowerCase();
+  const color = BARBER_COLORS[key] ?? FALLBACK_COLOR;
+  const dark = color === BLACK;
+  return { "--barber": color, "--barber-line": dark ? "#ffffff" : color, "--barber-stroke": dark ? "#ffffff" : "transparent" } as CSSProperties;
+};
 const waitLabel = (t: PublicTicket) =>
   t.estimatedMinutes === null ? null : t.estimatedMinutes <= 0 ? "Ahora" : `≈ ${t.estimatedMinutes} min`;
 const ticketKey = (t: PublicTicket) => `${t.number}:${t.status}:${t.barber}`;
@@ -98,9 +109,9 @@ function Digits({ value, className }: { value: string; className: string }) {
   );
 }
 
-function CallOverlay({ ticket, color }: { ticket: PublicTicket; color: string }) {
+function CallOverlay({ ticket, vars }: { ticket: PublicTicket; vars: CSSProperties }) {
   return (
-    <div className="tv-callfx" role="alert" aria-label={`Turno ${ticket.number}, pasar con ${ticket.barber}`} style={{ "--barber": color } as CSSProperties}>
+    <div className="tv-callfx" role="alert" aria-label={`Turno ${ticket.number}, pasar con ${ticket.barber}`} style={vars}>
       <div className="tv-callfx-rays" aria-hidden="true" />
       <div className="tv-callfx-flash" aria-hidden="true" />
       <div className="tv-callfx-wipe" aria-hidden="true" />
@@ -190,7 +201,7 @@ export function QueueMonitor() {
       : next[0]
         ? { ticket: next[0], label: "Siguiente turno" }
         : null;
-  const heroColor = hero ? colorOf(order, hero.ticket.barber) : "var(--steel-300)";
+  const heroVars = hero ? barberVars(hero.ticket.barber) : ({ "--barber": "var(--steel-300)", "--barber-line": "var(--steel-300)" } as CSSProperties);
   const pending = queue ? null : error ? "Sin datos por ahora." : "Cargando…";
   const reconnecting = !online && Boolean(queue || error);
 
@@ -223,7 +234,7 @@ export function QueueMonitor() {
         </header>
 
         <div className="tv-body">
-        <section className="tv-hero" data-status={hero?.ticket.status ?? "empty"} style={{ "--barber": heroColor } as CSSProperties} aria-live="polite">
+        <section className="tv-hero" data-status={hero?.ticket.status ?? "empty"} style={heroVars} aria-live="polite">
           <i className="tv-hero-sheen" aria-hidden="true" />
           <div className="tv-hero-main">
             {hero ? (
@@ -242,7 +253,7 @@ export function QueueMonitor() {
                   <p className="tv-hero-more">
                     También llamando:{" "}
                     {called.slice(1).map((t) => (
-                      <b key={t.number} style={{ "--barber": colorOf(order, t.barber) } as CSSProperties}>
+                      <b key={t.number} style={barberVars(t.barber)}>
                         {t.number} · {t.barber}
                       </b>
                     ))}
@@ -269,12 +280,11 @@ export function QueueMonitor() {
 
         <section className="tv-barbers" aria-label="Turnos por profesional">
           {order.map((name) => {
-            const color = colorOf(order, name);
             const now = serving.find((t) => t.barber === name) ?? called.find((t) => t.barber === name);
             const queued = next.filter((t) => t.barber === name);
             const extraCalled = serving.some((t) => t.barber === name) ? called.find((t) => t.barber === name) : undefined;
             return (
-              <article key={name} className="tv-barber" style={{ "--barber": color } as CSSProperties}>
+              <article key={name} className="tv-barber" style={barberVars(name)}>
                 <h2>
                   <span aria-hidden="true" />
                   {name}
@@ -325,7 +335,7 @@ export function QueueMonitor() {
         </footer>
       </div>
 
-      {showing && <CallOverlay key={showing.number} ticket={showing} color={colorOf(order, showing.barber)} />}
+      {showing && <CallOverlay key={showing.number} ticket={showing} vars={barberVars(showing.barber)} />}
       {idle && !showing && (
         <>
           <TvShowcase services={services} onExit={wake} demo={demo} />

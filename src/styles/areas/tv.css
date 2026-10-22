@@ -455,3 +455,17 @@ body:has(.tv) .pwa-tools { display: none; }
 .tv-instagram strong { font-size: calc(var(--u) * 6.2); }
 .tv-ig-ring::before { border-radius: 50%; }
 .tv-ig-ring::after { inset: calc(var(--u) * 0.7); border-radius: 50%; }
+
+/* Colores de barbero: el negro (Nelson) lleva filo blanco para leerse sobre el fondo oscuro. */
+.tv-hero-barber, .tv-now-body strong, .tv-hero-more b {
+  -webkit-text-stroke: calc(var(--u) * 0.12) var(--barber-stroke, transparent);
+  paint-order: stroke fill;
+}
+.tv-hero-barber span { box-shadow: 0 0 0 calc(var(--u) * 0.15) var(--barber-stroke, transparent), 0 0 calc(var(--u) * 1.2) var(--barber-line, var(--barber)); }
+.tv-barber h2 span { box-shadow: 0 0 0 calc(var(--u) * 0.15) var(--barber-stroke, transparent); }
+.tv-hero::before { box-shadow: 0 0 0 calc(var(--u) * 0.12) var(--barber-stroke, transparent); }
+.tv-barber { box-shadow: var(--tv-relief), inset 0 calc(var(--u) * 0.12) 0 var(--barber-stroke, transparent); }
+.tv-callfx-barber b {
+  border-color: var(--barber-line, var(--barber));
+  box-shadow: 0 0 calc(var(--u) * 3) color-mix(in srgb, var(--barber-line, var(--barber)) 55%, transparent);
+}
