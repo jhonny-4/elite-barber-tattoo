@@ -8,6 +8,10 @@ export async function POST(request: Request) {
   const key = request.headers.get("idempotency-key"); if (!key || !/^[A-Za-z0-9-]{8,100}$/.test(key)) return Response.json({ error: "Falta una referencia única válida." }, { status: 400, headers: noStore });
   try { limitPublic(request,"reservas"); const body = await readJson(request); const result = await createBooking(body as unknown as BookingInput, key);
     // Aviso al equipo después de responder: un fallo de push nunca afecta la reserva.
-    if (result.status === "confirmada") after(() => announceBooking(result.id).catch(e => console.error("Push: aviso de reserva fallido.", e instanceof Error ? e.message : e)));
+    if (result.status === "confirmada") {
+      const notify = () => announceBooking(result.id).catch(e => console.error("Push: aviso de reserva fallido.", e instanceof Error ? e.message : e));
+      // Fuera de una petición de Next (pruebas de contrato) `after` lanza: la reserva ya existe, así que se avisa sin esperar.
+      try { after(notify); } catch { void notify(); }
+    }
     return Response.json(result, { status: 201, headers: noStore }); } catch (e) { return errorResponse(e); }
 }
