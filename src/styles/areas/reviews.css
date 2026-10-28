@@ -1,0 +1,53 @@
+/* Reseñas: misma tarjeta 3D (home-tilt + glare) y paleta de Elite; estrellas en rojo de marca. */
+.rv-stars { display: inline-flex; gap: 2px; color: rgb(255 255 255 / 0.18); letter-spacing: 0; font-size: 18px; line-height: 1; margin: 0; }
+.rv-stars .is-on, .rv-admin .rv-stars { color: var(--red-600, #e11d2e); text-shadow: 0 0 12px rgb(225 29 46 / 0.45); }
+.rv-admin .rv-stars span { color: rgb(255 255 255 / 0.18); text-shadow: none; }
+
+.home-reviews .rv-average { display: inline-flex; align-items: center; gap: 12px; margin-top: 18px; color: var(--steel-300); font-size: 14px; }
+.rv-average strong { font-family: var(--font-display); font-size: 44px; line-height: 1; color: var(--white); }
+.rv-average .rv-stars { font-size: 22px; }
+
+.rv-card {
+  position: relative; display: grid; gap: 14px; height: 100%; padding: 28px 26px; overflow: hidden;
+  border-radius: var(--radius-md, 22px); border: 1px solid var(--line, rgb(255 255 255 / 0.08));
+  background: radial-gradient(120% 80% at 0% 0%, rgb(225 29 46 / 0.10), transparent 55%), linear-gradient(180deg, #1d1d1d, #0d0d0d);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.07) inset, 0 24px 48px -24px rgb(0 0 0 / 0.9);
+  transform-style: preserve-3d;
+}
+.rv-card::before { content: "“"; position: absolute; right: 18px; top: -8px; font-family: var(--font-serif, serif); font-size: 120px; color: rgb(255 255 255 / 0.05); pointer-events: none; }
+.rv-text { margin: 0; color: var(--steel-100, #e8e8e8); font-size: 16px; line-height: 1.6; }
+.rv-meta { margin: 0; color: var(--steel-300); font-size: 13px; letter-spacing: 0.04em; }
+.rv-meta strong { color: var(--white); }
+
+/* Página para calificar */
+.rv-panel { display: grid; gap: 18px; justify-items: center; text-align: center; }
+.rv-form { display: grid; gap: 20px; width: min(100%, 460px); }
+.rv-stars-input { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; justify-items: center; }
+.rv-stars-input legend { font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: 12px; color: var(--steel-300); margin-bottom: 6px; }
+.rv-stars-row { display: flex; gap: 8px; perspective: 400px; }
+.rv-stars-row label { cursor: pointer; font-size: 44px; line-height: 1; color: rgb(255 255 255 / 0.16); transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.25, 1.4), color 0.2s; }
+.rv-stars-row label.is-on { color: var(--red-600, #e11d2e); text-shadow: 0 0 18px rgb(225 29 46 / 0.6); transform: translateY(-3px) rotateX(18deg) scale(1.08); }
+.rv-stars-row input { position: absolute; opacity: 0; pointer-events: none; }
+.rv-stars-row label:has(input:focus-visible) { outline: 2px solid var(--white); outline-offset: 4px; border-radius: 6px; }
+.rv-stars-label { margin: 0; min-height: 1.4em; color: var(--steel-200); font-weight: 600; }
+.rv-comment { display: grid; gap: 8px; text-align: left; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--steel-300); }
+.rv-comment textarea { font: inherit; font-weight: 400; letter-spacing: 0; color: var(--white); background: rgb(0 0 0 / 0.4); border: 1px solid var(--line-strong, rgb(255 255 255 / 0.16)); border-radius: 14px; padding: 14px; resize: vertical; }
+
+/* Reserva: estrellas del barbero */
+.bk-pro-rating { display: inline-flex; align-items: baseline; gap: 4px; color: var(--red-600, #e11d2e); font-weight: 800; font-size: 13px; }
+.bk-pro-rating small { color: var(--steel-300); font-weight: 600; }
+
+/* Panel del dueño */
+.rv-admin { padding-inline: clamp(16px, 4vw, 48px); padding-bottom: 60px; }
+.rv-admin-head { display: grid; gap: 10px; justify-items: start; margin: 32px 0 24px; }
+.rv-admin-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.rv-admin-item { display: flex; gap: 18px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.rv-admin-item.is-pendiente { border-left: 4px solid var(--red-600, #e11d2e); }
+.rv-admin-item.is-rechazada { opacity: 0.55; }
+.rv-admin-actions { display: flex; gap: 8px; }
+.rv-empty { color: var(--steel-300); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rv-stars-row label { transition: none; }
+  .rv-stars-row label.is-on { transform: none; }
+}

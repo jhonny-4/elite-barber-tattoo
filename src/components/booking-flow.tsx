@@ -98,6 +98,7 @@ export function BookingFlow() {
     barbers: BarberSummary[];
     services: ServiceSummary[];
     barberServices: BarberServiceLink[];
+    ratings?: Record<string, { average: number; count: number }>;
   }>({ barbers: [], services: [], barberServices: [] });
   const [serverSlots, setServerSlots] = useState<SlotView[]>([]);
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
@@ -648,6 +649,12 @@ export function BookingFlow() {
                                   ? "Te asignamos quien esté libre"
                                   : "Barbero de Elite"}
                             </span>
+                            {index >= 0 && catalog.ratings?.[barbers[index]?.id] && (
+                              <span className="bk-pro-rating" aria-label={`${catalog.ratings[barbers[index].id].average} de 5 estrellas`}>
+                                ★ {catalog.ratings[barbers[index].id].average.toFixed(1)}
+                                <small>({catalog.ratings[barbers[index].id].count})</small>
+                              </span>
+                            )}
                             {!unavailable && clock > 0 && (
                               <span className="bk-pro-next">
                                 {next

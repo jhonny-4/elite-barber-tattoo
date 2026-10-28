@@ -335,6 +335,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"reviews": {
+                  Row: {
+                    "author_name": string,"barber_id": string,"booking_id": string,"comment": string | null,"created_at": string,"id": string,"rating": number,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "author_name": string,"barber_id": string,"booking_id": string,"comment"?: string | null,"created_at"?: string,"id"?: string,"rating": number,"status"?: string
+                  }
+                  Update: {
+                    "author_name"?: string,"barber_id"?: string,"booking_id"?: string,"comment"?: string | null,"created_at"?: string,"id"?: string,"rating"?: number,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "reviews_barber_id_fkey"
+      columns: ["barber_id"]
+isOneToOne: false
+      referencedRelation: "barbers"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reviews_booking_id_fkey"
+      columns: ["booking_id"]
+isOneToOne: true
+      referencedRelation: "bookings"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"services": {
                   Row: {
                     "active": boolean,"description": string | null,"duration_min": number,"id": string,"name": string,"price_cop": number,"slug": string,"sort_order": number
@@ -514,6 +540,9 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"mark_no_shows":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
 "reschedule_booking_by_token":
 { Args: { "p_starts": string,"p_token_hash": string }; Returns: {
               "access_token_hash": string,

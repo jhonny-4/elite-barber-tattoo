@@ -112,9 +112,6 @@ async function sendReminders(kind: ReminderKind, now: number) {
 }
 
 async function sendReviews(now: number) {
-  const review = process.env.GOOGLE_REVIEW_URL;
-  // Sin enlace de reseñas configurado (o no https) no se envía nada.
-  if (!review || !/^https:\/\//.test(review)) return 0;
   const w = reviewWindow(now);
   const { data, error } = await adminClient()
     .from("bookings")
@@ -126,14 +123,16 @@ async function sendReviews(now: number) {
   if (error) throw new Error("No se pudieron leer las citas finalizadas.");
   let sent = 0;
   for (const b of (data ?? []) as unknown as Booking[]) {
-    if (!(await claim(b.id, "resena", now))) continue;
+    // La reseña se deja en la web con el enlace privado de la cita (citas del sistema actual).
+    const link = bookingLink(b)?.replace("/mi-reserva/", "/resena/");
+    if (!link || !(await claim(b.id, "resena", now))) continue;
     const first = firstName(b.customer_name);
     const html = emailLayout({
       preheader: "Gracias por venir a Elite. ¿Nos dejas tu opinión?",
       eyebrow: "&#9670; Gracias por venir",
       title: `${first ? `${first}, ¿cómo` : "¿Cómo"} te fue?`,
-      intro: "Tu opinión ayuda a otros a encontrarnos y a nosotros a mejorar. Déjanos tu reseña en Google: toma menos de un minuto.",
-      content: actions(primaryButton(escapeHtml(review), "Dejar mi reseña &#9733;"), ghostButton(`${whatsappUrl}?text=${encodeURIComponent("Hola Elite, quiero comentarles sobre mi visita.")}`, "Escribir por WhatsApp")),
+      intro: `Califica tu visita con ${escapeHtml(b.barbers?.display_name ?? "tu barbero")}: toma menos de un minuto y ayuda a otros a elegir.`,
+      content: actions(primaryButton(link, "Calificar mi visita &#9733;"), ghostButton(`${whatsappUrl}?text=${encodeURIComponent("Hola Elite, quiero comentarles sobre mi visita.")}`, "Escribir por WhatsApp")),
       footerNote: "Recibes este correo porque tuviste una cita en Elite.",
     });
     const r = await sendEmail(b.customer_email, "¿Cómo te fue en Elite? · Elite Barber & Tattoo", html, { idempotencyKey: `resena-${b.id}`, record: { bookingId: b.id, template: "resena" } });
@@ -225,6 +224,12 @@ export async function runTick(now = Date.now()) {
     resena: () => sendReviews(now),
     resumen_dia: () => sendDigest(now),
     videos_huerfanos: () => cleanOrphanVideos(now),
+    // Cita confirmada sin llegada 15 min después de su hora: «no asistió» y el horario se libera.
+    no_asistio: async () => {
+      const { data, error } = await adminClient().rpc("mark_no_shows");
+      if (error) throw new Error("No se pudieron marcar las citas sin llegada.");
+      return data;
+    },
     reservas_expiradas: async () => {
       const { data, error } = await adminClient().rpc("expire_holds");
       if (error) throw new Error("No se pudieron expirar las reservas sin pago.");

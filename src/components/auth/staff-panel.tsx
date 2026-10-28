@@ -11,6 +11,7 @@ export function StaffPanel({ barberView, barberSlug }: { barberView: boolean; ba
       <div className="panel-alert-row">
         <PanelAlerts />
         <PushToggle />
+        {!barberView && <a className="button button-outline button-small" href="/administracion/resenas">★ Reseñas</a>}
       </div>
       <Dashboard professionalOnly={barberView} barberSlug={barberSlug} onExit={() => void signOut()} />
     </>

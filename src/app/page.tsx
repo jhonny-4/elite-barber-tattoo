@@ -10,11 +10,15 @@ import { HomeServices } from "../components/home/services";
 import { HomeBarbershop } from "../components/home/barbershop";
 import { HomeArtist } from "../components/home/artist";
 import { HomeTeam } from "../components/home/team";
+import { HomeReviews } from "../components/home/reviews";
 import { HomeBookingInvite } from "../components/home/booking-invite";
 import { HomeMotion } from "../components/motion/home-motion";
 import { HoverTilt } from "../components/motion/hover-tilt";
 import { HeroDepth } from "../components/motion/hero-depth";
 import { ButtonFx } from "../components/motion/button-fx";
+
+// Las reseñas aprobadas se refrescan cada 5 minutos sin perder la página estática.
+export const revalidate = 300;
 
 export default function Home() {
   return (
@@ -30,6 +34,7 @@ export default function Home() {
         <Gallery previewLimit={6} />
         <HomeArtist />
         <HomeTeam />
+        <HomeReviews />
         <HomeBookingInvite />
         <LocationMap />
       </main>
