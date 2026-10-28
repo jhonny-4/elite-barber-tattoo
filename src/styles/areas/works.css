@@ -380,3 +380,4 @@
 .gal-upload .gal-drop-text small { text-transform: none; letter-spacing: 0.01em; font-size: 0.82rem; }
 .gal-upload .gal-label { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.72rem; }
 @media (max-width: 640px) { .gal-upload .gal-drop-text strong { white-space: normal; } }
+.works-choose { display: flex; justify-content: center; padding: 28px 0 8px; position: sticky; bottom: 0; background: linear-gradient(transparent, rgb(8 8 8 / 0.92) 40%); }

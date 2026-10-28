@@ -216,6 +216,7 @@ export function BarberWorks({ slug, name, onChoose }: { slug: string; name: stri
                   </header>
                 ) : null}
                 {total ? (
+                  <>
                   <ul className="works-grid" style={{ "--count": Math.min(total, 4) } as CSSProperties}>
                     <HoverTilt />
                     {items.map((item, i) => (
@@ -239,6 +240,13 @@ export function BarberWorks({ slug, name, onChoose }: { slug: string; name: stri
                       </li>
                     ))}
                   </ul>
+                  <div className="works-choose">
+                    <button type="button" className="button button-accent" onClick={() => { close(); onChoose?.(); }}>
+                      Elegir a {name}
+                      <Icon name="arrow" />
+                    </button>
+                  </div>
+                  </>
                 ) : null}
               </div>
             ) : (
