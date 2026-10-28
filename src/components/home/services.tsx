@@ -12,12 +12,12 @@ const details: Record<string, { text: string; icon: IconName }> = {
     text: "Corte y barba en una misma experiencia.",
     icon: "razor",
   },
-  barba: { text: "Perfilado y arreglo de barba a tu medida.", icon: "razor" },
-  cerquillos: { text: "Líneas limpias que marcan la diferencia.", icon: "scissors" },
-  ceja: { text: "Un toque preciso para enmarcar la mirada.", icon: "spark" },
-  mascarilla: { text: "Una pausa para tu piel después del corte.", icon: "spark" },
-  "limpieza-facial": { text: "Piel fresca y limpia en una sesión.", icon: "spark" },
-  "limpieza-facial-profunda": { text: "Limpieza completa para renovar tu piel.", icon: "spark" },
+  barba: { text: "Perfilado y arreglo de barba a tu medida.", icon: "beard" },
+  cerquillos: { text: "Líneas limpias que marcan la diferencia.", icon: "comb" },
+  ceja: { text: "Un toque preciso para enmarcar la mirada.", icon: "brow" },
+  mascarilla: { text: "Una pausa para tu piel después del corte.", icon: "mask" },
+  "limpieza-facial": { text: "Piel fresca y limpia en una sesión.", icon: "drop" },
+  "limpieza-facial-profunda": { text: "Limpieza completa para renovar tu piel.", icon: "drops" },
 };
 
 function ServiceCard({
