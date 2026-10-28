@@ -12,6 +12,12 @@ const details: Record<string, { text: string; icon: IconName }> = {
     text: "Corte y barba en una misma experiencia.",
     icon: "razor",
   },
+  barba: { text: "Perfilado y arreglo de barba a tu medida.", icon: "razor" },
+  cerquillos: { text: "Líneas limpias que marcan la diferencia.", icon: "scissors" },
+  ceja: { text: "Un toque preciso para enmarcar la mirada.", icon: "spark" },
+  mascarilla: { text: "Una pausa para tu piel después del corte.", icon: "spark" },
+  "limpieza-facial": { text: "Piel fresca y limpia en una sesión.", icon: "spark" },
+  "limpieza-facial-profunda": { text: "Limpieza completa para renovar tu piel.", icon: "spark" },
 };
 
 function ServiceCard({
@@ -99,7 +105,7 @@ export function HomeServices() {
           <ServiceCard
             key={service.id}
             href={`/reservar?servicio=${service.id}`}
-            index={`0${i + 1}`}
+            index={String(i + 1).padStart(2, "0")}
             icon={details[service.id]?.icon ?? "scissors"}
             name={service.name}
             text={details[service.id]?.text ?? "Barbería Elite."}
@@ -111,7 +117,7 @@ export function HomeServices() {
         ))}
         <ServiceCard
           href="/tatuaje"
-          index={`0${services.length + 1}`}
+          index={String(services.length + 1).padStart(2, "0")}
           icon="needle"
           name="Tatuaje personalizado"
           text="Tu idea. El trazo de Jean Carlos."

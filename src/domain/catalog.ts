@@ -11,13 +11,15 @@ export const business = {
 } as const;
 
 export const services = [
-  { id: "corte", name: "Corte", priceCOP: 25000, demoDurationMinutes: 45 },
-  {
-    id: "corte-barba",
-    name: "Corte con barba",
-    priceCOP: 32000,
-    demoDurationMinutes: 45,
-  },
+  // Lista oficial del local (cartel de servicios). Los slugs coinciden con public.services.
+  { id: "corte", name: "Corte sencillo", priceCOP: 25000, demoDurationMinutes: 45 },
+  { id: "corte-barba", name: "Corte y barba", priceCOP: 32000, demoDurationMinutes: 45 },
+  { id: "barba", name: "Barba", priceCOP: 18000, demoDurationMinutes: 30 },
+  { id: "cerquillos", name: "Cerquillos", priceCOP: 12000, demoDurationMinutes: 15 },
+  { id: "ceja", name: "Ceja", priceCOP: 7000, demoDurationMinutes: 15 },
+  { id: "mascarilla", name: "Mascarilla", priceCOP: 10000, demoDurationMinutes: 20 },
+  { id: "limpieza-facial", name: "Limpieza facial sencilla", priceCOP: 60000, demoDurationMinutes: 45 },
+  { id: "limpieza-facial-profunda", name: "Limpieza facial profunda", priceCOP: 80000, demoDurationMinutes: 60 },
 ] as const;
 // IDs históricos del motor local; slug corresponde al catálogo real de reservas.
 export const barbers = [

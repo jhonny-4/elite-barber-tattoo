@@ -16,7 +16,7 @@ const pillars = [
     index: "01",
     icon: "scissors",
     title: "Barbería con identidad",
-    text: "Explora un corte o un corte con barba, elige tu profesional y encuentra un espacio en la agenda.",
+    text: "Explora cortes, barba, cejas y cuidado facial, elige tu profesional y encuentra un espacio en la agenda.",
   },
   {
     index: "02",
