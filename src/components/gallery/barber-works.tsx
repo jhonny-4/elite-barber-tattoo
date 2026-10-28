@@ -26,7 +26,7 @@ const ratioOf = (w: Work) => (w.width && w.height ? w.width / w.height : w.kind 
  * Rejilla de tarjetas flotantes con la proporción completa de cada foto y, al elegir una, visor con
  * contador, flechas, teclado y deslizamiento. Los videos arrancan sin sonido y solo cargan metadatos.
  */
-export function BarberWorks({ slug, name }: { slug: string; name: string }) {
+export function BarberWorks({ slug, name, onChoose }: { slug: string; name: string; onChoose?: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const swipe = useRef<{ id: number; x: number; y: number; dx: number; axis: "x" | "y" | null } | null>(null);
@@ -268,7 +268,7 @@ export function BarberWorks({ slug, name }: { slug: string; name: string }) {
                 <div className="lightbox-info">
                   <h2>{work.title ?? work.alt}</h2>
                   {work.title ? <p className="lightbox-note">{work.alt}</p> : null}
-                  <button type="button" className="button button-accent button-small" onClick={close}>
+                  <button type="button" className="button button-accent button-small" onClick={() => { close(); onChoose?.(); }}>
                     Elegir a {name}
                     <Icon name="arrow" />
                   </button>

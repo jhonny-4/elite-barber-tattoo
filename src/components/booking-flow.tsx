@@ -660,7 +660,7 @@ export function BookingFlow() {
                             <Icon name="check" />
                           </span>
                         </label>
-                        {index >= 0 && !unavailable ? <BarberWorks slug={p.id} name={p.name} /> : null}
+                        {index >= 0 && !unavailable ? <BarberWorks slug={p.id} name={p.name} onChoose={() => pickBarber(p.id)} /> : null}
                         </div>
                       );
                     })}
