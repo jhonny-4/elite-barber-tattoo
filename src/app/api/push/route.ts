@@ -2,7 +2,7 @@ import { isPushEndpoint } from "../../../domain/push-endpoint";
 import { getStaff } from "../../../server/auth/staff";
 import { BookingError } from "../../../server/bookings";
 import { errorResponse, noStore, readJson, sameOrigin } from "../../../server/bookings/http";
-import { vapidPublicKey } from "../../../server/notify/push";
+import { pushReady, vapidPublicKey } from "../../../server/notify/push";
 import { adminClient } from "../../../server/supabase/clients";
 
 export const runtime = "nodejs";
@@ -23,7 +23,7 @@ async function staffOrThrow(request: Request) {
 export async function GET() {
   const publicKey = vapidPublicKey();
   if (!publicKey) return Response.json({ error: "Avisos push no configurados." }, { status: 503, headers: noStore });
-  return Response.json({ publicKey }, { headers: noStore });
+  return Response.json({ publicKey, ready: pushReady() }, { headers: noStore });
 }
 
 /** Guarda la suscripción del dispositivo para el usuario de la sesión (nunca el enviado por el cliente). */

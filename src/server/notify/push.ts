@@ -26,6 +26,9 @@ const safePath = (url: string) => (/^\/(?!\/)[\w\-./?=&%#]*$/.test(url) ? url : 
  * Avisa al dueño y, si se indica, al barbero afectado, en todos sus dispositivos suscritos.
  * Las suscripciones caducadas (404/410) se eliminan. Nunca lanza: devuelve el conteo para logs.
  */
+/** Solo sí/no: las tres variables VAPID están presentes (no revela valores). */
+export const pushReady = () => vapidReady();
+
 export async function notifyStaff(title: string, body: string, url: string, barberId?: string | null) {
   const result = { sent: 0, removed: 0, failed: 0 };
   if (!vapidReady()) return result;
